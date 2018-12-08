@@ -1,25 +1,25 @@
 {
   "name": "kaboom",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "webpack --mode=development --watch"
-  },
-  "author": "",
-  "license": "MIT",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "@types/react": "^16.7.13",
-    "@types/react-dom": "^16.0.11",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "ts-loader": "^5.3.1",
-    "webpack": "^4.27.1"
+    "react-scripts-ts": "3.1.0"
+  },
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "awesome-typescript-loader": "^5.2.1",
-    "source-map-loader": "^0.2.4",
-    "typescript": "^3.2.2",
-    "webpack-cli": "^3.1.2"
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.12",
+    "@types/react": "^16.7.13",
+    "@types/react-dom": "^16.0.11",
+    "node-sass": "^4.10.0",
+    "sass-loader": "^7.1.0",
+    "typescript": "^3.2.2"
   }
 }
