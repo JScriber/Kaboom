@@ -13,15 +13,20 @@ export class Player {
   @Generated('uuid')
   uuid: string;
 
+  /** Authentification token. */
+  @Column('varchar', { length: 255, nullable: true })
+  token: string;
+
+  /** Date at which the user is created. */
+  @Column('date', { name: 'created_at' })
+  createdAt: Date;
+
   /** A email address can be used only once. */
-  @Column('varchar', {
-    length: 255,
-    unique: true
-  })
+  @Column('varchar', { length: 255, unique: true })
   email: string;
 
   /** A user only has a username. No firstname nor lastname. */
-  @Column('varchar', { length: 255 })
+  @Column('varchar', { length: 255, unique: true })
   username: string;
 
   /** Encrypted password. */
