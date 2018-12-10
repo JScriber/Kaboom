@@ -73,7 +73,7 @@ module.exports = {
     // We placed these paths second because we want `node_modules` to "win"
     // if there are any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebookincubator/create-react-app/issues/253
-    modules: ['node_modules', paths.appNodeModules].concat(
+    modules: ['node_modules', paths.appNodeModules, paths.appSrc].concat(
       // It is guaranteed to exist because we tweak it in `env.js`
       process.env.NODE_PATH.split(path.delimiter).filter(Boolean)
     ),
@@ -96,10 +96,13 @@ module.exports = {
       '.jsx',
     ],
     alias: {
-      
+
       // Support React Native Web
       // https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
       'react-native': 'react-native-web',
+      pixi: path.join(__dirname, '../node_modules/phaser-ce/build/custom/pixi.js'),
+      'phaser-ce': path.join(__dirname, '../node_modules/phaser-ce/build/custom/phaser-split.js'),
+      p2: path.join(__dirname, '../node_modules/phaser-ce/build/custom/p2.js')
     },
     plugins: [
       // Prevents users from importing files from outside of src/ (or node_modules/).
@@ -125,19 +128,41 @@ module.exports = {
         include: paths.appSrc,
       },
       {
+        test: /pixi\.js$/,
+        use: [
+          {
+            loader: 'expose-loader',
+            options: 'PIXI'
+          }
+        ]
+      },
+      {
+        test: /phaser-split\.js$/,
+        use: [
+          {
+            loader: 'imports-loader',
+            options: 'pixi,p2'
+          },
+          {
+            loader: 'expose-loader',
+            options: 'Phaser'
+          }
+        ]
+      },
+      {
+        test: /p2\.js$/,
+        use: [
+          {
+            loader: require.resolve('expose-loader'),
+            options: 'p2'
+          }
+        ]
+      },
+      {
         // "oneOf" will traverse all following loaders until one will
         // match the requirements. When no loader matches it will fall
         // back to the "file" loader at the end of the loader list.
         oneOf: [
-          {
-            test: /\.scss$/,
-            include: paths.appSrc,
-            loaders: [
-              require.resolve('style-loader'),
-              require.resolve('css-loader'),
-              require.resolve('sass-loader')
-            ]
-          },
           // "url" loader works like "file" loader except that it embeds assets
           // smaller than specified limit in bytes as data URLs to avoid requests.
           // A missing `test` is equivalent to a match.
@@ -154,7 +179,7 @@ module.exports = {
             include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
-              
+
               compact: true,
             },
           },
