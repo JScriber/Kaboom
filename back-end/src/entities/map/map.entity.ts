@@ -8,6 +8,10 @@ export class Map {
   @PrimaryGeneratedColumn()
   id: number;
 
+  /** Date at which the map is created. */
+  @Column('date', { name: 'created_at' })
+  createdAt: Date;
+
   /** Height of the map. */
   @Column('smallint')
   height: number;
