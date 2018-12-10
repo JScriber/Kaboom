@@ -1,0 +1,60 @@
+#!/bin/bash
+
+# Name of the container.
+declare -r CONTAINER="kaboom"
+
+# Port of the host.
+declare -r HOST_PORT=5432
+
+# Port of the container.
+declare -r CONTAINER_PORT=5432
+
+# Identifiers.
+declare -r USER_NAME="postgres"
+declare -r PASSWORD="pass"
+
+# Exit codes.
+declare -r SUCCESS=0
+declare -r ALREADY_EXIST=125
+
+declare -r SUCCESS_MESSAGE="--> Success!"
+declare -r ERROR_MESSAGE="--> Error!"
+
+# Creates the database.
+create() {
+  echo "Attempting to create the database..."
+  $(docker run --name $CONTAINER -d -p $HOST_PORT:$CONTAINER_PORT -e POSTGRES_PASSWORD=$PASSWORD $USER_NAME &>/dev/null) 
+
+  case $? in
+    $SUCCESS)
+      echo $SUCCESS_MESSAGE
+    ;;
+    $ALREADY_EXIST)
+      echo "The database already exist. Launch \"rebuild\" if you want to clear it."
+    ;;
+    *)
+      echo "Unknow error."
+    ;;
+  esac
+}
+
+# Deletes the database.
+delete() {
+  echo "Deleting the database..."
+  $(docker container stop $CONTAINER &>/dev/null)
+  $(docker container rm $CONTAINER &>/dev/null)
+
+  if [[ $? -eq 0 ]]; then
+    echo $SUCCESS_MESSAGE
+  else
+    echo $ERROR_MESSAGE
+  fi
+}
+
+# Rebuilds the database.
+rebuild() {
+  delete
+  create
+}
+
+"$@"
