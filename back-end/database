@@ -30,10 +30,10 @@ create() {
       echo $SUCCESS_MESSAGE
     ;;
     $ALREADY_EXIST)
-      echo "The database already exist. Launch \"rebuild\" if you want to clear it."
+      echo "The database already exists. Launch \"rebuild\" if you want to clear it."
     ;;
     *)
-      echo "Unknow error."
+      echo "Unknown error."
     ;;
   esac
 }
