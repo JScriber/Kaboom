@@ -8,20 +8,25 @@ npm install
 This example uses Postgrès as database.
 Run a Postgrès container with the following command : 
 ```docker
-docker run --name userbook -d -p 5432:5432 -e POSTGRES_PASSWORD=pass postgres
+docker run --name kaboom -d -p 5432:5432 -e POSTGRES_PASSWORD=pass postgres
 ```
 (Note: It may take some time if you don't already have a Postgrès image on your disk.)
 
 ### Check container
 Check if the container is up and running with : 
 ```docker
-docker container ls | grep userbook
+docker container ls | grep kaboom
 ```
 
-### Add database
+### Directly access database
 Enter the container by running :
 ```docker 
-docker exec -it userbook psql -U postgres
+docker exec -it kaboom psql -U postgres
+```
+# Run the database
+If it's not the first time you use the database, you may simply need to start it. To do so just run:
+```
+docker container start kaboom
 ```
 
 # Run the project
@@ -48,6 +53,5 @@ npm run test:watch
 ```
 
 # Swagger
-If the server is running, you should be able to access Swagger by visiting : http://localhost:3000/api/.
-
-Swagger allows you to see all the entrypoints of the application and to send request.
+The API is documented with Swagger.
+If the server is up and running, you should be able to access it by visiting : http://localhost:3000/api/.
