@@ -1,3 +1,6 @@
 export const environment = {
-  roundEncryption: 10
+  security: {
+    roundEncryption: 10,
+    tokenExpiration: '2 days'
+  }
 }
