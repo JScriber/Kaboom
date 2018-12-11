@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, Param, ParseIntPipe, HttpException, HttpStatus, Bind } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 import { DeleteResult, Repository } from 'typeorm';
 import { Response } from 'express-serve-static-core';
 
@@ -11,14 +12,15 @@ import { CreatePlayerInDto } from '../../dto/player/create-player/player-in.dto'
 import { environment } from '../../../environment';
 import { CreatePlayerOutDto } from 'src/dto/player/create-player/player-out.dto';
 import { IdentifiersInDto } from 'src/dto/player/identifiers/identifiers-in.dto';
-import { ConnectedUserDto } from '../../dto/player/identifiers/identifiers-out.dto';
+import { TokenService } from '../../services/token/token.service';
 
 @Controller('player')
 export class PlayerController {
 
   constructor(
     @InjectRepository(Player)
-    private readonly playerRepository: Repository<Player>) {}  
+    private readonly playerRepository: Repository<Player>,
+    private readonly tokenService: TokenService) {}  
 
   @Get(':id')
   async findOne(@Param('id', new ParseIntPipe()) id: number): Promise<Player> {
@@ -40,16 +42,16 @@ export class PlayerController {
 
       // Tested password.
       const password: string = await Bcrypt.hash(identifiers.password, player.salt);
-
       if (password === player.password) {
-        // Generate a token.
-        player.token = await Bcrypt.genSalt(environment.roundEncryption);
-  
-        this.playerRepository.save(player).then(() => {
-          res.status(HttpStatus.OK).send(
-            new ConnectedUserDto(player)
-          );
-        });
+        // Generate and assign a token.
+        player.token = await this.tokenService.generate(player);
+
+        if (player.token !== null) {
+          // Updates the user to store the token.
+          this.playerRepository.save(player).then(() => {
+            res.status(HttpStatus.OK).send(player.token);
+          });
+        }
       } else {
         // Bad password exception.
         // TODO: Better error handling.
@@ -74,7 +76,7 @@ export class PlayerController {
     player.createdAt = new Date();
 
     // Set the salt.
-    player.salt = await Bcrypt.genSalt(environment.roundEncryption);
+    player.salt = await Bcrypt.genSalt(environment.security.roundEncryption);
     // Encrypt password.
     player.password = await Bcrypt.hash(playerIn.password, player.salt);
 
