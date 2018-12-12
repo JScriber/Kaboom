@@ -46,6 +46,14 @@ export class TokenService {
   }
 
   /**
+   * Extract the informations out of the token.
+   * @param token 
+   */
+  verify(token: string): TokenContent {
+    return this.jwt.verify<TokenContent>(token, {});
+  }
+
+  /**
    * Says if the token is valid.
    * @param {string} token
    * @param {string} uuid
@@ -55,8 +63,7 @@ export class TokenService {
     let isValid = false;
 
     try {
-      const values = this.jwt.verify<TokenContent>(token, {});
-      
+      const values = this.verify(token);
       isValid = values.uuid === uuid;
     } catch (e) {}
 
