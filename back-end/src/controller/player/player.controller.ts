@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, Param, ParseIntPipe, HttpException, HttpStatus, Bind, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, Param, HttpStatus, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
+import { AuthGuard } from '@nestjs/passport';
 import { DeleteResult, Repository } from 'typeorm';
 import { Response } from 'express-serve-static-core';
 
@@ -9,12 +10,14 @@ import * as Bcrypt from 'bcrypt';
 
 import { Player } from '../../entities/player/player.entity';
 import { CreatePlayerInDto } from '../../dto/player/create-player/player-in.dto';
+import { PlayerSelfDto } from '../../dto/player/self/player-self.dto';
 import { environment } from '../../../environment';
 import { CreatePlayerOutDto } from 'src/dto/player/create-player/player-out.dto';
 import { IdentifiersInDto } from 'src/dto/player/identifiers/identifiers-in.dto';
 import { TokenService } from '../../services/token/token.service';
 import { Validator } from '../../utils/validator/validator';
 
+@ApiUseTags('Player')
 @Controller('player')
 export class PlayerController {
 
@@ -23,14 +26,28 @@ export class PlayerController {
     private readonly playerRepository: Repository<Player>,
     private readonly tokenService: TokenService) {}  
 
-  @Get(':id')
-  async findOne(@Param('id', new ParseIntPipe()) id: number): Promise<Player> {
-    const user = await this.playerRepository.findOne(id);
+  /** Informations on the current user. */
+  @Get('self/info')
+  @UseGuards(AuthGuard('bearer'))
+  @ApiBearerAuth()
+  async current(@Req() request): Promise<PlayerSelfDto> {
+    return new PlayerSelfDto(request.player);
+  }
 
-    if (user === undefined)
-      throw new HttpException('User not found.', HttpStatus.NOT_FOUND);
+  /** Deletion of the current user. */
+  @Delete('self/delete')
+  @UseGuards(AuthGuard('bearer'))
+  @ApiBearerAuth()
+  async delete(@Req() request) {
+    // TODO: Ask for password to insist on deletion.
+    const player: Player = request.player;
+    const result: DeleteResult = await this.playerRepository.delete(player.id);
 
-    return user;
+    if (result.affected === 0) {
+      throw new InternalServerErrorException('Couldn\'t delete current user');
+    }
+
+    return 'Successfully deleted.';
   }
 
   @Post('login')
@@ -44,9 +61,7 @@ export class PlayerController {
         username: credentials.username
       });
 
-      // Tested password.
-      const password: string = await Bcrypt.hash(credentials.password, player.salt);
-      if (password === player.password) {
+      if (await this.passwordMatch(credentials.password, player)) {
         // Generate and assign a token.
         player.token = await this.tokenService.generate(player);
 
@@ -64,6 +79,7 @@ export class PlayerController {
     }
   }
 
+  /** Creates a new user. */
   @Post()
   async signup(@Res() res: Response, @Body(new ValidationPipe()) playerIn: CreatePlayerInDto) {
     if (Validator.test(playerIn.password, Validator.MEDIUM_PASSWORD) &&
@@ -102,12 +118,13 @@ export class PlayerController {
     }
   }
 
-  @Delete(':id')
-  async delete(@Param('id', new ParseIntPipe()) id: number) {
-    const result: DeleteResult = await this.playerRepository.delete(id);
-
-    if (result.affected === 0) {
-      throw new HttpException('Couldn\'t delete the user', HttpStatus.BAD_REQUEST);
-    }
+  /**
+   * Says if the given password is the good password.
+   * @param {string} testedPassword - Password to test.
+   * @param {Player} player
+   * @returns {Promise<boolean>}
+   */
+  private async passwordMatch(testedPassword: string, player: Player): Promise<boolean> {
+    return player.password === await Bcrypt.hash(testedPassword, player.salt);
   }
 }
