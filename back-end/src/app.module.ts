@@ -9,12 +9,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { TokenService } from './services/token/token.service';
 import { AuthService } from './services/auth/auth.service';
 import { HttpStrategy } from './services/auth/http-strategy/http.strategy';
+import { environment } from '../environment';
 
 @Module({
   imports: [
     JwtModule.registerAsync({
       useFactory: () => ({
-        secretOrPrivateKey: 'OQTrltPlbj'
+        secretOrPrivateKey: environment.security.privateKey
       })
     }),
     PassportModule.register({

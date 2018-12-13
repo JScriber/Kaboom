@@ -12,8 +12,8 @@ import { Player } from '../../entities/player/player.entity';
 import { CreatePlayerInDto } from '../../dto/player/create-player/player-in.dto';
 import { PlayerSelfDto } from '../../dto/player/self/player-self.dto';
 import { environment } from '../../../environment';
-import { CreatePlayerOutDto } from 'src/dto/player/create-player/player-out.dto';
-import { IdentifiersInDto } from 'src/dto/player/identifiers/identifiers-in.dto';
+import { CreatePlayerOutDto } from '../../dto/player/create-player/player-out.dto';
+import { IdentifiersInDto } from '../../dto/player/identifiers/identifiers-in.dto';
 import { TokenService } from '../../services/token/token.service';
 import { Validator } from '../../utils/validator/validator';
 

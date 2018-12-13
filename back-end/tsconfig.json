@@ -14,10 +14,11 @@
     "baseUrl": "./"
   },
   "include": [
-    "src/**/*"
+    "src/**/*", "test/player.controller.e2e-spec.ts"
   ],
   "exclude": [
     "node_modules",
+    "!node_modules/@types",
     "**/*.spec.ts"
   ]
 }
