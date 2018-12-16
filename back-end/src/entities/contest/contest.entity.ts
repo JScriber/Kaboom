@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn } from "typeorm";
 import { Map } from '../map/map.entity';
 import { Participant } from '../participant/participant.entity';
 
@@ -8,9 +8,23 @@ export class Contest {
   @PrimaryGeneratedColumn()
   id: number;
 
-  /** Date at which the contest took place. */
-  @Column('date')
-  date: Date;
+  /** Date at which the contest has been created. */
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  /** Date at which the contest begins. */
+  @Column('date', {
+    name: 'start_date',
+    nullable: true
+  })
+  startDate: Date;
+
+  /** Date at which the contest ends. */
+  @Column('date', {
+    name: 'end_date',
+    nullable: true
+  })
+  endDate: Date;
 
   /** Says if the bonus have been activated. */
   @Column('boolean')

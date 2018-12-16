@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, JoinColumn } from "typeorm";
 import { Player } from '../player/player.entity';
 import { Contest } from '../contest/contest.entity';
 
@@ -9,8 +9,12 @@ export class Map {
   id: number;
 
   /** Date at which the map is created. */
-  @Column('date', { name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
+
+  /** Name of the map. */
+  @Column('varchar', { length: 255 })
+  name: string;
 
   /** Height of the map. */
   @Column('smallint')
@@ -28,6 +32,7 @@ export class Map {
   @ManyToOne(type => Player, player => player.maps, {
     nullable: true
   })
+  @JoinColumn({ name: 'owner_id' })
   owner: Player;
 
   /** A map can be used and reused in many contests. */

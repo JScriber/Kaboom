@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { Player } from '../player/player.entity';
 import { Contest } from '../contest/contest.entity';
 
@@ -8,6 +8,18 @@ export class Participant {
   @PrimaryGeneratedColumn()
   id: number;
 
+  /** WS access token. */
+  @Column('varchar', { length: 255 })
+  token: string;
+
+  /** Date at which the participant has been created. */
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  /** Says if the participant is the creator of the contest. */
+  @Column()
+  creator: boolean;
+
   /** Rank of the participant at the end of the game. */
   @Column('smallint', {
     nullable: true
@@ -15,7 +27,9 @@ export class Participant {
   rank: number;
 
   /** If the user left the game. */
-  @Column('boolean')
+  @Column('boolean', {
+    nullable: true
+  })
   abort: boolean;
 
   /** Player who participates. */

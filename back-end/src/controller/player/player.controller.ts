@@ -90,7 +90,6 @@ export class PlayerController {
       // Set basic informations.
       player.username = playerIn.username;
       player.email = playerIn.email;
-      player.createdAt = new Date();
   
       // Set the salt.
       player.salt = await Bcrypt.genSalt(environment.security.roundEncryption);
