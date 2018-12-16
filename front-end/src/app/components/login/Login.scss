@@ -1,9 +1,9 @@
-@import "colors";
+@import "../../../assets/scss/colors";
 
 .Login {
       padding: 60px 0;
     }
-  
+
     .Login form {
       margin: 0 auto;
       max-width: 320px;
@@ -37,8 +37,8 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-      }     
-      
+      }
+
       /* Hide the browser's default checkbox */
       .checkbox_container input {
         position: absolute;
@@ -47,7 +47,7 @@
         height: 0;
         width: 0;
       }
-      
+
       /* Create a custom checkbox */
       .custom_checkbox {
         position: absolute;
@@ -57,29 +57,29 @@
         width: 20px;
         background-color: #eee;
       }
-      
+
       /* On mouse-over, add a grey background color */
       .checkbox_container:hover input ~ .custom_checkbox {
         background-color: #ccc;
       }
-      
+
       /* When the checkbox is checked, add a blue background */
       .checkbox_container input:checked ~ .custom_checkbox {
         background-color: $purple;
       }
-      
+
       /* Create the checkmark/indicator (hidden when not checked) */
       .custom_checkbox:after {
         content: "";
         position: absolute;
         display: none;
       }
-      
+
       /* Show the checkmark when checked */
       .checkbox_container input:checked ~ .custom_checkbox:after {
         display: block;
       }
-      
+
       /* Style the checkmark/indicator */
       .checkbox_container .custom_checkbox:after {
         left: 9px;
@@ -92,5 +92,4 @@
         -ms-transform: rotate(45deg);
         transform: rotate(45deg);
       }
-      
- 
+
