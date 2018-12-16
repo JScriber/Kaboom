@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {FormControl, FormGroup} from 'react-bootstrap';
-import './Login.scss';
+import './Signin.scss';
 import Card from '@material-ui/core/Card';
 import {Button, CardContent, CardHeader, Paper} from "@material-ui/core";
 
@@ -31,7 +31,7 @@ export interface IFormState {
     submitSuccess?: boolean;
 }
 
-export default class Login extends React.Component<IFormProps, IFormState> {
+class Signin extends React.Component<IFormProps, IFormState> {
     constructor(props: IFormProps) {
         super(props);
 
@@ -93,9 +93,9 @@ export default class Login extends React.Component<IFormProps, IFormState> {
     public render() {
 
         return (
-            <div className="Login row">
-                <Card className="col-6 mx-auto mt-5 p-0">
-                    <CardHeader className="purple-card-header text-white" title="Entrez vos identifiants"/>
+            <div className="Signin row">
+                <Card className="col-6 mx-auto p-0 mt-5">
+                    <CardHeader className="purple-card-header text-white" title="Entrez vos informations"/>
                     <CardContent className="py-4 row">
                         <form className="col-8 mx-auto">
                             <FormGroup controlId="email" bsSize="large">
@@ -110,24 +110,21 @@ export default class Login extends React.Component<IFormProps, IFormState> {
                                     type="password"
                                 />
                             </FormGroup>
-                            < FormGroup>
-                                <label className="checkbox_container"> Se rappeler de moi
-                                    <input
-                                        name="rememberMe"
-                                        type="checkbox"/>
-                                    <span className="custom_checkbox"/>
-                                </label>
+                            < FormGroup controlId="password-confirm" bsSize="large">
+                                <FormControl
+                                    placeholder="Confirmez votre mot de passe"
+                                    type="password"
+                                />
                             </FormGroup>
-                            <Paper elevation={2} className="row">
-                                <Button
-                                    className="submit_button purple-button waves-effect waves-light col"
-                                    variant="contained"
-                                    type="submit">
-                                    Valider
-                                </Button>
-                            </Paper>
 
-                            <a href="" className="purple_link">Mot de passe oublié ?</a>
+                            <Paper elevation={2} className="row">
+                            <Button
+                                className="submit_button purple-button waves-effect waves-light col"
+                                variant="contained"
+                                type="submit">
+                                Valider
+                            </Button>
+                            </Paper>
                         </form>
                     </CardContent>
                 </Card>
@@ -135,3 +132,5 @@ export default class Login extends React.Component<IFormProps, IFormState> {
         );
     }
 }
+
+export default Signin;
