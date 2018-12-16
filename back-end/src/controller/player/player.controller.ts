@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, Param, HttpStatus, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, HttpStatus, NotFoundException, ConflictException, InternalServerErrorException, BadRequestException, UseGuards, Req } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
@@ -63,7 +63,7 @@ export class PlayerController {
 
       if (await this.passwordMatch(credentials.password, player)) {
         // Generate and assign a token.
-        player.token = await this.tokenService.generate(player);
+        player.token = this.tokenService.generate(player);
 
         if (player.token !== null) {
           // Updates the user to store the token.

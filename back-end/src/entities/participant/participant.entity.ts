@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, Generated } from "typeorm";
 import { Player } from '../player/player.entity';
 import { Contest } from '../contest/contest.entity';
 
@@ -8,9 +8,10 @@ export class Participant {
   @PrimaryGeneratedColumn()
   id: number;
 
-  /** WS access token. */
-  @Column('varchar', { length: 255 })
-  token: string;
+  /** Unique identifier. */
+  @Column()
+  @Generated('uuid')
+  uuid: string;
 
   /** Date at which the participant has been created. */
   @CreateDateColumn({ name: 'created_at' })
@@ -36,13 +37,13 @@ export class Participant {
   @ManyToOne(type => Player, player => player.participations, {
     nullable: true
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'player_id' })
   player: Player;
 
   /** A participant is a participant for only one contest. */
   @ManyToOne(type => Contest, contest => contest.participants, {
     nullable: true
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'contest_id' })
   contest: Contest;
 }

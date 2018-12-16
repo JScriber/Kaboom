@@ -10,6 +10,7 @@ import { AuthService } from './services/auth/auth.service';
 import { HttpStrategy } from './services/auth/http-strategy/http.strategy';
 import { PoolWebSocket } from './websockets/pool/pool.websocket';
 import { ContestController } from './controller/contest/contest.controller';
+import { RepositoriesModule } from './repositories/repositories.module';
 
 @Module({
   imports: [
@@ -23,7 +24,9 @@ import { ContestController } from './controller/contest/contest.controller';
       property: 'player'
     }),
     TypeOrmModule.forRoot(),
-    EntitiesModule
+    RepositoriesModule,
+    EntitiesModule,
+    RepositoriesModule
   ],
   controllers: [
     PlayerController,

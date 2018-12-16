@@ -102,7 +102,6 @@ export namespace ContestDTO {
    * Settings of the contest. (used in POST)
    */
   export class ContestSettings {
-
     /** Map used in the contest. */
     @ApiModelProperty()
     @IsNumber() readonly mapID: number;
@@ -123,5 +122,11 @@ export namespace ContestDTO {
     readonly penalties: Penalty;
 
     // TODO: Implement bombs.
+  }
+
+  export class ContestJoin {
+    /** Id of the contest. */
+    @ApiModelProperty()
+    @IsNumber() readonly id: number;
   }
 }
