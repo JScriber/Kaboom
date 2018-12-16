@@ -5,13 +5,15 @@ import { AuthGuard } from '@nestjs/passport';
 import { Repository } from 'typeorm';
 import { Response } from 'express-serve-static-core';
 
-import { Contest } from '../../entities/contest/contest.entity';
-import { Player } from '../../entities/player/player.entity';
-import { ContestDTO } from '../../dto/contest/contest-settings.dto';
+// Entities.
+import { Contest } from '@entity/contest/contest.entity';
+import { Player } from '@entity/player/player.entity';
+import { Participant } from '@entity/participant/participant.entity';
+import { Map } from '@entity/map/map.entity';
+
+import { PlayerRepository } from '@repository/player/player.repository';
+import { ContestDTO } from '@dto/contest/contest-settings.dto';
 import { PoolWebSocket } from '../../websockets/pool/pool.websocket';
-import { Map } from 'src/entities/map/map.entity';
-import { Participant } from '../../entities/participant/participant.entity';
-import { PlayerRepository } from '../../repositories/player-repository/player.repository';
 
 @ApiUseTags('Contest')
 @Controller('contest')
