@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn } from "typeorm";
-import { Map } from '../map/map.entity';
-import { Participant } from '../participant/participant.entity';
+import { Map } from '@entity/map/map.entity';
+import { Participant } from '@entity/participant/participant.entity';
 
 @Entity()
 export class Contest {

@@ -2,36 +2,35 @@ import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, HttpStatus, N
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult } from 'typeorm';
 import { Response } from 'express-serve-static-core';
 
 // Encryption purposes.
 import * as Bcrypt from 'bcrypt';
 
-import { Player } from '../../entities/player/player.entity';
-import { CreatePlayerInDto } from '../../dto/player/create-player/player-in.dto';
-import { PlayerSelfDto } from '../../dto/player/self/player-self.dto';
-import { environment } from '../../../environment';
-import { CreatePlayerOutDto } from 'src/dto/player/create-player/player-out.dto';
-import { IdentifiersInDto } from 'src/dto/player/identifiers/identifiers-in.dto';
-import { TokenService } from '../../services/token/token.service';
-import { Validator } from '../../utils/validator/validator';
+import { environment } from '@environment';
+import { PlayerRepository } from '@repository/player/player.repository';
+import { Player } from '@entity/player/player.entity';
+import { TokenService } from '@service/token/token.service';
+
+// Inputs and outputs.
+import * as PlayerDTO from '@dto/player/index';
 
 @ApiUseTags('Player')
 @Controller('player')
 export class PlayerController {
 
   constructor(
-    @InjectRepository(Player)
-    private readonly playerRepository: Repository<Player>,
+    @InjectRepository(PlayerRepository)
+    private readonly playerRepository: PlayerRepository,
     private readonly tokenService: TokenService) {}  
 
   /** Informations on the current user. */
   @Get('self/info')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async current(@Req() request): Promise<PlayerSelfDto> {
-    return new PlayerSelfDto(request.player);
+  async current(@Req() request): Promise<PlayerDTO.CurrentPlayer> {
+    return new PlayerDTO.CurrentPlayer(request.player);
   }
 
   /** Deletion of the current user. */
@@ -51,7 +50,7 @@ export class PlayerController {
   }
 
   @Post('login')
-  async login(@Res() res: Response, @Body(new ValidationPipe()) credentials: IdentifiersInDto) {
+  async login(@Res() res: Response, @Body(new ValidationPipe()) credentials: PlayerDTO.Credentials) {
     // Message returned if incorrect credentials.
     const incorrectCredentials: string = 'Incorrect credentials.';
 
@@ -81,39 +80,33 @@ export class PlayerController {
 
   /** Creates a new user. */
   @Post()
-  async signup(@Res() res: Response, @Body(new ValidationPipe()) playerIn: CreatePlayerInDto) {
-    if (Validator.test(playerIn.password, Validator.MEDIUM_PASSWORD) &&
-        Validator.test(playerIn.email, Validator.EMAIL)) {
+  async signup(@Res() res: Response, @Body(new ValidationPipe()) info: PlayerDTO.CreatePlayer) {
+    const player = new Player();
 
-      const player = new Player();
-  
-      // Set basic informations.
-      player.username = playerIn.username;
-      player.email = playerIn.email;
-  
-      // Set the salt.
-      player.salt = await Bcrypt.genSalt(environment.security.roundEncryption);
-      // Encrypt password.
-      player.password = await Bcrypt.hash(playerIn.password, player.salt);
-  
-      // Persist the user.
-      try {
-        res.status(HttpStatus.CREATED).send(
-          new CreatePlayerOutDto(
-            await this.playerRepository.save(player)
-          )
-        );
-      } catch (error) {
-        // Credentials already used.
-        if (error.code === '23505') {
-          throw new ConflictException('The credentials are already used.');
-        } else {
-          // Unknown error.
-          throw new InternalServerErrorException();
-        }
+    // Set basic informations.
+    player.username = info.username;
+    player.email = info.email;
+
+    // Set the salt.
+    player.salt = await Bcrypt.genSalt(environment.security.roundEncryption);
+    // Encrypt password.
+    player.password = await Bcrypt.hash(info.password, player.salt);
+
+    // Persist the user.
+    try {
+      res.status(HttpStatus.CREATED).send(
+        new PlayerDTO.CreatedPlayer(
+          await this.playerRepository.save(player)
+        )
+      );
+    } catch (error) {
+      // Credentials already used.
+      if (error.code === '23505') {
+        throw new ConflictException('The credentials are already used.');
+      } else {
+        // Unknown error.
+        throw new InternalServerErrorException();
       }
-    } else {
-      throw new BadRequestException('You must enter an email address and a strong password.');
     }
   }
 

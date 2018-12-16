@@ -1,6 +1,6 @@
-import { Player } from '../../../entities/player/player.entity';
+import { Player } from '@entity/player/player.entity';
 
-export class CreatePlayerOutDto {
+export class CreatedPlayer {
   readonly id: number;
   readonly username: string;
   readonly email: string;

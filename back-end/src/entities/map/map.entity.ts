@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, CreateDateColumn, JoinColumn } from "typeorm";
-import { Player } from '../player/player.entity';
-import { Contest } from '../contest/contest.entity';
+import { Player } from '@entity/player/player.entity';
+import { Contest } from '@entity/contest/contest.entity';
 
 @Entity()
 export class Map {
