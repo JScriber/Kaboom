@@ -1,0 +1,21 @@
+@import "../../../assets/scss/colors";
+
+.Header {
+  background-color: $light-grey;
+  color: white;
+  height: 5rem;
+    }
+
+.header-title {
+  font-family: "bomberman", sans-serif;
+  font-size: 4rem;
+  color: $dark-purple;
+}
+
+.purple-button {
+  background-color: $purple !important;
+  color: white !important;
+  font-family: "poppins", sans-serif !important;
+}
+
+
