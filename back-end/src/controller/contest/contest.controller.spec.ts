@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { PoolController } from './pool.controller';
+import { ContestController } from './contest.controller';
 
-describe('Pool Controller', () => {
+describe('Contest Controller', () => {
   let module: TestingModule;
   
   beforeAll(async () => {
     module = await Test.createTestingModule({
-      controllers: [PoolController],
+      controllers: [ContestController],
     }).compile();
   });
   it('should be defined', () => {
-    const controller: PoolController = module.get<PoolController>(PoolController);
+    const controller: ContestController = module.get<ContestController>(ContestController);
     expect(controller).toBeDefined();
   });
 });

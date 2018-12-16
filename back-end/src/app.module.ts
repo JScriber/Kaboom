@@ -3,12 +3,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
 import { PlayerController } from './controller/player/player.controller';
 import { MapController } from './controller/map/map.controller';
-import { PoolController } from './controller/pool/pool.controller';
 import { EntitiesModule } from './entities/entities.module';
 import { JwtModule } from '@nestjs/jwt';
 import { TokenService } from './services/token/token.service';
 import { AuthService } from './services/auth/auth.service';
 import { HttpStrategy } from './services/auth/http-strategy/http.strategy';
+import { PoolWebSocket } from './websockets/pool/pool.websocket';
+import { ContestController } from './controller/contest/contest.controller';
+import { RepositoriesModule } from './repositories/repositories.module';
 
 @Module({
   imports: [
@@ -22,17 +24,20 @@ import { HttpStrategy } from './services/auth/http-strategy/http.strategy';
       property: 'player'
     }),
     TypeOrmModule.forRoot(),
-    EntitiesModule
+    RepositoriesModule,
+    EntitiesModule,
+    RepositoriesModule
   ],
   controllers: [
     PlayerController,
     MapController,
-    PoolController
+    ContestController
   ],
   providers: [
     TokenService,
     AuthService,
-    HttpStrategy
+    HttpStrategy,
+    PoolWebSocket
   ],
 })
 export class AppModule {}
