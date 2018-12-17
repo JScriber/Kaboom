@@ -29,6 +29,11 @@ If it's not the first time you use the database, you may simply need to start it
 docker container start kaboom
 ```
 
+# Run MongoDB
+```
+docker run -p 27017:27017 --name kaboomango -d mongo
+```
+
 # Run the project
 The project can be run under different modes.
 
