@@ -1,2 +1,4 @@
 /node_modules
 /build
+/docker/mongo-data
+/docker/postgres-data
