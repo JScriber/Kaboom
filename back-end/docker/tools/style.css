@@ -1,0 +1,37 @@
+.content {
+  position: relative;
+  display: inline-flex;
+  flex-flow: row nowrap;
+  margin: 10px;
+  padding: 10px;
+  height: 150px;
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  outline: none;
+  color: #000;
+  transition: all .1s linear 0s;
+}
+
+.content:hover {
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.212);
+  text-decoration: none;
+  color: #000;
+}
+
+.pull-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100%;
+}
+
+.pull-left img {
+  height: 50px;
+}
+
+p {
+  padding: 0 5px;
+  opacity: .7;
+  max-width: 350px;
+}
