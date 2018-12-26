@@ -4,34 +4,9 @@ Run the following command at the root of the project.
 npm install
 ```
 
-# Prepare database
-This example uses Postgrès as database.
-Run a Postgrès container with the following command : 
-```docker
-docker run --name kaboom -d -p 5432:5432 -e POSTGRES_PASSWORD=pass postgres
+# Setup databases
 ```
-(Note: It may take some time if you don't already have a Postgrès image on your disk.)
-
-### Check container
-Check if the container is up and running with : 
-```docker
-docker container ls | grep kaboom
-```
-
-### Directly access database
-Enter the container by running :
-```docker 
-docker exec -it kaboom psql -U postgres
-```
-# Run the database
-If it's not the first time you use the database, you may simply need to start it. To do so just run:
-```
-docker container start kaboom
-```
-
-# Run MongoDB
-```
-docker run -p 27017:27017 --name kaboomango -d mongo
+cd docker && docker-compose -p kaboom up
 ```
 
 # Run the project
@@ -57,6 +32,12 @@ If you want to launch the unit tests, you should execute :
 npm run test:watch
 ```
 
-# Swagger
-The API is documented with Swagger.
-If the server is up and running, you should be able to access it by visiting : http://localhost:3000/api/.
+# Access tools
+All the tools are accessible in [this page](docker/tools/helper.html).
+
+| Tool | Link |
+|---|---|
+| Swagger | [port 8080](http://localhost:8080/swagger/) |
+| PgAdmin | [port 5050](http://localhost:5050) |
+| Mongo-express | [port 8888](http://localhost:8888) |
+

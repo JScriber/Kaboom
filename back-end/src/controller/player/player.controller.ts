@@ -23,7 +23,7 @@ export class PlayerController {
   constructor(
     @InjectRepository(PlayerRepository)
     private readonly playerRepository: PlayerRepository,
-    private readonly tokenService: TokenService) {}  
+    private readonly tokenService: TokenService) {}
 
   /** Informations on the current user. */
   @Get('self/info')

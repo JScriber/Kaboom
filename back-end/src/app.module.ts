@@ -27,7 +27,7 @@ import { ParticipantModule } from './game/participant/participant.module';
       property: 'player'
     }),
     TypeOrmModule.forRoot(),
-    MongooseModule.forRoot('mongodb://localhost:27017/database'),
+    MongooseModule.forRoot('mongodb://kaboom_user:TQktmwyHX3WPmSWhHHZSNngH65m@localhost:27017/kaboom?authSource=admin'),
     RepositoriesModule,
     EntitiesModule,
     RepositoriesModule,
