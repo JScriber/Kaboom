@@ -6,23 +6,21 @@ export default class Game extends React.Component {
 
   protected readonly config = {
     height: 600,
-    // physics: {
-    //   arcade: {
-    //     debug: false,
-    //     gravity: {y: 300},
-    //   },
-    //   default: 'arcade',
-    // },
-    // type: Phaser.AUTO,
-    width: 800,
-
-
-    // scene: {
-    //   preload: preload,
-    //   create: create,
-    //   update: update
-    // }
+    width: 800
   };
+  // physics: {
+  //   arcade: {
+  //     debug: false,
+  //     gravity: {y: 300},
+  //   },
+  //   default: 'arcade',
+  // },
+  // type: Phaser.AUTO,
+  // scene: {
+  //   preload: preload,
+  //   create: create,
+  //   update: update
+  // }
 
   protected game: Phaser.Game;
 
@@ -61,8 +59,8 @@ export default class Game extends React.Component {
     this.game.add.image(400, 300, 'sky');
   }
 
-  public update(){
-    // todo
+  public update() {
+    // TODO
   }
 
   public render(): React.ReactNode {

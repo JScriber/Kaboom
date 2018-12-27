@@ -1,4 +1,4 @@
-import createBrowserHistory from "history/createBrowserHistory";
+import createBrowserHistory from 'history/createBrowserHistory';
 import * as React from 'react';
 import { Route, Router} from 'react-router-dom';
 import { rootRoutes } from './root.routes';
@@ -11,10 +11,11 @@ export default class RouterOutlet extends React.Component {
   public render(): JSX.Element {
     return (
       <Router history={history}>
-        <div className="router-outlet">
+        <div className='router-outlet'>
           {
-            rootRoutes.map(route => (
+            rootRoutes.map((route, i) => (
               <Route
+                key={i}
                 path={route.path}
                 exact={route.exact}
                 component={route.component}/>

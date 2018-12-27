@@ -71,10 +71,10 @@ export class PlayerController {
           });
         }
       } else {
-        throw new NotFoundException(incorrectCredentials);
+        throw new BadRequestException(incorrectCredentials);
       }
     } catch (e) {
-      throw new NotFoundException(incorrectCredentials);
+      throw new BadRequestException(incorrectCredentials);
     }
   }
 
