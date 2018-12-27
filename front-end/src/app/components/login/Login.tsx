@@ -130,6 +130,7 @@ export default class LoginComponent extends React.Component<Login.Props, Login.S
       password: 'root'
     };
 
+    // TODO: Change retrieved type.
     return this.apiService.post<boolean>('/player/login', data);
   }
 }
