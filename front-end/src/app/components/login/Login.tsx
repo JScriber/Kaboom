@@ -1,137 +1,135 @@
 import * as React from 'react';
-import {Button, FormControl, FormGroup} from 'react-bootstrap';
+import { Button, FormControl, FormGroup } from 'react-bootstrap';
+import { Card, CardContent, CardHeader } from '@material-ui/core';
+import { Observable } from 'rxjs';
+
 import './Login.scss';
-import Card from '@material-ui/core/Card';
-import {CardContent, CardHeader} from "@material-ui/core";
+import { Login } from './login';
+import { ApiService } from 'src/app/services/api/api';
 
-// TODO: Move all those interfaces out of this file.
-interface IFormProps {
-    /* The http path that the form will be posted to */
-    action: string;
-}
+/** Type alias for form event. */
+type FormEvent = React.FormEvent<HTMLFormElement>;
 
-export interface IFormValues {
-    /* Key value pairs for all the field values with key being the field name */
-    [key: string]: any;
-}
+/** Login component using the Login model. */
+export default class LoginComponent extends React.Component<Login.Props, Login.State> {
 
-export interface IFormErrors {
-    /* The validation error messages for each field (key is the field name */
-    [key: string]: string;
-}
+  /** API request. */
+  private apiService: ApiService = ApiService.instance();
 
-export interface IFormState {
-    /* The field values */
-    values: IFormValues;
+  constructor(props: Login.Props) {
+    super(props);
 
-    /* The field validation error messages */
-    errors: IFormErrors;
+    const errors: Login.FormErrors = {},
+    form: Login.Form = {
+      email: '',
+      password: '',
+      rememberMe: true
+    };
 
-    /* Whether the form has been successfully submitted */
-    submitSuccess?: boolean;
-}
+    this.state = { errors, form };
+  }
 
-export default class Login extends React.Component<IFormProps, IFormState> {
-    constructor(props: IFormProps) {
-        super(props);
+  /** @inheritdoc */
+  public render() {
+    return (
+      <div className='Login row'>
+        <Card className='col-6 m-auto p-0'>
+          <CardHeader className='purple-card-header text-white' title='Entrez vos identifiants'/>
+          <CardContent className='py-4'>
+            <form onSubmit={this.handleSubmit}>
+              <FormGroup controlId='email' bsSize='large'>
+                <FormControl
+                  placeholder='Adresse e-mail'
+                  type='email'/>
+              </FormGroup>
 
-        const errors: IFormErrors = {};
-        const values: IFormValues = {};
-        this.state = {
-            errors,
-            values
-        };
+              <FormGroup controlId='password' bsSize='large'>
+                <FormControl
+                  placeholder='Mot de passe'
+                  type='password'/>
+              </FormGroup>
+
+              <FormGroup>
+                <label className='checkbox_container'>
+                  Se rappeler de moi
+                  <input
+                    name='rememberMe'
+                    value={this.state.form.rememberMe.toString()}
+                    type='checkbox'/>
+                  <span className='custom_checkbox'/>
+                </label>
+              </FormGroup>
+
+              <Button
+                className='submit_button waves-effect waves-light'
+                bsSize='large'
+                block={true}
+                type='submit'>
+                Valider
+              </Button>
+
+              <a href='' className='purple_link'>Mot de passe oublié ?</a>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // /**
+  //  * Returns whether there are any errors in the errors object that is passed in
+  //  * @param {Login.FormErrors} errors - The field errors
+  //  * @returns {boolean}
+  //  */
+  // private hasError(errors: Login.FormErrors): boolean {
+  //   let hasError: boolean = false;
+
+  //   Object.keys(errors).map((key: string) => {
+  //     if (errors[key].length > 0) {
+  //       hasError = true;
+  //     }
+  //   });
+
+  //   return hasError;
+  // }
+
+  /**
+   * Handles form submission
+   * @param {FormEvent} e - The form event
+   */
+  private handleSubmit = (e: FormEvent): void => {
+    e.preventDefault();
+
+    if (this.formIsValid()) {
+      this.submitForm().subscribe((data) => {
+        this.setState({
+          submitSuccess: true
+        });
+        console.log('Success', data);
+      }, (err) => console.log('Error', err));
     }
+  }
 
-    // /**
-    //  * Returns whether there are any errors in the errors object that is passed in
-    //  * @param {IErrors} errors - The field errors
-    //  */
-    // private haveErrors(errors: IFormErrors) {
-    //   let haveError: boolean = false;
-    //   Object.keys(errors).map((key: string) => {
-    //     if (errors[key].length > 0) {
-    //       haveError = true;
-    //     }
-    //   });
-    //   return haveError;
-    // }
+  /**
+   * Executes the validation rules for all the fields on the form and sets the error state
+   * @returns {boolean} - Whether the form is valid or not
+   */
+  private formIsValid(): boolean {
+    // TODO - validate form
+    return true;
+  }
 
-    // /**
-    //  * Handles form submission
-    //  * @param {React.FormEvent<HTMLFormElement>} e - The form event
-    //  */
-    // private handleSubmit = async (
-    //   e: React.FormEvent<HTMLFormElement>
-    // ): Promise<void> => {
-    //   e.preventDefault();
-    //
-    //   if (this.validateForm()) {
-    //     const submitSuccess: boolean = await this.submitForm();
-    //     this.setState({submitSuccess});
-    //   }
-    // };
+  /**
+   * Submits the form to the API.
+   * @returns {Observable<any>} - Whether the form submission was successful or not
+   */
+  private submitForm(): Observable<any> {
+    // TODO: Send real data.
+    const data: Login.Api = {
+      username: 'Johan doe',
+      password: 'root'
+    };
 
-    // /**
-    //  * Executes the validation rules for all the fields on the form and sets the error state
-    //  * @returns {boolean} - Whether the form is valid or not
-    //  */
-    // private validateForm(): boolean {
-    //   // TODO - validate form
-    //   return true;
-    // }
-    //
-    // /**
-    //  * Submits the form to the http api
-    //  * @returns {boolean} - Whether the form submission was successful or not
-    //  */
-    // private async submitForm(): Promise<boolean> {
-    //   // TODO - submit the form
-    //   return true;
-    // }
-
-    public render() {
-
-        return (
-            <div className="Login row">
-                <Card className="col-6 m-auto p-0">
-                    <CardHeader className="purple-card-header text-white" title="Entrez vos identifiants"/>
-                    <CardContent className="py-4">
-                        <form>
-                            <FormGroup controlId="email" bsSize="large">
-                                <FormControl
-                                    placeholder="Adresse e-mail"
-                                    type="email"
-                                />
-                            </FormGroup>
-                            < FormGroup controlId="password" bsSize="large">
-                                <FormControl
-                                    placeholder="Mot de passe"
-                                    type="password"
-                                />
-                            </FormGroup>
-                            < FormGroup>
-                                <label className="checkbox_container"> Se rappeler de moi
-                                    <input
-                                        name="rememberMe"
-                                        type="checkbox"/>
-                                    <span className="custom_checkbox"/>
-                                </label>
-                            </FormGroup>
-
-                            <Button
-                                className="submit_button waves-effect waves-light"
-                                bsSize="large"
-                                block={true}
-                                type="submit">
-                                Valider
-                            </Button>
-
-                            <a href="" className="purple_link">Mot de passe oublié ?</a>
-                        </form>
-                    </CardContent>
-                </Card>
-            </div>
-        );
-    }
+    return this.apiService.post<boolean>('/player/login', data);
+  }
 }

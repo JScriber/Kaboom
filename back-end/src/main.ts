@@ -6,6 +6,7 @@ import { environment } from '@environment';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.enableCors();
 
   const options = new DocumentBuilder()
     .setTitle('Kaboom')
