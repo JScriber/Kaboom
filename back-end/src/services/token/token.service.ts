@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Player } from 'src/entities/player/player.entity';
 import { SignOptions } from 'jsonwebtoken';
 import { environment } from '../../../environment';
+import { Participant } from '../../entities/participant/participant.entity';
 
 /** Fields used to generate the token. */
 interface TokenContent {
@@ -16,34 +17,6 @@ export class TokenService {
 
   /** Constructor. */
   constructor(private readonly jwt: JwtService) {}
-
-  /**
-   * Generates a token.
-   * @param {Player} player - Player to get the informations.
-   * @returns {Promise<string>}
-   */
-  generate(player: Player): Promise<string> {
-    const informations: TokenContent = {
-      id: player.id,
-      uuid: player.uuid,
-      username: player.username
-    };
-
-    // Options for token generation.
-    const options: SignOptions = {
-      algorithm: 'HS256',
-      expiresIn: environment.security.tokenExpiration
-    };
-
-    // Handle possible errors.
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(this.jwt.sign(informations, options));
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
 
   /**
    * Extract the informations out of the token.
@@ -68,5 +41,27 @@ export class TokenService {
     } catch (e) {}
 
     return isValid;
+  }
+
+  /**
+   * Generates a token from a player.
+   * @param {Player} player - Player to get the informations.
+   * @returns {Promise<string>}
+   */
+  generate(player: Player): string {
+    const informations: TokenContent = {
+      id: player.id,
+      uuid: player.uuid,
+      username: player.username
+    };
+
+    // Options for token generation.
+    const options: SignOptions = {
+      algorithm: 'HS256',
+      expiresIn: environment.security.tokenExpiration
+    };
+
+    // Handle possible errors.
+    return this.jwt.sign(informations, options);
   }
 }

@@ -2,9 +2,9 @@
   "type": "postgres",
   "host": "localhost",
   "port": 5432,
-  "username": "postgres",
-  "password": "pass",
-  "database": "postgres",
+  "database": "kaboom",
+  "username": "kaboom_user",
+  "password": "puj23MqaCJH9evmJZeKMkNxqY",
   "entities": ["src/**/**.entity{.ts,.js}"],
   "synchronize": true
 }

@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, Generated, Unique, OneToMany, JoinColumn } from "typeorm";
-import { Map } from '../map/map.entity';
-import { Participant } from '../participant/participant.entity';
+import { Entity, PrimaryGeneratedColumn, Column, Generated, Unique, OneToMany, JoinColumn, CreateDateColumn } from "typeorm";
+import { Map } from '@entity/map/map.entity';
+import { Participant } from '@entity/participant/participant.entity';
 
 @Entity()
 export class Player {
@@ -18,7 +18,7 @@ export class Player {
   token: string;
 
   /** Date at which the user is created. */
-  @Column('date', { name: 'created_at' })
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
   /** A email address can be used only once. */

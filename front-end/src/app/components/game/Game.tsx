@@ -1,29 +1,30 @@
 import * as Phaser from 'phaser-ce';
 import * as React from 'react';
+import * as SocketIO from 'socket.io-client';
 
 export default class Game extends React.Component {
 
   protected readonly config = {
     height: 600,
-    // physics: {
-    //   arcade: {
-    //     debug: false,
-    //     gravity: {y: 300},
-    //   },
-    //   default: 'arcade',
-    // },
-    // type: Phaser.AUTO,
-    width: 800,
-
-
-    // scene: {
-    //   preload: preload,
-    //   create: create,
-    //   update: update
-    // }
+    width: 800
   };
+  // physics: {
+  //   arcade: {
+  //     debug: false,
+  //     gravity: {y: 300},
+  //   },
+  //   default: 'arcade',
+  // },
+  // type: Phaser.AUTO,
+  // scene: {
+  //   preload: preload,
+  //   create: create,
+  //   update: update
+  // }
 
   protected game: Phaser.Game;
+
+  private socket: SocketIOClient.Socket;
 
   constructor(props: any) {
     super(props);
@@ -32,6 +33,16 @@ export default class Game extends React.Component {
       create: this.create,
       preload: this.preload,
       update: this.update
+    });
+
+    this.socket = SocketIO('http://localhost:8080', { path: '/pool' });
+
+    console.log('Start emitting');
+
+    this.socket.emit('event', { name: 'Nest' });
+
+    this.socket.addEventListener('event', (data: any) => {
+      console.log('I have been heard!', data.message);
     });
   }
 
@@ -48,8 +59,8 @@ export default class Game extends React.Component {
     this.game.add.image(400, 300, 'sky');
   }
 
-  public update(){
-    // todo
+  public update() {
+    // TODO
   }
 
   public render(): React.ReactNode {

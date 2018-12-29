@@ -1,12 +1,14 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
-export class IdentifiersInDto {
+export class Credentials {
   /** Unique username. */
   @ApiModelProperty()
+  @IsNotEmpty()
   @IsString() readonly username: string;
 
-  /** Front-end encrypted password. */
+  /** Front-end password. */
   @ApiModelProperty()
+  @IsNotEmpty()
   @IsString() readonly password: string;
 }

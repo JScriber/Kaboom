@@ -1,6 +1,6 @@
-import { Player } from '../../../entities/player/player.entity';
+import { Player } from '@entity/player/player.entity';
 
-export class ConnectedUserDto {
+export class NewCredentials {
   /** Unique id of the user. */
   private readonly id: number;
 

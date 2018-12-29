@@ -1,6 +1,6 @@
-import { Player } from '../../../entities/player/player.entity';
+import { Player } from '@entity/player/player.entity';
 
-export class PlayerSelfDto {
+export class CurrentPlayer {
   /** Unique name of the user. */
   private readonly username: string;
 
