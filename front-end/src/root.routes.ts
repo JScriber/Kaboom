@@ -1,14 +1,14 @@
 import { RouteProps } from 'react-router';
 
-import Login from './app/components/login/Login';
+import LoginComponent from './app/components/login/LoginComponent';
 import Game from './app/components/game/Game';
-import Signin from "./app/components/signin/Signin";
+import SigninComponent from './app/components/signin/SigninComponent';
 
 export const rootRoutes: RouteProps[] = [
   {
     path: '/login',
     exact: true,
-    component: Login
+    component: LoginComponent
   },
   {
     path: '/game',
@@ -18,6 +18,6 @@ export const rootRoutes: RouteProps[] = [
   {
     path: '/signin',
     exact: true,
-    component: Signin
+    component: SigninComponent
   }
 ];
