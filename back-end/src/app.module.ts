@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { MongooseModule } from '@nestjs/mongoose';
 import { JwtModule } from '@nestjs/jwt';
 import { PlayerController } from './controller/player/player.controller';
 import { MapController } from './controller/map/map.controller';
@@ -13,7 +12,6 @@ import { PoolWebSocket } from './websockets/pool/pool.websocket';
 import { ContestController } from './controller/contest/contest.controller';
 import { RepositoriesModule } from './repositories/repositories.module';
 import { ParticipantModule } from './game/participant/participant.module';
-
 
 @Module({
   imports: [
@@ -27,7 +25,6 @@ import { ParticipantModule } from './game/participant/participant.module';
       property: 'player'
     }),
     TypeOrmModule.forRoot(),
-    MongooseModule.forRoot('mongodb://kaboom_user:TQktmwyHX3WPmSWhHHZSNngH65m@localhost:27017/kaboom?authSource=admin'),
     RepositoriesModule,
     EntitiesModule,
     RepositoriesModule,
@@ -43,6 +40,6 @@ import { ParticipantModule } from './game/participant/participant.module';
     AuthService,
     HttpStrategy,
     PoolWebSocket
-  ],
+  ]
 })
 export class AppModule {}
