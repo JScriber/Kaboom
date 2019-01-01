@@ -5,7 +5,7 @@ import './assets/scss/index.scss';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
-  <App />,
+  <App/>,
   document.getElementById('root') as HTMLElement
 );
 

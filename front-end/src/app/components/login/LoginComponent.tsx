@@ -1,17 +1,17 @@
 import * as React from 'react';
-import { Button, FormControl, FormGroup } from 'react-bootstrap';
-import { Card, CardContent, CardHeader } from '@material-ui/core';
+import { FormControl, FormGroup } from 'react-bootstrap';
+import {Button, Card, CardContent, CardHeader, Paper} from '@material-ui/core';
 import { Observable } from 'rxjs';
 
 import './Login.scss';
-import { Login } from './login';
+import { Login } from './Login';
 import { ApiService } from 'src/app/services/api/api';
 
 /** Type alias for form event. */
 type FormEvent = React.FormEvent<HTMLFormElement>;
 
 /** Login component using the Login model. */
-export default class LoginComponent extends React.Component<Login.Props, Login.State> {
+class LoginComponent extends React.Component<Login.Props, Login.State> {
 
   /** API request. */
   private apiService: ApiService = ApiService.instance();
@@ -33,10 +33,10 @@ export default class LoginComponent extends React.Component<Login.Props, Login.S
   public render() {
     return (
       <div className='Login row'>
-        <Card className='col-6 m-auto p-0'>
+        <Card className='col-6 mx-auto p-0'>
           <CardHeader className='purple-card-header text-white' title='Entrez vos identifiants'/>
           <CardContent className='py-4'>
-            <form onSubmit={this.handleSubmit}>
+            <form className='col-8 mx-auto' onSubmit={this.handleSubmit}>
               <FormGroup controlId='email' bsSize='large'>
                 <FormControl
                   placeholder='Adresse e-mail'
@@ -60,13 +60,14 @@ export default class LoginComponent extends React.Component<Login.Props, Login.S
                 </label>
               </FormGroup>
 
-              <Button
-                className='submit_button waves-effect waves-light'
-                bsSize='large'
-                block={true}
-                type='submit'>
-                Valider
-              </Button>
+              <Paper elevation={2} className='col-6 mx-auto p-0'>
+                <Button
+                    className='submit_button purple-button waves-effect waves-light col'
+                    variant='contained'
+                    type='submit'>
+                  Valider
+                </Button>
+              </Paper>
 
               <a href='' className='purple_link'>Mot de passe oublié ?</a>
             </form>
@@ -134,3 +135,5 @@ export default class LoginComponent extends React.Component<Login.Props, Login.S
     return this.apiService.post<boolean>('/player/login', data);
   }
 }
+
+export default LoginComponent;
