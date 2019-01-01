@@ -5,3 +5,5 @@ export const environment = {
     tokenExpiration: '2 days'
   }
 }
+
+export const maxCreatedMaps = 20;
