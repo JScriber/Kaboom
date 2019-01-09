@@ -1,0 +1,24 @@
+
+.menu_button {
+    margin: auto;
+    width: 800px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.menu_button .play {
+    width: 42rem;
+}
+
+.menu_button .button {
+    width: 20rem;
+}
+
+.menu_button Button {
+    height: 8rem;
+    margin: 1rem;
+    font-size: 2rem;
+}
