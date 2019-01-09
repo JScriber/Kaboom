@@ -1,7 +1,13 @@
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
+.material-icons.md-96 { font-size: 96px; }
 
 .menu_button {
     margin: auto;
-    width: 800px;
+    max-width: 720px;
     align-items: center;
     justify-content: center;
     display: flex;
@@ -11,14 +17,19 @@
 
 .menu_button .play {
     width: 42rem;
+    font-size: 4rem;
 }
 
 .menu_button .button {
     width: 20rem;
+    font-size: 2rem;
 }
 
 .menu_button Button {
+    font-weight: bold;
+    min-width: 12rem;
     height: 8rem;
     margin: 1rem;
-    font-size: 2rem;
+    overflow: hidden;
 }
+
