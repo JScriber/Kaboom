@@ -12,6 +12,7 @@ import { PoolWebSocket } from './websockets/pool/pool.websocket';
 import { ContestController } from './controller/contest/contest.controller';
 import { RepositoriesModule } from './repositories/repositories.module';
 import { ParticipantModule } from './game/participant/participant.module';
+import {Player} from "@entity/player/player.entity";
 
 @Module({
   imports: [

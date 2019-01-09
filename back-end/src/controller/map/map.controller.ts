@@ -1,21 +1,22 @@
 import {
     BadRequestException,
     Body,
-    Controller,
+    Controller, Delete,
     Get,
     HttpStatus,
     NotFoundException,
     Param,
-    Post,
+    Post, Put,
     Req,
     Res,
-    UseGuards
+    UseGuards, ValidationPipe
 } from '@nestjs/common';
 import {ApiUseTags, ApiBearerAuth} from '@nestjs/swagger';
 import {MapRepository} from "@repository/map/map.repository";
 import {InjectRepository} from '@nestjs/typeorm';
 import {AuthGuard} from '@nestjs/passport';
 import {maxCreatedMaps} from "@environment";
+import {CreateMap} from "@dto/map/create-map.dto";
 
 @ApiUseTags('Map')
 @Controller('maps')
@@ -56,7 +57,7 @@ export class MapController {
 
     }
 
-    @Post(':id/delete')
+    @Delete(':id')
     @UseGuards(AuthGuard('bearer'))
     @ApiBearerAuth()
     async delete(@Req() req, @Param('id') id) {
@@ -75,37 +76,36 @@ export class MapController {
     @Post('create')
     @UseGuards(AuthGuard('bearer'))
     @ApiBearerAuth()
-    async create(@Req() req, @Body() body) {
+    async create(@Req() req, @Body(new ValidationPipe()) mapDTO : CreateMap) {
         const maps = await this.findAll(req);
         if (maps.length <= maxCreatedMaps) {
             const map = this.mapRepository.create(); // same as const user = new User();
-            map.height = body.height;
-            map.width = body.width;
-            map.name = body.name;
-            map.content = body.content;
+            map.height = mapDTO.height;
+            map.width = mapDTO.width;
+            map.name = mapDTO.name;
+            map.content = mapDTO.content;
             map.createdAt = new Date();
             map.owner = req.player;
             await this.mapRepository.save(map);
         } else {
-            // todo : handle message with the front ?
-            throw new BadRequestException("Vous ne pouvez pas créer de carte supplémentaire")
+            throw new BadRequestException("You've reached the maximum number of created maps")
         }
     }
 
-    @Post(':id/update')
+    @Put(':id')
     @UseGuards(AuthGuard('bearer'))
     @ApiBearerAuth()
-    async update(@Res() res, @Req() req, @Body() body, @Param('id') id) {
+    async update(@Res() res, @Req() req, @Body(new ValidationPipe()) mapDto : CreateMap, @Param('id') id) {
         // update is authorized only if the current player is the owner of the map
         const map = await this.mapRepository.findOne(id, {
             where: {owner: req.player}
         });
 
         if (map !== undefined) {
-            map.height = body.height;
-            map.width = body.width;
-            map.name = body.name;
-            map.content = body.content;
+            map.height = mapDto.height;
+            map.width = mapDto.width;
+            map.name = mapDto.name;
+            map.content = mapDto.content;
             map.createdAt = new Date();
             this.mapRepository.save(map).then(() => {
                 res.status(HttpStatus.OK).send("OK");
