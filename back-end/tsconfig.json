@@ -17,7 +17,7 @@
       "@entity/*": ["./src/entities/*"],
       "@service/*": ["./src/services/*"],
       "@dto/*": ["./src/dto/*"],
-      "@environment": ["./environment.ts"]
+      "@environment": ["./environment/environment.dev.ts"]
     }
   },
   "include": [
