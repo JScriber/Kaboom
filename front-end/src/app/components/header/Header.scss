@@ -1,15 +1,15 @@
 @import "../../../assets/scss/colors";
 
-.Header {
+.header {
   background-color: $light-grey;
   color: white;
   height: 5rem;
-    }
+  display: flex;
+  justify-content: space-between;
+}
 
-.header-title {
-  font-family: "bomberman", sans-serif;
-  font-size: 4rem;
-  color: $dark-purple;
+.connection, .disconnection {
+  flex-direction: row;
 }
 
 .purple-button {
@@ -18,4 +18,7 @@
   font-family: "poppins", sans-serif !important;
 }
 
-
+.logo {
+  height:100%;
+  width: auto;
+}
