@@ -2,15 +2,15 @@ import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import 'material-design-icons/iconfont/material-icons.css';
 
-import './Menu.scss';
+import './Home.scss';
 
-export default class Menu extends React.Component {
+export default class HomeComponent extends React.Component {
 
   public render() {
     return (
-      <div className='menu'>
-          <h2>Menu</h2>
-          <div className='menu_button'>
+      <div className='home'>
+          <h2>Home</h2>
+          <div className='home_button'>
             <Button className='purple-button row' variant='contained'>
                 <i className='material-icons md-96 col-3'>play_circle_filled</i>
                 <p className='col-6 mr-3 my-auto'>Play</p>
