@@ -9,3 +9,5 @@ export const environment = {
     port: 6379
   }
 }
+
+export const maxCreatedMaps = 20;
