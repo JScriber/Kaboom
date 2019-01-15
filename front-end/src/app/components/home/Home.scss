@@ -16,27 +16,27 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    
+    /* purple button */
+    .purple-button {
+        width: 42rem;
+        font-size: 4rem;
+        justify-content: start;
+    }
+    
+    /* buttons */
+    .button {
+        width: 20rem;
+        font-size: 2rem;
+    }
+    
+    /* Button = purple button + buttons */
+    Button {
+        font-weight: bold;
+        min-width: 12rem;
+        height: 8rem;
+        margin: 1rem;
+        overflow: hidden;
+    }
 }
-
-/* purple button */
-.home_button .purple-button {
-    width: 42rem;
-    font-size: 4rem;
-    justify-content: start;
-}
-
-/* buttons */
-.home_button .button {
-    width: 20rem;
-    font-size: 2rem;
-}
-
-/* Button = purple button + buttons */
-.home_button Button {
-
-    font-weight: bold;
-    min-width: 12rem;
-    height: 8rem;
-    margin: 1rem;
-    overflow: hidden;
-}
+    
