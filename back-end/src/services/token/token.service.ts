@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Player } from 'src/entities/player/player.entity';
 import { SignOptions } from 'jsonwebtoken';
-import { environment } from '../../../environment';
-import { Participant } from '../../entities/participant/participant.entity';
+import { environment } from '@environment';
 
 /** Fields used to generate the token. */
 interface TokenContent {
