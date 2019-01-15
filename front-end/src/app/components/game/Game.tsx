@@ -35,15 +35,21 @@ export default class Game extends React.Component {
       update: this.update
     });
 
-    this.socket = SocketIO('http://localhost:8080', { path: '/pool' });
+    this.socket = SocketIO('http://localhost:8081', { path: '/game' });
 
-    console.log('Start emitting');
-
-    this.socket.emit('event', { name: 'Nest' });
-
-    this.socket.addEventListener('event', (data: any) => {
-      console.log('I have been heard!', data.message);
+    const res = this.socket.emit('movement', {
+      direction: {
+        x: -1,
+        y: 0
+      },
+      speed: 5
     });
+
+    console.log(res);
+
+    // this.socket.addEventListener('event', (data: any) => {
+    //   console.log('I have been heard!', data.message);
+    // });
   }
 
   public preload() {

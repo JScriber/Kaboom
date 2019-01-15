@@ -1,23 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ICommand } from '@nestjs/cqrs';
 import * as Redis from 'ioredis';
+
 import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
+
 import Game from '../../model/game';
 import Player from '../../model/player';
-
-const keys = {
-  game: {
-    list: 'game_list',
-    count: 'game_count'
-  }
-};
+import { keys } from './redis-keys';
 
 @Injectable()
-export class CachingService {
-  private redis = new Redis();
+export class SerializerService {
+
+  /** Redis database. */
+  private readonly redis = new Redis();
+
+  /**
+   * Serialize the command.
+   * @param {ICommand} command
+   */
+  serialize(command: ICommand): void {
+    // TODO: handle groups.
+
+    this.generateID(keys.command.count, keys.command.list)
+      .subscribe(id => {
+        this.redis.hset(id, 'serial', JSON.stringify(command))
+          .catch(err => {
+            Logger.error('Error while serializing the command.', err, 'Redis');
+          });
+      });
+  }
+
 
   async pushGame() {
-    const id: string = await this.gameID().toPromise();
+    const id: string = await this.generateID(keys.game.count, keys.game.list).toPromise();
 
     const player: Player = {
       id: 10,
@@ -78,15 +94,17 @@ export class CachingService {
   }
 
   /**
-   * Returns the game id.
+   * Generate an id with the given columns.
+   * @param {string} key - Key column name.
+   * @param {string} list - List column name.
    * @returns {Observable<string>}
    */
-  private gameID(): Observable<string> {
-    return from(this.redis.incr(keys.game.count))
-      .pipe(map(id => this.idBuilder(id)));
-  }
+  private generateID(key: string, list: string): Observable<string> {
+    const promise = this.redis.incr(key);
 
-  private idBuilder(id: number): string {
-    return keys.game.list + id;
+    return from(promise).pipe(
+      take(1),
+      map(id => list + id)
+    );
   }
 }

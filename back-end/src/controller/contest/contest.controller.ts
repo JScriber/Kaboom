@@ -14,7 +14,6 @@ import { Map } from '@entity/map/map.entity';
 import { PlayerRepository } from '@repository/player/player.repository';
 import { ContestDTO } from '@dto/contest/contest-settings.dto';
 import { PoolWebSocket } from '../../websockets/pool/pool.websocket';
-import { CachingService } from '../../services/caching/caching.service';
 
 @ApiUseTags('Contest')
 @Controller('contest')
@@ -28,13 +27,7 @@ export class ContestController {
     private readonly participantRepository: Repository<Participant>,
     @InjectRepository(PlayerRepository)
     private readonly playerRepository: PlayerRepository,
-    private readonly contestWS: PoolWebSocket,
-    private readonly caching: CachingService) {}
-
-  @Get('test')
-  test() {
-    this.caching.pushGame();
-  }
+    private readonly contestWS: PoolWebSocket) {}
 
   @Post('create')
   @UseGuards(AuthGuard('bearer'))

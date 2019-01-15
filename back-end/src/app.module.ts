@@ -9,10 +9,9 @@ import { HttpStrategy } from './services/auth/http-strategy/http.strategy';
 import { PoolWebSocket } from './websockets/pool/pool.websocket';
 import { ContestController } from './controller/contest/contest.controller';
 import { RepositoriesModule } from './repositories/repositories.module';
-import { ParticipantModule } from './game/participant/participant.module';
 import { TokenService } from './services/token/token.service';
 import { AuthService } from './services/auth/auth.service';
-import { CachingService } from './services/caching/caching.service';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
@@ -29,7 +28,7 @@ import { CachingService } from './services/caching/caching.service';
     RepositoriesModule,
     EntitiesModule,
     RepositoriesModule,
-    ParticipantModule
+    GameModule
   ],
   controllers: [
     PlayerController,
@@ -40,8 +39,7 @@ import { CachingService } from './services/caching/caching.service';
     TokenService,
     AuthService,
     HttpStrategy,
-    CachingService,
-    PoolWebSocket,
+    PoolWebSocket
   ]
 })
 export class AppModule {}
