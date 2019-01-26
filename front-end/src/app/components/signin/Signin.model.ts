@@ -1,7 +1,10 @@
-export interface Form {
+import * as F from '../form/Form.model';
+
+export interface Form extends F.Form {
+  username: string;
   email: string;
   password: string;
-  rememberMe: boolean;
+  confirm_password: string;
 }
 
 export interface FormErrors {
@@ -9,7 +12,7 @@ export interface FormErrors {
   [key: string]: string;
 }
 
-/** State of the login component. */
+/** State of the Signin component. */
 export interface State {
   /* The field values. */
   form: Form;
@@ -21,7 +24,7 @@ export interface State {
   submitSuccess?: boolean;
 }
 
-/** Props of the login component. */
+/** Props of the signin component. */
 export interface Props {
   /** The HTTP path that the form will be posted to. */
   action: string;

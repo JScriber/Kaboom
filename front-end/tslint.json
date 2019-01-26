@@ -28,10 +28,6 @@
     ],
     "interface-over-type-literal": true,
     "label-position": true,
-    "max-line-length": [
-      true,
-      140
-    ],
     "member-access": false,
     "member-ordering": [
       true,
@@ -134,6 +130,8 @@
     "one-variable-per-declaration": false,
     "no-non-null-assertion": false,
     "no-unused-variable": false,
-    "interface-name": [false]
+    "interface-name": [false],
+    "jsx-no-lambda": false,
+    "max-line-length": [false]
   }
 }
