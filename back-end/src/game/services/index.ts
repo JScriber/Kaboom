@@ -1,5 +1,5 @@
-import { GameService } from "./game/game.service";
-import { RoutineService } from "./routine/routine.service";
-import { SerializerService } from './serializer/serializer.service';
+import { GameService } from './game/game.service';
+import { MutexService } from './mutex/mutex.service';
+import { RedisService } from './redis/redis.service';
 
-export const GameServices = [GameService, RoutineService, SerializerService];
+export const Services = [GameService, MutexService, RedisService];

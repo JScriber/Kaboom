@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SerializerService } from './serializer.service';
+import { MutexService } from './mutex.service';
 
-describe('SerializerService', () => {
-  let service: SerializerService;
+describe('MutexService', () => {
+  let service: MutexService;
   
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SerializerService],
+      providers: [MutexService],
     }).compile();
-    service = module.get<SerializerService>(SerializerService);
+    service = module.get<MutexService>(MutexService);
   });
   it('should be defined', () => {
     expect(service).toBeDefined();

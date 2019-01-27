@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TokenService } from './token.service';
+import { RedisService } from './redis.service';
 
-describe('TokenService', () => {
-  let service: TokenService;
+describe('RedisService', () => {
+  let service: RedisService;
   
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TokenService],
+      providers: [RedisService],
     }).compile();
-    service = module.get<TokenService>(TokenService);
+    service = module.get<RedisService>(RedisService);
   });
   it('should be defined', () => {
     expect(service).toBeDefined();

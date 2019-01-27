@@ -62,7 +62,11 @@ export class PlayerController {
 
       if (await this.passwordMatch(credentials.password, player)) {
         // Generate and assign a token.
-        player.token = this.tokenService.generate(player);
+        player.token = this.tokenService.generateFrom({
+          id: player.id,
+          uuid: player.uuid,
+          username: player.username
+        });
 
         if (player.token !== null) {
           // Updates the user to store the token.

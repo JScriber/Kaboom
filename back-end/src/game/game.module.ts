@@ -1,28 +1,16 @@
-import { ModuleRef } from '@nestjs/core';
-import { OnModuleInit, Module } from '@nestjs/common';
-import { CommandBus, CQRSModule } from '@nestjs/cqrs';
-import { CommandHandlers } from './commands/handlers';
-import { GameWebsocket } from './controllers/game.websocket';
-import { GameServices } from './services/index';
+import { Module } from '@nestjs/common';
+
+import { GameWebSocket } from './gateways/game.gateway';
+import { Services } from './services/index';
+import { ServicesModule } from '../services/services.module';
 
 @Module({
   imports: [
-    CQRSModule
+    ServicesModule
   ],
   providers: [
-    ...CommandHandlers,
-    ...GameServices,
-    GameWebsocket
+    ...Services,
+    GameWebSocket
   ]
 })
-export class GameModule implements OnModuleInit {
-  constructor(
-    private readonly moduleRef: ModuleRef,
-    private readonly command$: CommandBus
-  ) {}
-
-  onModuleInit() {
-    this.command$.setModuleRef(this.moduleRef);
-    this.command$.register(CommandHandlers);
-  }
-}
+export class GameModule {}

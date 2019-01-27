@@ -35,14 +35,19 @@ export default class Game extends React.Component {
       update: this.update
     });
 
-    this.socket = SocketIO('http://localhost:8081', { path: '/game' });
+    this.socket = SocketIO('http://localhost:8081', {
+      path: '/game',
+      query: {
+        token: 'my super token'
+      }
+    });
 
     const res = this.socket.emit('movement', {
       direction: {
-        x: -1,
-        y: 0
+        x: Math.floor(Math.random() * 20),
+        y: Math.floor(Math.random() * 20),
       },
-      speed: 5
+      speed: Math.floor(Math.random() * 100),
     });
 
     console.log(res);

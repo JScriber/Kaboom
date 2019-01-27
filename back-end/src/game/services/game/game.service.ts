@@ -1,23 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { CommandBus, ICommand } from '@nestjs/cqrs';
-import { SerializerService } from '../serializer/serializer.service';
 
 import { Vector } from '../../model/physics/vector/vector';
-import MovementCommand from '../../commands/commands/movement.command';
+import Player from '../../model/player';
+import Game from '../../model/game';
+
+export interface Movement {
+  direction: Vector,
+  speed: number;
+}
 
 @Injectable()
 export class GameService {
-  constructor(
-    private readonly commandBus: CommandBus,
-    private readonly serializer: SerializerService
-  ) {}
+
 
   /**
-   * Moves the character.
-   * @param {Vector} direction - Translation vector.
-   * @param {number} speed - Velocity.
+   * Movement.
+   * @param {Player} player 
+   * @param {Game} game
+   * @param {Movement} data
+   * @returns {Game}
    */
-  move(direction: Vector, speed: number): void {
-    this.serializer.serialize(new MovementCommand(direction, speed));
+  move(player: Player, game: Game, data: Movement): Game {
+    // TODO: Game treatment.
+    
+
+    console.log(data);
+
+    return game;
   }
+
 }
