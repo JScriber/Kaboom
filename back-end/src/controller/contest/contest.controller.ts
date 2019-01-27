@@ -54,13 +54,13 @@ export class ContestController {
 
     // Attach the participant.
     let participant: Participant;
-    
+
     try {
       participant = await this.newParticipant(player, true);
     } catch (error) {
       throw new InternalServerErrorException('Cannot create a participation.');
     }
-    
+
     contest.participants = [participant];
     // TODO: Change.
     contest.bonusActived = true;
@@ -68,7 +68,7 @@ export class ContestController {
 
     try {
       const newContest: Contest = await this.contestRepository.save(contest);
-      
+
       res.status(HttpStatus.CREATED).send({
         id: newContest.id,
         reference: participant.uuid
@@ -114,7 +114,7 @@ export class ContestController {
 
       // Add the participant to the contest.
       contest.participants.push(participant);
-      
+
       // Try to save the contest.
       this.contestRepository.save(contest).then((contest) => {
         // Notice the other players.
@@ -124,7 +124,7 @@ export class ContestController {
         res.status(HttpStatus.CREATED).send({
           id: contest.id,
           players: contest.participants.length,
-          reference: participant.uuid 
+          reference: participant.uuid
         });
       }).catch(() => {
         // Delete the orphan.

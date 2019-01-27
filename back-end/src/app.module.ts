@@ -42,4 +42,5 @@ import { GameModule } from './game/game.module';
     PoolWebSocket
   ]
 })
-export class AppModule {}
+export class AppModule {
+}

@@ -4,7 +4,7 @@ import {Button, Card, CardContent, CardHeader, Paper} from '@material-ui/core';
 import { Observable } from 'rxjs';
 
 import './Login.scss';
-import { Login } from './Login';
+import * as Login from './login.model';
 import { ApiService } from 'src/app/services/api/api';
 
 /** Type alias for form event. */
