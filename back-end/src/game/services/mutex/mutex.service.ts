@@ -3,24 +3,23 @@ import { Subject, Observable } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 
 import { RedisService } from '../redis/redis.service';
+import { MutexNotifierService } from '../mutex-notifier/mutex-notifier.service';
 
 export type Trigger = Observable<void>;
 
 @Injectable()
 export class MutexService {
 
-  /** Notifies when the mutex is freed. */
-  private freed: Subject<void> = new Subject();
-
-  constructor(private readonly redis: RedisService) {
+  constructor(private readonly redis: RedisService,
+              private readonly registry: MutexNotifierService) {
     // Set initial lock.
     this.locker(false).subscribe();
   }
 
   /** Locks the mutex. */
-  lock(): Trigger {
+  lock(id: number): Trigger {
     const locker = this.locker(true);
-    const freed = this.freed.pipe(
+    const freed = this.notifier(id).pipe(
       switchMap(() => locker),
       take(1)
     );
@@ -31,8 +30,8 @@ export class MutexService {
   }
 
   /** Unlocks the mutex. */
-  unlock(): void {
-    this.locker(false).subscribe(() => this.freed.next());
+  unlock(id: number): void {
+    this.locker(false).subscribe(() => this.notifier(id).next());
   }
 
   /** Says if the mutex is locked. */
@@ -47,5 +46,14 @@ export class MutexService {
    */
   private locker(state: boolean): Trigger {
     return this.redis.setLock(state);
+  }
+
+  /**
+   * Finds the corresponding notifier.
+   * @param {number} id
+   * @returns {Subject<void>}
+   */
+  private notifier(id: number): Subject<void> {
+    return this.registry.listen(id);
   }
 }

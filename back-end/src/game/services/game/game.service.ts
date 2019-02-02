@@ -24,7 +24,7 @@ export class GameService {
     // TODO: Game treatment.
     
 
-    console.log(data);
+    console.log(player, data);
 
     return game;
   }

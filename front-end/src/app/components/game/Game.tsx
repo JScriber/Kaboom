@@ -38,11 +38,13 @@ export default class Game extends React.Component {
     this.socket = SocketIO('http://localhost:8081', {
       path: '/game',
       query: {
-        token: 'my super token'
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJJRCI6MSwiZ2FtZUlEIjoxLCJpYXQiOjE1NDkxMTIwNDcsImV4cCI6MTU0OTI4NDg0N30.HiP3qM2ebYw8pL528eIMM1Iwz__D-kxs0BYsIhGdF80'
       }
     });
 
-    const res = this.socket.emit('movement', {
+    this.socket.emit('join', {});
+
+    this.socket.emit('movement', {
       direction: {
         x: Math.floor(Math.random() * 20),
         y: Math.floor(Math.random() * 20),
@@ -50,11 +52,9 @@ export default class Game extends React.Component {
       speed: Math.floor(Math.random() * 100),
     });
 
-    console.log(res);
-
-    // this.socket.addEventListener('event', (data: any) => {
-    //   console.log('I have been heard!', data.message);
-    // });
+    this.socket.addEventListener('state/1', (game: any) => {
+      console.log('Game', game);
+    });
   }
 
   public preload() {

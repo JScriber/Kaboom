@@ -110,9 +110,14 @@ export class RedisService {
     })
   }
   
-  getGameState(): Observable<Game> {
+  /**
+   * Finds the state of the game.
+   * @param {number} id - ID of the game.
+   * @returns {Observable<Game>}
+   */
+  getGameState(id: number): Observable<Game> {
     const player: Player = {
-      id: 10,
+      id: 1,
       uuid: 'sqdfdsf',
       position: {
         x: 1,
@@ -122,7 +127,7 @@ export class RedisService {
     };
 
     return of({
-      id: 10,
+      id,
       range: {
         start: new Date(),
         end: new Date()
