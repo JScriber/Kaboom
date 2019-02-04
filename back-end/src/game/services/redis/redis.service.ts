@@ -1,12 +1,16 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { Observable, from, Subscriber } from 'rxjs';
+import { take, withLatestFrom } from 'rxjs/operators';
 import * as Redis from 'ioredis';
-
-import { Observable, from, of } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import * as Redlock from 'redlock';
 
 import Game from '../../model/game';
-import Player from '../../model/player';
-import { keys } from './redis-keys';
+
+/** Game key in database. */
+const GAME_KEY = 'game';
+
+/** Game key count. */
+const GAME_KEY_COUNT = GAME_KEY + ':count';
 
 @Injectable()
 export class RedisService {
@@ -14,178 +18,118 @@ export class RedisService {
   /** Redis database. */
   private readonly redis = new Redis();
 
-  /**
-   * Returns the lock from redis.
-   * @returns {Observable<boolean>}
-   */
-  getLock(): Observable<boolean> {
-    return Observable.create(async obs => {
-      const lock = (await this.redis.mget('game_test'))[0] === '1';
+  /** Resource locker. */
+  private readonly redlock = new Redlock([ this.redis ], {
+    driftFactor: 0.01,
+    retryCount: 1,
+    retryDelay: 50,
+    retryJitter: 200
+  });
 
-      obs.next(lock);
-      obs.complete();
-    });
-  }
+  /** Maximum time the resource is locked (milliseconds). */
+  private readonly ttl: number = 100;
 
   /**
-   * Sets the lock state.
-   * @param {boolean} state
-   * @returns {Observable<void>}
+   * Access the game state.
+   * @param {number} id
+   * @returns {Observable<[Redlock.Lock, Game]>}
    */
-  setLock(state: boolean): Observable<void> {
-    return Observable.create(async obs => {
-      console.log('LOCK -', state);
-      await this.redis.mset('game_test', + state);
-
-      obs.next();
-      obs.complete();
-    });
-  }
-
-  async pushGame() {
-    const id: string = await this.generateID(keys.game.count, keys.game.list).toPromise();
-
-    const player: Player = {
-      id: 10,
-      uuid: 'sqdfdsf',
-      position: {
-        x: 1,
-        y: 1
-      },
-      items: []
-    };
-
-    const game: Game = {
-      id: parseInt(id),
-      range: {
-        start: new Date(),
-        end: new Date()
-      },
-      players: [player],
-      owner: player,
-      map: {
-        dimensions: {
-          width: 50,
-          height: 50
-        },
-        slots: []
-      },
-      bonus: {
-        wallPass: true,
-        teleportation: true,
-        fireSuit: true,
-        bombUp: true,
-        speedUp: true,
-        yellowFlame: true,
-        redFlame: true,
-        bombDisarmer: true,
-        powerGlove: true,
-        push: true,
-        heart: false,
-        lifeUp: false,
-        swapPositions: true
-      },
-      penalty: {
-        bombDown: false,
-        speedDown: false,
-        blueFlame: false,
-        invert: false
-      }
-    }
-  
-    this.redis.hmset(id,
-      'start', new Date().toString(),
-      'end', new Date().toString(),
-      'json', JSON.stringify(game)
+  accessMutable(id: number): Observable<[Redlock.Lock, Game]> {
+    return this.locker(id).pipe(
+      withLatestFrom(this.access(id))
     );
-
-    console.log(await this.redis.hmget(id, 'start', 'end'), +true);
-    console.log(JSON.parse(await this.redis.hmget(id, 'json')));
   }
 
-  setGameState(game: Game): Observable<Game> {
-    return Observable.create(obs => {
-      obs.next(game);
-      obs.complete();
-    })
-  }
-  
   /**
-   * Finds the state of the game.
-   * @param {number} id - ID of the game.
+   * Access the game state in read-only.
+   * @param {number} id
    * @returns {Observable<Game>}
    */
-  getGameState(id: number): Observable<Game> {
-    const player: Player = {
-      id: 1,
-      uuid: 'sqdfdsf',
-      position: {
-        x: 1,
-        y: 1
-      },
-      items: []
-    };
+  access(id: number): Observable<Game> {
+    return Observable.create(async (obs: Subscriber<Game>) => {
+      const key = this.key(id);
+      const json: string = (await this.redis.mget(key))[0];
 
-    return of({
-      id,
-      range: {
-        start: new Date(),
-        end: new Date()
-      },
-      players: [player],
-      owner: player,
-      map: {
-        dimensions: {
-          width: 50,
-          height: 50
-        },
-        slots: []
-      },
-      bonus: {
-        wallPass: true,
-        teleportation: true,
-        fireSuit: true,
-        bombUp: true,
-        speedUp: true,
-        yellowFlame: true,
-        redFlame: true,
-        bombDisarmer: true,
-        powerGlove: true,
-        push: true,
-        heart: false,
-        lifeUp: false,
-        swapPositions: true
-      },
-      penalty: {
-        bombDown: false,
-        speedDown: false,
-        blueFlame: false,
-        invert: false
+      if (json) {
+        try {
+          const game: Game = JSON.parse(json);
+          obs.next(game);
+          obs.complete();
+        } catch (e) {
+          obs.error();
+        }
+      } else {
+        obs.error();
       }
     });
+  }
+
+  /**
+   * Saves the game state.
+   * @param {Redlock.Lock} lock
+   * @param {Game} game
+   * @returns {Observable<void>}
+   */
+  save(lock: Redlock.Lock, game: Game): Observable<void> {
+    if (game) {
+      const key = this.key(game.id);
+  
+      this.redis.set(key, JSON.stringify(game));
+    }
+
+    // Unlock the resource.
+    return from(lock.unlock());
+  }
+
+  /**
+   * Inits a game state.
+   * @param {Game} game
+   * @returns {Promise<string>}
+   */
+  async init(game: Game): Promise<string> {
+    const id = +(await this.generateID(GAME_KEY_COUNT));
+    const key = this.key(id);
+
+    // Set the generated id.
+    game.id = id;
+
+    return this.redis.set(key, JSON.stringify(game));
+  }
+
+  /**
+   * Locks a game state resource.
+   * @param {number} id
+   * @returns {Observable<Redlock.Lock>}
+   */
+  private locker(id: number): Observable<Redlock.Lock> {
+    return Observable.create(async sub => {
+      try {
+        const lock = await this.redlock.lock(this.key(id), this.ttl);
+        console.log('LOCK', lock);
+        sub.next(lock);
+        sub.complete();
+      } catch (e) {
+        console.log(e);
+        sub.error(e);
+      }
+    });
+  }
+
+  /**
+   * Returns the key of the game.
+   * @param {number} id
+   * @returns {string}
+   */
+  private key(id: number): string {
+    return `${GAME_KEY}:${id}`;
   }
 
   /**
    * Generate an id with the given columns.
    * @param {string} key - Key column name.
-   * @param {string} list - List column name.
-   * @returns {Observable<string>}
+   * @returns {Observable<number>}
    */
-  private generateID(key: string, list: string): Observable<string> {
-    const promise = this.redis.incr(key);
-
-    return this.observablify<number>(promise).pipe(
-      map(id => list + id)
-    );
-  }
-
-  /**
-   * Transforms promises into observables.
-   * @template T - Returned type.
-   * @param {Promise<any>} promise
-   * @returns {Observable<T>}
-   */
-  private observablify<T>(promise: Promise<any>): Observable<T> {
-    return from(promise).pipe(take(1));
+  private async generateID(key: string): Promise<number> {
+    return this.redis.incr(key);
   }
 }

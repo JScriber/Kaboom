@@ -12,7 +12,6 @@ export interface Movement {
 @Injectable()
 export class GameService {
 
-
   /**
    * Movement.
    * @param {Player} player 

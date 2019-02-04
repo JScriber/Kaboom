@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { WsArgumentsHost } from '@nestjs/common/interfaces';
 
 import { TokenService } from '../../services/token/token.service';
-import { Participant } from '../gateways/participant.model';
+import Participant from '../gateways/participant.model';
 
 @Injectable()
 export class WsJwtGuard implements CanActivate {

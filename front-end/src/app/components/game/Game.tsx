@@ -42,6 +42,8 @@ export default class Game extends React.Component {
       }
     });
 
+    this.socket.emit('test', {});
+
     this.socket.emit('join', {});
 
     this.socket.emit('movement', {
@@ -51,6 +53,7 @@ export default class Game extends React.Component {
       },
       speed: Math.floor(Math.random() * 100),
     });
+
 
     this.socket.addEventListener('state/1', (game: any) => {
       console.log('Game', game);

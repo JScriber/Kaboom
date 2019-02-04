@@ -16,7 +16,7 @@ export interface WsBody<T = any> {
   data: T
 }
 
-/** Map of running processes. */
-export interface Processes {
+/** Map of running broadcasts. */
+export interface Broadcasts {
   [key: number]: Subscription;
 }
