@@ -9,7 +9,7 @@ import { RedisService } from './services/redis/redis.service';
 
 @Module({
   imports: [
-    ServicesModule
+    ServicesModule,
   ],
   providers: [
     GameService,

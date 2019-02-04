@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, from, Subscriber } from 'rxjs';
-import { take, withLatestFrom } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import * as Redis from 'ioredis';
-import * as Redlock from 'redlock';
 
 import Game from '../../model/game';
+import { Locker } from './locker/locker';
 
 /** Game key in database. */
 const GAME_KEY = 'game';
@@ -19,24 +19,16 @@ export class RedisService {
   private readonly redis = new Redis();
 
   /** Resource locker. */
-  private readonly redlock = new Redlock([ this.redis ], {
-    driftFactor: 0.01,
-    retryCount: 1,
-    retryDelay: 50,
-    retryJitter: 200
-  });
-
-  /** Maximum time the resource is locked (milliseconds). */
-  private readonly ttl: number = 100;
+  private readonly locker = new Locker(this.redis, GAME_KEY);
 
   /**
    * Access the game state.
    * @param {number} id
-   * @returns {Observable<[Redlock.Lock, Game]>}
+   * @returns {Observable<Game>}
    */
-  accessMutable(id: number): Observable<[Redlock.Lock, Game]> {
-    return this.locker(id).pipe(
-      withLatestFrom(this.access(id))
+  accessMutable(id: number): Observable<Game> {
+    return this.locker.lock(id).pipe(
+      switchMap(() => this.access(id))
     );
   }
 
@@ -53,6 +45,7 @@ export class RedisService {
       if (json) {
         try {
           const game: Game = JSON.parse(json);
+
           obs.next(game);
           obs.complete();
         } catch (e) {
@@ -66,19 +59,19 @@ export class RedisService {
 
   /**
    * Saves the game state.
-   * @param {Redlock.Lock} lock
+   * @param {Lock} lock
    * @param {Game} game
    * @returns {Observable<void>}
    */
-  save(lock: Redlock.Lock, game: Game): Observable<void> {
+  save(game: Game): Observable<void> {
     if (game) {
       const key = this.key(game.id);
   
       this.redis.set(key, JSON.stringify(game));
-    }
 
-    // Unlock the resource.
-    return from(lock.unlock());
+      // Free the resource.
+      return from(this.locker.unlock(game.id));
+    }
   }
 
   /**
@@ -87,32 +80,21 @@ export class RedisService {
    * @returns {Promise<string>}
    */
   async init(game: Game): Promise<string> {
-    const id = +(await this.generateID(GAME_KEY_COUNT));
+    let id = +(await this.generateID(GAME_KEY_COUNT));
+    
+    // TODO: Remove.
+    id = 1;
+
     const key = this.key(id);
+
+    // Register the resource.
+    this.locker.register(id);
 
     // Set the generated id.
     game.id = id;
 
+    // TODO: Handle error.
     return this.redis.set(key, JSON.stringify(game));
-  }
-
-  /**
-   * Locks a game state resource.
-   * @param {number} id
-   * @returns {Observable<Redlock.Lock>}
-   */
-  private locker(id: number): Observable<Redlock.Lock> {
-    return Observable.create(async sub => {
-      try {
-        const lock = await this.redlock.lock(this.key(id), this.ttl);
-        console.log('LOCK', lock);
-        sub.next(lock);
-        sub.complete();
-      } catch (e) {
-        console.log(e);
-        sub.error(e);
-      }
-    });
   }
 
   /**

@@ -1,9 +1,8 @@
-import { WebSocketGateway, SubscribeMessage, WebSocketServer, WsResponse, OnGatewayConnection, OnGatewayDisconnect } from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, WsResponse } from '@nestjs/websockets';
 import { UseGuards } from '@nestjs/common';
-import { Observable, interval, throwError } from 'rxjs';
-import { switchMap, map, mapTo, catchError } from 'rxjs/operators';
-import { Lock } from 'redlock';
-import { Server, Socket } from 'socket.io';
+import { Observable, interval } from 'rxjs';
+import { switchMap, map, mapTo, delay } from 'rxjs/operators';
+import { Socket, Server } from 'socket.io';
 
 import { environment } from '@environment';
 import Player from '../model/player';
@@ -47,23 +46,29 @@ export class GameWebSocket extends GatewaySocket {
 
   /** Force authentification at connection time. */
   handleConnection(socket: Socket): void {
-    console.log('CONNECTED - ', socket.client.id);
+    console.log('CONNECTED', socket.client.id);
     const participant = this.getParticipantFromSocket(socket);
+
+    // console.log('TOKEN', this.authentification.generateFrom({
+    //   playerID: 1,
+    //   gameID: 1
+    // }));
 
     if (!participant) socket.disconnect();
   }
-  
+
   /** Check disconnection of players. */
   handleDisconnect(socket: Socket): void {
-    console.log('DISCONNECTED');
+    console.log('DISCONNECTED', socket.client.id);
     const participant = this.getParticipantFromSocket(socket);
 
+
     if (participant) {
-      this.applyStateChanges(participant, game => {
-        // TODO: Set participant as disconnected.
-        // TODO: Check if at least two participants. If not stop process.
-        return game;
-      }).subscribe(() => {}, () => {});
+      // this.applyStateChanges(participant, game => {
+      //   // TODO: Set participant as disconnected.
+      //   // TODO: Check if at least two participants. If not stop process.
+      //   return game;
+      // }).subscribe(() => {}, () => {});
     }
   }
 
@@ -191,13 +196,11 @@ export class GameWebSocket extends GatewaySocket {
    * @returns {Observable<void>}
    */
   private applyStateChanges({ gameID }: Participant, converter: GameConverter): Observable<void> {
-    // Modify only the game in the tuple.
-    const convert = ([lock, game]): [Lock, Game] => [lock, converter(game)];
-
     // Fetch, alter and save state.
     return this.redis.accessMutable(gameID).pipe(
-      map(convert),
-      switchMap(([lock, game]) => this.redis.save(lock, game))
+      delay(2000),
+      map(converter),
+      switchMap((game) => this.redis.save(game))
     );
   }
 

@@ -1,6 +1,5 @@
 import * as Phaser from 'phaser-ce';
 import * as React from 'react';
-import * as SocketIO from 'socket.io-client';
 
 export default class Game extends React.Component {
 
@@ -24,8 +23,6 @@ export default class Game extends React.Component {
 
   protected game: Phaser.Game;
 
-  private socket: SocketIOClient.Socket;
-
   constructor(props: any) {
     super(props);
 
@@ -33,30 +30,6 @@ export default class Game extends React.Component {
       create: this.create,
       preload: this.preload,
       update: this.update
-    });
-
-    this.socket = SocketIO('http://localhost:8081', {
-      path: '/game',
-      query: {
-        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF5ZXJJRCI6MSwiZ2FtZUlEIjoxLCJpYXQiOjE1NDkxMTIwNDcsImV4cCI6MTU0OTI4NDg0N30.HiP3qM2ebYw8pL528eIMM1Iwz__D-kxs0BYsIhGdF80'
-      }
-    });
-
-    this.socket.emit('test', {});
-
-    this.socket.emit('join', {});
-
-    this.socket.emit('movement', {
-      direction: {
-        x: Math.floor(Math.random() * 20),
-        y: Math.floor(Math.random() * 20),
-      },
-      speed: Math.floor(Math.random() * 100),
-    });
-
-
-    this.socket.addEventListener('state/1', (game: any) => {
-      console.log('Game', game);
     });
   }
 

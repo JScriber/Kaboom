@@ -21,11 +21,8 @@ export class GameService {
    */
   move(player: Player, game: Game, data: Movement): Game {
     // TODO: Game treatment.
-    
-
     console.log(player, data);
 
     return game;
   }
-
 }
