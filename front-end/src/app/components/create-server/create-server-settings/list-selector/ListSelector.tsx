@@ -9,7 +9,8 @@ import Timer10Icon from '@material-ui/icons/Timer10Rounded';
 import TimerOffIcon from '@material-ui/icons/TimerOff';
 
 // Models.
-import { IProps, IState, styles, Duration } from './ListSelector.model';
+import { IProps, IState, styles, Duration, Item } from './ListSelector.model';
+import SearchBox from '../search-box/SearchBox';
 
 /**
  * List of options.
@@ -19,7 +20,8 @@ class ListSelector extends React.Component<IProps, IState> {
   /** State initilisation. */
   state: IState = {
     expanded: true,
-    items: []
+    items: [],
+    filter: null
   };
 
   /** Called when the panel is expanded or closed. */
@@ -45,17 +47,28 @@ class ListSelector extends React.Component<IProps, IState> {
   };
 
   /** Handles simple option toggle. */
-  private handleToggle = (index: number) => () => {
-    this.setState((state: IState) => {
-      const item = state.items[index];
-      item.toggled = !item.toggled;
+  private handleToggle = (item: Item) => () => {
+    const index = this.state.items.indexOf(item);
 
-      return state;
-    });
+    if (index !== -1) {
+      this.setState((state: IState) => {
+        const item = state.items[index];
+        item.toggled = !item.toggled;
+  
+        return state;
+      });
+    }
   };
 
   /** State of the main toggle. */
   private mainToggleState = (): boolean => this.state.items.every(i => i.toggled);
+
+  /** Filters the results. */
+  private filtering = (filter: string | null) => {
+    if (filter === '') filter = null;
+
+    this.setState({ filter });
+  };
 
   /**
    * Determines which icon to display.
@@ -72,6 +85,17 @@ class ListSelector extends React.Component<IProps, IState> {
     }
   };
 
+  private textTestFilter = (text: string): boolean => {
+    const { filter } = this.state;
+
+    if (filter === null) {
+      return true;
+    }
+
+    const regex = new RegExp(filter, 'gi');
+    return regex.test(text);
+  };
+
   /** On init. */
   componentDidMount() {
     this.setState({ items: this.props.items });
@@ -84,6 +108,7 @@ class ListSelector extends React.Component<IProps, IState> {
 
   render() {
     const { classes, title } = this.props;
+    const { filter } = this.state;
 
     return (
       <ExpansionPanel expanded={this.state.expanded} onChange={this.handleExpanded}>
@@ -96,35 +121,42 @@ class ListSelector extends React.Component<IProps, IState> {
           <Typography className={classes.heading}>{title}</Typography>
         </ExpansionPanelSummary>
 
-        <ExpansionPanelDetails>
+        <ExpansionPanelDetails className={classes.panel}>
+          <SearchBox placeholder={this.props.placeholder} onSearch={this.filtering}/>
+          <Divider className={classes.divider}/>
+
           <List className={classes.root}>
             {
-              this.state.items.map((item, i) => (
-                <React.Fragment key={i}>
-                  <ListItem>
-                    <ListItemAvatar>
-                      <Avatar>
-                        {this.timeIcon(item.duration)}
-                      </Avatar>
-                    </ListItemAvatar>
+              this.state.items
+                .filter(item => filter === null
+                  || this.textTestFilter(item.name)
+                  || this.textTestFilter(item.description))
+                .map((item, i) => (
+                  <React.Fragment key={i}>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar>
+                          {this.timeIcon(item.duration)}
+                        </Avatar>
+                      </ListItemAvatar>
 
-                    <ListItemText primary={item.name} secondary={
-                      <Typography>
-                        {item.description}
-                      </Typography>
-                    }/>
+                      <ListItemText primary={item.name} secondary={
+                        <Typography>
+                          {item.description}
+                        </Typography>
+                      }/>
 
-                    <ListItemSecondaryAction>
-                      <Switch
-                        checked={item.toggled}
-                        onChange={this.handleToggle(i)}
-                        color="primary"
-                      />
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                  { i !== this.state.items.length - 1 && <Divider light />}
-                </React.Fragment>
-              ))
+                      <ListItemSecondaryAction>
+                        <Switch
+                          checked={item.toggled}
+                          onChange={this.handleToggle(item)}
+                          color="primary"
+                        />
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                    { i !== this.state.items.length - 1 && <Divider light />}
+                  </React.Fragment>
+                ))
             }
           </List>
         </ExpansionPanelDetails>

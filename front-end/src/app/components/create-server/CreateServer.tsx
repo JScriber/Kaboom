@@ -17,13 +17,13 @@ export default class CreateServer extends React.Component {
   render() {
     return (
       <Grid container spacing={16} className="create-server">
-        <Grid item lg={8} md={7} sm={12}>
+        <Grid item lg={7} md={6} sm={12}>
           <Paper>
             <CreateServerSettings/>
           </Paper>
         </Grid>
 
-        <Grid item lg={4} md={5} sm={12}>
+        <Grid item lg={5} md={6} sm={12}>
           <Paper>
             <CreateServerMap/>
           </Paper>

@@ -43,9 +43,9 @@ export default class CreateServerSettings extends React.Component<IProps, IState
   render() {
     return (
       <React.Fragment>
-        <TimeLimit/>
-        <ListSelector title="Bonus" items={this.state.bonus}/>
-        <ListSelector title="Malus" items={this.state.penalty}/>
+        <TimeLimit initialValue={5} min={3} max={20}/>
+        <ListSelector title="Bonus" placeholder="Rechercher un bonus" items={this.state.bonus}/>
+        <ListSelector title="Malus" placeholder="Rechercher un malus" items={this.state.penalty}/>
       </React.Fragment>
     );
   }

@@ -33,17 +33,27 @@ export const styles = (theme: Theme) => ({
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightMedium,
     alignSelf: 'center'
+  },
+  panel: {
+    display: 'flex',
+    flexFlow: 'column wrap',
+    paddingTop: 0
+  },
+  divider: {
+    marginBottom: 5
   }
 });
 
 /** Props of the component. */
 export interface IProps extends WithStyles<typeof styles> {
   title: string;
+  placeholder: string;
   items: Item[];
 }
 
 /** State of the component. */
 export interface IState {
   expanded: boolean;
+  filter: string | null;
   items: Item[];
 }
