@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { withStyles } from '@material-ui/core';
 
 // Models.
-import { IProps, IState, styles } from './CreateServerSettings.model';
-import ListSelector from './list-selector/ListSelector';
+import { IProps, IState } from './CreateServerSettings.model';
 import { Duration } from './list-selector/ListSelector.model';
+
+// Local components.
+import ListSelector from './list-selector/ListSelector';
+import TimeLimit from './time-limit/TimeLimit';
 
 /**
  * Main settings to create a server.
  */
-class CreateServerSettings extends React.Component<IProps, IState> {
+export default class CreateServerSettings extends React.Component<IProps, IState> {
 
   /** State initialization. */
   state: IState = {
-    expanded: null,
     bonus: [{
       name: 'Passe murailles',
       description: 'Permet de passer à travers les murs. Ne rend pas intangible.',
@@ -42,14 +43,10 @@ class CreateServerSettings extends React.Component<IProps, IState> {
   render() {
     return (
       <React.Fragment>
+        <TimeLimit/>
         <ListSelector title="Bonus" items={this.state.bonus}/>
         <ListSelector title="Malus" items={this.state.penalty}/>
       </React.Fragment>
     );
   }
 }
-
-/** Export with material theme. */
-export default withStyles(styles, {
-  withTheme: true
-})(CreateServerSettings);
