@@ -24,6 +24,9 @@ export interface IMapState {
   /** Tab index. */
   value: number;
 
+  /** Selected map. */
+  selectedId: number | null;
+
   /** Default maps loaded. */
   defaultMapsLoaded: boolean;
 

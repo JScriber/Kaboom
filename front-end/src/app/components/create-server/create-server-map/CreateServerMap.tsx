@@ -16,7 +16,7 @@ import { interval } from 'rxjs';
 
 /** Tabs encapsulation. */
 const TabContainer = (props: any) => (
-  <Typography component="div" style={{ padding: 8 * 3 }}>
+  <Typography component="div" style={{ padding: 5 * 3 }}>
     {props.children}
   </Typography>
 );
@@ -31,6 +31,7 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
 
   /** State initialisation. */
   state: IMapState = {
+    selectedId: 0,
     value: CreateServerMap.DEFAULT_TAB,
     defaultMapsLoaded: false,
     defaultMaps: [],
@@ -53,10 +54,62 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
     interval(1000).subscribe(() => {
       this.setState({
         defaultMapsLoaded: true,
-        customMapsLoaded: true
+        customMapsLoaded: true,
+        defaultMaps: [
+          {
+            id: 0,
+            name: 'Golden arena'
+          },
+          {
+            id: 1,
+            name: 'Platinum stadium'
+          },
+          {
+            id: 2,
+            name: 'Lost heaven'
+          },
+          {
+            id: 3,
+            name: 'Shouting star'
+          },
+          {
+            id: 4,
+            name: 'Warrior arena'
+          },
+          {
+            id: 5,
+            name: 'Night sight'
+          },
+          {
+            id: 6,
+            name: 'Roaring lion'
+          },
+        ],
+        customMaps: [
+          {
+            id: 10,
+            name: 'Custom 1'
+          }
+        ]
       });
+
+      this.forceUpdate();
     })
   }
+
+  /**
+   * Handles the selection of a map.
+   * @param {number | null} id
+   */
+  private handleOnSelect = (id: number | null) => {
+    this.setState(({ selectedId }: IMapState) => {
+      if (id === selectedId) {
+        id = null;
+      }
+
+      return { selectedId: id };
+    });
+  };
 
   render() {
     return (
@@ -77,13 +130,17 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
         >
           <TabContainer>
             { this.state.defaultMapsLoaded
-              ? <ListMap previews={this.state.defaultMaps}/>
+              ? <ListMap previews={this.state.defaultMaps}
+                  selectedId={this.state.selectedId}
+                  onSelect={this.handleOnSelect}/>
               : <CircularProgress/> }
           </TabContainer>
 
           <TabContainer>
             { this.state.customMapsLoaded
-              ? <ListMap previews={this.state.customMaps}/>
+              ? <ListMap previews={this.state.customMaps}
+                  selectedId={this.state.selectedId}
+                  onSelect={this.handleOnSelect}/>
               : <CircularProgress/> }
           </TabContainer>
         </SwipeableViews>
