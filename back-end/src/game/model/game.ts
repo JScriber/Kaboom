@@ -6,8 +6,9 @@ import Penalty from './item-activation/penalty/penalty';
 import Map from './map';
 
 export default interface Game {
-  /** Unique ID. */
-  id: number;
+
+  /** Unique identifier. */
+  id?: number;
 
   /** Time related. */
   range: TimeRange<Date>;

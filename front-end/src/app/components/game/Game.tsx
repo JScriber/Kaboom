@@ -1,6 +1,5 @@
 import * as Phaser from 'phaser-ce';
 import * as React from 'react';
-import * as SocketIO from 'socket.io-client';
 
 export default class Game extends React.Component {
 
@@ -24,8 +23,6 @@ export default class Game extends React.Component {
 
   protected game: Phaser.Game;
 
-  private socket: SocketIOClient.Socket;
-
   constructor(props: any) {
     super(props);
 
@@ -33,16 +30,6 @@ export default class Game extends React.Component {
       create: this.create,
       preload: this.preload,
       update: this.update
-    });
-
-    this.socket = SocketIO('http://localhost:8080', { path: '/pool' });
-
-    console.log('Start emitting');
-
-    this.socket.emit('event', { name: 'Nest' });
-
-    this.socket.addEventListener('event', (data: any) => {
-      console.log('I have been heard!', data.message);
     });
   }
 
