@@ -5,8 +5,9 @@ import { AppModule } from './app.module';
 import { environment } from 'environment/environment.dev';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  const app = await NestFactory.create(AppModule, {
+    cors: true
+  });
 
   const options = new DocumentBuilder()
     .setTitle('Kaboom')
@@ -17,6 +18,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);
 
-  await app.listen(environment.port);
+  await app.listen(environment.ports.app);
 }
 bootstrap();

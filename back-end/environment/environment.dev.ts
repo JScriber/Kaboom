@@ -1,5 +1,8 @@
 export const environment = {
-  port: 8080,
+  ports: {
+    app: 8080,
+    ws: 8081
+  },
   security: {
     roundEncryption: 10,
     tokenExpiration: '2 days'
