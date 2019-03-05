@@ -10,7 +10,7 @@ import TimerOffIcon from '@material-ui/icons/TimerOff';
 
 // Models.
 import { IProps, IState, styles, Duration, Item } from './ListSelector.model';
-import SearchBox from '../search-box/SearchBox';
+import SearchBox from './search-box/SearchBox';
 
 /**
  * List of options.
