@@ -5,6 +5,7 @@ import Game from './app/components/game/Game';
 import SigninComponent from './app/components/signin/SigninComponent';
 import MenuComponent from './app/components/home/Home';
 import ServerListComponent from './app/components/serverlist/ServerList';
+import CreateServer from './app/components/create-server/CreateServer';
 import TestComponent from './app/components/test/Test';
 
 export const rootRoutes: RouteProps[] = [
@@ -34,9 +35,13 @@ export const rootRoutes: RouteProps[] = [
     component: ServerListComponent
   },
   {
+    path: '/server/create',
+    exact: true,
+    component: CreateServer
+  },
+  {
     path: '/test',
     exact: true,
     component: TestComponent
   }
-
 ];
