@@ -8,9 +8,8 @@ import { PENALTY_CONF } from 'src/configs/items/penalty';
 import { IProps, IState } from './CreateServerSettings.model';
 
 // Local components.
-import NumberPlayers from './number-players/NumberPlayers';
 import ListSelector from './list-selector/ListSelector';
-import TimeLimit from './time-limit/TimeLimit';
+import ValuePicker from './value-picker/ValuePicker';
 
 /**
  * Main settings to create a server.
@@ -27,8 +26,26 @@ export default class CreateServerSettings extends React.Component<IProps, IState
   render() {
     return (
       <React.Fragment>
-        <NumberPlayers min={2} max={4} default={2}/>
-        <TimeLimit initialValue={5} min={3} max={20}/>
+        <ValuePicker
+          initialValue={4}
+          min={2}
+          max={4}
+          expanded={false}
+          togglable={false}
+          title="Nombre de joueurs"
+          displaying={v => v + ' joueurs'}
+        />
+
+        <ValuePicker
+          initialValue={5}
+          min={3}
+          max={20}
+          expanded={true}
+          togglable={true}
+          title="Limite de temps"
+          displaying={v => v + ' min'}
+        />
+
         <ListSelector title="Bonus" placeholder="Rechercher un bonus" items={this.state.bonus}/>
         <ListSelector title="Malus" placeholder="Rechercher un malus" items={this.state.penalty}/>
       </React.Fragment>

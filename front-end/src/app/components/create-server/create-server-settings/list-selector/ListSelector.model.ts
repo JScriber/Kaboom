@@ -39,6 +39,9 @@ export const styles = (theme: Theme) => ({
     flexFlow: 'column wrap',
     paddingTop: 0
   },
+  secondaryText: {
+    opacity: .6
+  },
   divider: {
     marginBottom: 5
   }

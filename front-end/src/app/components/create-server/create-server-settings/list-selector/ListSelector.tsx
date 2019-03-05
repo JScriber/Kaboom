@@ -141,7 +141,7 @@ class ListSelector extends React.Component<IProps, IState> {
                       </ListItemAvatar>
 
                       <ListItemText primary={item.name} secondary={
-                        <Typography>
+                        <Typography className={classes.secondaryText}>
                           {item.description}
                         </Typography>
                       }/>
