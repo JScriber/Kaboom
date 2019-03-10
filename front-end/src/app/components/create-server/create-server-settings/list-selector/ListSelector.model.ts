@@ -1,24 +1,15 @@
 import { WithStyles, Theme } from '@material-ui/core';
 
-/** Duration of an item. */
-export enum Duration {
-  /** Last 10 seconds. */
-  S_10,
-
-  /** No duration. */
-  None
-}
-
 /** Item to select. */
 export interface Item {
   /** Name of the option. */
   name: string;
 
+  /** Technical key of the item. */
+  key: string;
+
   /** Description of the option. */
   description: string;
-
-  /** Maximum duration. */
-  duration: Duration;
 
   /** Toggled or not. */
   toggled: boolean;
@@ -38,6 +29,9 @@ export const styles = (theme: Theme) => ({
     display: 'flex',
     flexFlow: 'column wrap',
     paddingTop: 0
+  },
+  secondaryText: {
+    opacity: .6
   },
   divider: {
     marginBottom: 5

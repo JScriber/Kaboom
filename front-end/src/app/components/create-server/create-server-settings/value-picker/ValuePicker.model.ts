@@ -25,11 +25,15 @@ export interface IProps extends WithStyles<typeof styles> {
   initialValue: number;
   min: number;
   max: number;
+  title: string;
+  expanded: boolean;
+  togglable: boolean;
+  displaying: (value: number) => string;
 }
 
 /** State of the component. */
 export interface IState {
   toggled: boolean;
   expanded: boolean;
-  duration: number;
+  value: number;
 }

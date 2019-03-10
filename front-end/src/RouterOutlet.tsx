@@ -8,25 +8,23 @@ const history = createBrowserHistory();
 
 export default class RouterOutlet extends React.Component {
 
-    /** Component rendering. */
-    public render(): JSX.Element {
-        return (
-            <Router history={history}>
-                <div>
-                    <Header/>
-                    <div className='router-outlet'>
-                        {
-                            rootRoutes.map((route, i) => (
-                                <Route
-                                    key={i}
-                                    path={route.path}
-                                    exact={route.exact}
-                                    component={route.component}/>
-                            ))
-                        }
-                    </div>
-                </div>
-            </Router>
-        );
-    }
+  /** Component rendering. */
+  public render(): JSX.Element {
+    return (
+      <Router history={history}>
+        <React.Fragment>
+          <Header/>
+          {
+            rootRoutes.map((route, i) => (
+              <Route
+                key={i}
+                path={route.path}
+                exact={route.exact}
+                component={route.component}/>
+            ))
+          }
+        </React.Fragment>
+      </Router>
+    );
+  }
 }

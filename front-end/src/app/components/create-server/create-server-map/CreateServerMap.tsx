@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { Typography, Zoom, Tabs, Tab, Fab, CircularProgress } from '@material-ui/core';
+import { Typography, Tabs, Tab, CircularProgress } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import EditIcon from '@material-ui/icons/Edit';
 import SwipeableViews from 'react-swipeable-views';
 
 // Local models.
@@ -144,16 +143,6 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
               : <CircularProgress/> }
           </TabContainer>
         </SwipeableViews>
-
-        <Zoom
-          key="primary"
-          in={this.state.value === 1}
-          unmountOnExit
-        >
-          <Fab color="primary" className={this.props.classes.fab}>
-          <EditIcon />
-          </Fab>
-        </Zoom>
       </div>
     )
   }

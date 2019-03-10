@@ -6,18 +6,18 @@ import Slider from '@material-ui/lab/Slider';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 // Models.
-import { IProps, IState, styles } from './TimeLimit.model';
+import { IProps, IState, styles } from './ValuePicker.model';
 
 /**
- * Time limit selection.
+ * Value selection.
  */
-class TimeLimit extends React.Component<IProps, IState> {
+class ValuePicker extends React.Component<IProps, IState> {
 
   /** State initialisation. */
   state: IState = {
     toggled: true,
     expanded: true,
-    duration: 0
+    value: 0
   };
 
   /** Called when the panel is expanded or closed. */
@@ -40,37 +40,41 @@ class TimeLimit extends React.Component<IProps, IState> {
   };
 
   /** Handles slider value change. */
-  private handleSlide = (_: React.FormEvent, duration: number) => {
-    this.setState({ duration, toggled: true });
+  private handleSlide = (_: React.FormEvent, value: number) => {
+    this.setState({ value, toggled: true });
   };
 
   /** On Init. */
   componentDidMount() {
-    let { initialValue, min, max } = this.props;
+    let { initialValue, min, max, expanded } = this.props;
 
     if (initialValue > max || initialValue < min) {
       initialValue = min;
     }
 
-    this.setState({ duration: initialValue });
+    this.setState({ value: initialValue, expanded });
   }
 
   render() {
-    const { classes, min, max } = this.props;
+    const { classes, title, min, max, togglable } = this.props;
+    const { value } = this.state;
 
     return (
       <ExpansionPanel expanded={this.state.expanded} onChange={this.handleExpanded}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Switch
-            checked={this.state.toggled}
-            onClick={this.toggle}
-            color="primary"
-          />
-          <Typography className={classes.heading}>Limite de temps</Typography>
+          {
+            this.props.togglable &&
+            <Switch
+              checked={this.state.toggled}
+              onClick={this.toggle}
+              color="primary"
+            />
+          }
+          <Typography className={classes.heading}>{title}</Typography>
 
           {
-            this.state.toggled && <Typography className={classes.secondaryHeading}>
-              {this.state.duration} min
+            (this.state.toggled || !togglable) && <Typography className={classes.secondaryHeading}>
+              {this.props.displaying(value)}
             </Typography>
           }
         </ExpansionPanelSummary>
@@ -78,7 +82,7 @@ class TimeLimit extends React.Component<IProps, IState> {
         <ExpansionPanelDetails>
           <Slider
             classes={{ container: classes.slider }}
-            value={this.state.duration}
+            value={value}
             min={min}
             max={max}
             step={1}
@@ -93,4 +97,4 @@ class TimeLimit extends React.Component<IProps, IState> {
 /** Export with material theme. */
 export default withStyles(styles, {
   withTheme: true
-})(TimeLimit);
+})(ValuePicker);
