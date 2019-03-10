@@ -30,7 +30,7 @@ export const rootRoutes: RouteProps[] = [
     component: MenuComponent
   },
   {
-    path: '/server-list',
+    path: '/server/list',
     exact: true,
     component: ServerListComponent
   },

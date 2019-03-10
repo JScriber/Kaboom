@@ -5,11 +5,9 @@ import { withStyles, ExpansionPanel, ExpansionPanelSummary, Switch, Typography,
 
 // Icons.
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Timer10Icon from '@material-ui/icons/Timer10Rounded';
-import TimerOffIcon from '@material-ui/icons/TimerOff';
 
 // Models.
-import { IProps, IState, styles, Duration, Item } from './ListSelector.model';
+import { IProps, IState, styles, Item } from './ListSelector.model';
 import SearchBox from './search-box/SearchBox';
 
 /**
@@ -70,21 +68,6 @@ class ListSelector extends React.Component<IProps, IState> {
     this.setState({ filter });
   };
 
-  /**
-   * Determines which icon to display.
-   * @param {Duration} duration
-   * @returns {JSX.Element}
-   */
-  private timeIcon = (duration: Duration): JSX.Element => {
-    switch (duration) {
-      case Duration.S_10:
-        return <Timer10Icon/>;
-
-      case Duration.None:
-        return <TimerOffIcon/>;
-    }
-  };
-
   private textTestFilter = (text: string): boolean => {
     const { filter } = this.state;
 
@@ -136,7 +119,7 @@ class ListSelector extends React.Component<IProps, IState> {
                     <ListItem>
                       <ListItemAvatar>
                         <Avatar>
-                          {this.timeIcon(item.duration)}
+                          <img src={process.env.PUBLIC_URL + '/items/' + item.key + '.png'}/>
                         </Avatar>
                       </ListItemAvatar>
 
