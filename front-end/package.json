@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.6.2",
     "@types/axios": "^0.14.0",
+    "@types/react-redux": "^7.0.3",
     "@types/socket.io-client": "^1.4.32",
     "autoprefixer": "7.1.6",
     "axios": "^0.18.0",
@@ -21,6 +22,7 @@
     "file-loader": "1.1.5",
     "fork-ts-checker-webpack-plugin": "^0.2.8",
     "fs-extra": "3.0.1",
+    "hoist-non-react-statics": "^3.3.0",
     "html-webpack-plugin": "2.29.0",
     "imports-loader": "^0.8.0",
     "jest": "20.0.4",
@@ -34,6 +36,7 @@
     "react": "^16.6.3",
     "react-dev-utils": "^5.0.2",
     "react-dom": "^16.6.3",
+    "react-redux": "^6.0.1",
     "react-router-dom": "^4.3.1",
     "resolve": "1.6.0",
     "rxjs": "^6.3.3",

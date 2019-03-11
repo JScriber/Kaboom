@@ -6,7 +6,9 @@ import Card from '@material-ui/core/Card';
 import './Signin.scss';
 import * as SignIn from './Signin.model';
 import { FormComponent } from '../form/Form';
-import { Validator } from '../form/Validators';
+import { loginUser } from 'src/app/redux/user/actions/login';
+import { store } from 'src/app/redux';
+// import { Validator } from '../form/Validators';
 
 class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
 
@@ -22,15 +24,16 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
 
   /** @inheritdoc */
   protected formValid(): boolean {
-    const { username, email, password, confirm_password } = this.state.form;
+    // const { username, email, password, confirm_password } = this.state.form;
 
     // Values are set.
-    return ((Validator.set(username) && Validator.set(email)
-    && Validator.set(password) && Validator.set(confirm_password))
-    // Special validations.
-    && (Validator.email(email) && Validator.password(password, 6))
-    // Matching passwords.
-    && (password === confirm_password)) as boolean;
+    return true;
+    // return ((Validator.set(username) && Validator.set(email)
+    // && Validator.set(password) && Validator.set(confirm_password))
+    // // Special validations.
+    // && (Validator.email(email) && Validator.password(password, 6))
+    // // Matching passwords.
+    // && (password === confirm_password)) as boolean;
   }
 
   /** @inheritdoc */
@@ -42,9 +45,15 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
       password: form.password
     };
 
+    
+    
     // Request the back-end.
-    this.api.post<void>('/player', dto)
-      .subscribe(() => {
+    this.api.post<SignIn.NewUser>('/player', dto)
+    .subscribe(user => {
+      store.dispatch(loginUser({
+        username: user.username,
+        token: user.token 
+      }));
         // TODO: Redirect to other page.
       }, e => {
         if (e.error === 'Bad Request') {

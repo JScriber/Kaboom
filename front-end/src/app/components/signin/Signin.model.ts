@@ -34,3 +34,17 @@ export interface Api {
   username: string;
   password: string;
 }
+
+/** New user after sign in. */
+export interface NewUser {
+  /** Unique id. */
+  id: number;
+  /** Email address. */
+  email: string;
+  /** Unique username. */
+  username: string;
+  /** Date at which the user has been created. */
+  createdAt: string;
+  /** Authentification token. */
+  token: string;
+}
