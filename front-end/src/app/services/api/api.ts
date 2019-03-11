@@ -66,6 +66,14 @@ export class ApiService {
   }
 
   /**
+   * Deletes all token related.
+   */
+  public deleteToken(): void {
+    this.token.delete();
+    this.removeBearer();
+  }
+
+  /**
    * Get request.
    * @template T - Returned type.
    * @param {string | number} path

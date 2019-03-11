@@ -1,10 +1,13 @@
-const tokenStorage = 'token';
+/** Name of the token storage. */
+const TOKEN_STORAGE = 'token';
 
+/**
+ * Token handler.
+ */
 export default class Token {
 
+  /** Value of the token. */
   private token: string | null = null;
-
-  constructor() {}
 
   /**
    * Fetches the token.
@@ -12,7 +15,7 @@ export default class Token {
    */
   public fetch(): string | null {
     if (!this.token) {
-      this.token = localStorage.getItem(tokenStorage);
+      this.token = localStorage.getItem(TOKEN_STORAGE);
     }
 
     return this.token;
@@ -23,7 +26,14 @@ export default class Token {
    * @param {string} token
    */
   public set(token: string): void {
-    localStorage.setItem(tokenStorage, token);
+    localStorage.setItem(TOKEN_STORAGE, token);
     this.token = token;
+  }
+
+  /**
+   * Removes the token from the storage.
+   */
+  public delete(): void {
+    localStorage.removeItem(TOKEN_STORAGE);
   }
 }

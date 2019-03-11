@@ -1,11 +1,14 @@
 import * as React from 'react';
 import { FormControl, FormGroup } from 'react-bootstrap';
-import {Button, Card, CardContent, CardHeader, Paper} from '@material-ui/core';
+import { Button, Card, CardContent, CardHeader, Paper } from '@material-ui/core';
 import { Observable } from 'rxjs';
 
 import './Login.scss';
 import * as Login from './login.model';
 import { ApiService } from 'src/app/services/api/api';
+import { pathRoutes } from 'src/root.routes';
+import { store } from 'src/app/redux';
+import { push } from 'connected-react-router';
 
 /** Type alias for form event. */
 type FormEvent = React.FormEvent<HTMLFormElement>;
@@ -28,6 +31,9 @@ class LoginComponent extends React.Component<Login.Props, Login.State> {
 
     this.state = { errors, form };
   }
+
+  /** Redirects to sign in view. */
+  private signInView = () => store.dispatch(push(pathRoutes.signin));
 
   /** @inheritdoc */
   public render() {
@@ -70,6 +76,10 @@ class LoginComponent extends React.Component<Login.Props, Login.State> {
               </Paper>
 
               <a href='' className='purple_link'>Mot de passe oublié ?</a>
+
+              <Button focusRipple color="default" onClick={this.signInView}>
+                Créer un compte
+              </Button>
             </form>
           </CardContent>
         </Card>

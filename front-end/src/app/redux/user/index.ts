@@ -1,6 +1,6 @@
 import { AnyAction, DeepPartial } from 'redux';
 import { User } from './model/user.model';
-import { LOGIN_USER } from './constants';
+import { LOGIN_USER, LOGOUT_USER } from './constants';
 import { setState } from '../index';
 import { ApiService } from 'src/app/services/api/api';
 
@@ -19,6 +19,16 @@ export const userReducer = (state = initialState, { type, payload }: AnyAction) 
     /** Login action. */
     case LOGIN_USER:
       api.setToken((payload as User).token);
+
+      return setState(state, {
+        user: payload
+      });
+    
+    /** Logout action. */
+    case LOGOUT_USER:
+      api.deleteToken();
+
+      console.log('Log out');
 
       return setState(state, {
         user: payload

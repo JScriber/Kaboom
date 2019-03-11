@@ -1,24 +1,5 @@
 @import "../../../assets/scss/colors";
 
-.header {
-  background-color: $light-grey;
-  color: white;
-  height: 5rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-.connection, .disconnection {
-  flex-direction: row;
-}
-
-.purple-button {
-  background-color: $purple !important;
-  color: white !important;
-  font-family: "poppins", sans-serif !important;
-}
-
-.logo {
-  height:100%;
-  width: auto;
+.kaboom-logo {
+  height: 58px;
 }
