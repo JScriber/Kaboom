@@ -22,6 +22,9 @@ export interface State {
 
   /* Whether the form has been successfully submitted. */
   submitSuccess?: boolean;
+
+  /* Should redirect the user to home page. */
+  redirect: boolean;
 }
 
 /** Props of the signin component. */

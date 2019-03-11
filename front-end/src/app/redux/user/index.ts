@@ -2,6 +2,7 @@ import { AnyAction, DeepPartial } from 'redux';
 import { User } from './model/user.model';
 import { LOGIN_USER } from './constants';
 import { setState } from '../index';
+import { ApiService } from 'src/app/services/api/api';
 
 /** Initial state. */
 const initialState: DeepPartial<User> = {};
@@ -11,13 +12,16 @@ const initialState: DeepPartial<User> = {};
  * @param state 
  * @param {AnyAction} action
  */
-export const userReducer = (state = initialState, action: AnyAction) => {
-  switch (action.type) {
+export const userReducer = (state = initialState, { type, payload }: AnyAction) => {
+  const api: ApiService = ApiService.instance();
+
+  switch (type) {
     /** Login action. */
     case LOGIN_USER:
-      console.log('Reduce action', action);
+      api.setToken((payload as User).token);
+
       return setState(state, {
-        user: action.payload
+        user: payload
       });
 
     /** Unknown action. */

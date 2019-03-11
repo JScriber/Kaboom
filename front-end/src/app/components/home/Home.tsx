@@ -3,6 +3,8 @@ import Button from '@material-ui/core/Button';
 import 'material-design-icons/iconfont/material-icons.css';
 
 import './Home.scss';
+import { Link } from 'react-router-dom';
+import { pathRoutes } from 'src/root.routes';
 
 export default class HomeComponent extends React.Component {
 
@@ -27,10 +29,12 @@ export default class HomeComponent extends React.Component {
                   <i className='material-icons md-48 col-3'>show_chart</i>
                   <p className='col-9 my-auto'>Statistics</p>
             </Button>
-            <Button className='button row' variant='contained'>
-                  <i className='material-icons md-48 col-3'>help_outline</i>
-                  <p className='col-9 my-auto'>Help</p>
-            </Button>
+            <Link to={pathRoutes.serverCreate}>
+              <Button className='button row' variant='contained'>
+                    <i className='material-icons md-48 col-3'>help_outline</i>
+                    <p className='col-9 my-auto'>Help</p>
+              </Button>
+            </Link>
         </div>
       </div>
     );

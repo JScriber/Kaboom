@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import {Link} from 'react-router-dom';
 import logo from '../../../assets/images/logo.png';
+import { pathRoutes } from 'src/root.routes';
 
 interface IHeaderProps {
     name?: string;
@@ -17,7 +18,7 @@ export default class Header extends React.Component<IHeaderProps> {
                 <div className='header p-1'>
                   <div className='header-left'>
                   <Link to={{
-                              pathname: '/home'
+                              pathname: pathRoutes.home
                           }}>
                     <img className='logo'src={logo} alt='KABOOM logo bomb'/>
                   </Link>

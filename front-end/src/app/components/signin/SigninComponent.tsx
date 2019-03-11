@@ -8,6 +8,8 @@ import * as SignIn from './Signin.model';
 import { FormComponent } from '../form/Form';
 import { loginUser } from 'src/app/redux/user/actions/login';
 import { store } from 'src/app/redux';
+import { pathRoutes } from 'src/root.routes';
+import { push } from 'connected-react-router';
 // import { Validator } from '../form/Validators';
 
 class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
@@ -45,16 +47,17 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
       password: form.password
     };
 
-    
-    
     // Request the back-end.
     this.api.post<SignIn.NewUser>('/player', dto)
-    .subscribe(user => {
-      store.dispatch(loginUser({
-        username: user.username,
-        token: user.token 
-      }));
-        // TODO: Redirect to other page.
+      .subscribe(user => {
+        store.dispatch(
+          loginUser({
+            username: user.username,
+            token: user.token 
+          })
+        );
+
+        store.dispatch(push(pathRoutes.home));
       }, e => {
         if (e.error === 'Bad Request') {
           if (e.message) {
@@ -64,6 +67,8 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
           }
         }
 
+        console.log('Error', e);
+
         // TODO: Handle errors.
       });
   }
@@ -71,7 +76,13 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
   /** @inheritdoc */
   protected invalidForm(): void {}
 
-  public render(): JSX.Element {
+  componentDidMount() {
+    this.setState({
+      redirect: false
+    });
+  }
+
+  render(): JSX.Element {
     return (
       <div className='Signin row'>
         <Card className='col-6 mx-auto p-0'>
