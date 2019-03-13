@@ -39,6 +39,7 @@ export const routingMiddleware: Middleware = store => next => async action => {
   // Only handles action of location type.
   if (action.type === LOCATION_CHANGE) {
     const destination = action.payload.location.pathname;
+    console.log('Route change to ' + destination);
 
     // Check if route exists.
     if (routeExists(destination)) {

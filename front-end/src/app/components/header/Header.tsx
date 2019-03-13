@@ -29,7 +29,7 @@ class Header extends React.Component<IProps, IState> {
 
   /** State initialization. */
   state: IState = {
-    authentificated: true,
+    authentificated: false,
     anchorEl: null,
   };
 
@@ -45,7 +45,7 @@ class Header extends React.Component<IProps, IState> {
     store.subscribe(() => {
       const { authentificated } = this.state;
       const { username } = store.getState().userReducer;
-      const hasUser = typeof username !== undefined;
+      const hasUser = username !== undefined;
 
       if (authentificated && !hasUser) {
         this.setState({ authentificated: false });
@@ -60,6 +60,8 @@ class Header extends React.Component<IProps, IState> {
   /** Disconnects the user. */
   private disconnect = () => {
     store.dispatch(logoutUser());
+    this.loginPage();
+
     this.handleClose();
   };
 
@@ -69,6 +71,9 @@ class Header extends React.Component<IProps, IState> {
       store.dispatch(push(pathRoutes.home));
     }
   };
+
+  /** Redirects to login page. */
+  private loginPage = () => store.dispatch(push(pathRoutes.login));
 
   public render() {
     const { classes } = this.props;
@@ -84,7 +89,7 @@ class Header extends React.Component<IProps, IState> {
 
           <span className={classes.grow}></span>
 
-          { authentificated ? (
+          { authentificated && (
           <React.Fragment>
             <IconButton
               aria-owns={open ? 'menu-appbar' : undefined}
@@ -122,10 +127,6 @@ class Header extends React.Component<IProps, IState> {
               </MenuItem>
             </Menu>
           </React.Fragment>
-          ) : (
-            <IconButton color="inherit" onClick={() => store.dispatch(push(pathRoutes.login))}>
-              <AssignmentIndIcon/>
-            </IconButton>
           )}
         </Toolbar>
       </AppBar>

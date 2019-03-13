@@ -4,6 +4,8 @@ import { catchError, map } from 'rxjs/operators';
 
 import { environment } from 'src/environment';
 import Token from './token';
+import { store } from 'src/app/redux';
+import { logoutUser } from 'src/app/redux/user/actions/logout';
 
 /** General structure of errors. */
 interface HTTPError {
@@ -148,9 +150,7 @@ export class ApiService {
 
     // General handling for authentification.
     if (data && data.statusCode === 401) {
-      console.log('Authentification error.');
-      this.removeBearer();
-      // ! TODO: Redirect to login.
+      store.dispatch(logoutUser());
     }
 
     return throwError(data);

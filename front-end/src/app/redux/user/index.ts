@@ -20,19 +20,13 @@ export const userReducer = (state = initialState, { type, payload }: AnyAction) 
     case LOGIN_USER:
       api.setToken((payload as User).token);
 
-      return setState(state, {
-        user: payload
-      });
-    
+      return setState(state, payload);
+
     /** Logout action. */
     case LOGOUT_USER:
       api.deleteToken();
 
-      console.log('Log out');
-
-      return setState(state, {
-        user: payload
-      });
+      return setState(state, payload);
 
     /** Unknown action. */
     default:
