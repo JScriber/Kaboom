@@ -1,7 +1,8 @@
-export interface Form {
-  email: string;
+import * as F from '../form/Form.model';
+
+export interface Form extends F.Form {
+  username: string;
   password: string;
-  rememberMe: boolean;
 }
 
 export interface FormErrors {

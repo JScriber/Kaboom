@@ -4,6 +4,8 @@ import { catchError, map } from 'rxjs/operators';
 
 import { environment } from 'src/environment';
 import Token from './token';
+import { store } from 'src/app/redux';
+import { logoutUser } from 'src/app/redux/user/actions/logout';
 
 /** General structure of errors. */
 interface HTTPError {
@@ -31,20 +33,29 @@ export class ApiService {
   }
 
   /** Headers put on requests. */
-  private headers = new Headers({
+  private headers ={
     'Accept': 'application/json',
     'Content-Type': 'application/json'
-  });
+  };
 
   /** Authentification token. */
   private token = new Token();
 
   private constructor() {
-    const token: string | null = this.token.fetch();
+    this.fetchToken();
+  }
+
+  /**
+   * Fetches the token.
+   */
+  public fetchToken(): string | null {
+    const token = this.token.fetch();
 
     if (token) {
       this.setBearer(token);
     }
+
+    return token;
   }
 
   /**
@@ -57,13 +68,23 @@ export class ApiService {
   }
 
   /**
+   * Deletes all token related.
+   */
+  public deleteToken(): void {
+    this.token.delete();
+    this.removeBearer();
+  }
+
+  /**
    * Get request.
    * @template T - Returned type.
    * @param {string | number} path
    * @returns {Observable<T>}
    */
   public get<T>(path: string | number): Observable<T> {
-    return this.handler(axios.get<T>(this.buildURI(path)));
+    return this.handler(axios.get<T>(this.buildURI(path), {
+      headers: this.headers
+    }));
   }
 
   /**
@@ -129,9 +150,7 @@ export class ApiService {
 
     // General handling for authentification.
     if (data && data.statusCode === 401) {
-      console.log('Authentification error.');
-      this.removeBearer();
-      // ! TODO: Redirect to login.
+      store.dispatch(logoutUser());
     }
 
     return throwError(data);
@@ -151,11 +170,11 @@ export class ApiService {
    * @param {string} token
    */
   private setBearer(token: string): void {
-    this.headers.set('Authorization', `Bearer ${token}`);
+    this.headers['Authorization'] = `Bearer ${token}`;
   }
 
   /** Removes the bearer. */
   private removeBearer(): void {
-    this.headers.delete('Authorization');
+    delete this.headers['Authorization'];
   }
 }

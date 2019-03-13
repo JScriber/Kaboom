@@ -6,7 +6,11 @@ import Card from '@material-ui/core/Card';
 import './Signin.scss';
 import * as SignIn from './Signin.model';
 import { FormComponent } from '../form/Form';
-import { Validator } from '../form/Validators';
+import { loginUser } from 'src/app/redux/user/actions/login';
+import { store } from 'src/app/redux';
+import { pathRoutes } from 'src/root.routes';
+import { push } from 'connected-react-router';
+// import { Validator } from '../form/Validators';
 
 class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
 
@@ -22,15 +26,16 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
 
   /** @inheritdoc */
   protected formValid(): boolean {
-    const { username, email, password, confirm_password } = this.state.form;
+    // const { username, email, password, confirm_password } = this.state.form;
 
     // Values are set.
-    return ((Validator.set(username) && Validator.set(email)
-    && Validator.set(password) && Validator.set(confirm_password))
-    // Special validations.
-    && (Validator.email(email) && Validator.password(password, 6))
-    // Matching passwords.
-    && (password === confirm_password)) as boolean;
+    return true;
+    // return ((Validator.set(username) && Validator.set(email)
+    // && Validator.set(password) && Validator.set(confirm_password))
+    // // Special validations.
+    // && (Validator.email(email) && Validator.password(password, 6))
+    // // Matching passwords.
+    // && (password === confirm_password)) as boolean;
   }
 
   /** @inheritdoc */
@@ -43,9 +48,16 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
     };
 
     // Request the back-end.
-    this.api.post<void>('/player', dto)
-      .subscribe(() => {
-        // TODO: Redirect to other page.
+    this.api.post<SignIn.NewUser>('/player', dto)
+      .subscribe(user => {
+        store.dispatch(
+          loginUser({
+            username: user.username,
+            token: user.token 
+          })
+        );
+
+        store.dispatch(push(pathRoutes.home));
       }, e => {
         if (e.error === 'Bad Request') {
           if (e.message) {
@@ -55,6 +67,8 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
           }
         }
 
+        console.log('Error', e);
+
         // TODO: Handle errors.
       });
   }
@@ -62,7 +76,13 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
   /** @inheritdoc */
   protected invalidForm(): void {}
 
-  public render(): JSX.Element {
+  componentDidMount() {
+    this.setState({
+      redirect: false
+    });
+  }
+
+  render(): JSX.Element {
     return (
       <div className='Signin row'>
         <Card className='col-6 mx-auto p-0'>

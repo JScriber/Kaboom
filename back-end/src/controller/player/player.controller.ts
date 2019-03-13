@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
 import { DeleteResult } from 'typeorm';
 import { Response } from 'express-serve-static-core';
+import { Observable } from 'rxjs';
 
 // Encryption purposes.
 import * as Bcrypt from 'bcrypt';
@@ -56,17 +57,13 @@ export class PlayerController {
 
     try {
       // Get the requested player.
-      const player: Player = await this.playerRepository.findOne({
+      let player: Player = await this.playerRepository.findOne({
         username: credentials.username
       });
 
       if (await this.passwordMatch(credentials.password, player)) {
         // Generate and assign a token.
-        player.token = this.tokenService.generateFrom({
-          id: player.id,
-          uuid: player.uuid,
-          username: player.username
-        });
+        player = this.generateToken(player);
 
         if (player.token !== null) {
           // Updates the user to store the token.
@@ -98,9 +95,13 @@ export class PlayerController {
 
     // Persist the user.
     try {
+      // First persist for the token.
+      let savedPlayer = await this.playerRepository.save(player);
+      savedPlayer = this.generateToken(savedPlayer);
+
       res.status(HttpStatus.CREATED).send(
         new PlayerDTO.CreatedPlayer(
-          await this.playerRepository.save(player)
+          await this.playerRepository.save(savedPlayer)
         )
       );
     } catch (error) {
@@ -122,5 +123,20 @@ export class PlayerController {
    */
   private async passwordMatch(testedPassword: string, player: Player): Promise<boolean> {
     return player.password === await Bcrypt.hash(testedPassword, player.salt);
+  }
+
+  /**
+   * Generates a token from the given player.
+   * @param {Player} player
+   * @returns {Player}
+   */
+  private generateToken(player: Player): Player {
+    player.token = this.tokenService.generateFrom({
+      id: player.id,
+      uuid: player.uuid,
+      username: player.username
+    });
+
+    return player;
   }
 }
