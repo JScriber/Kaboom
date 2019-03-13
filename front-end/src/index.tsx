@@ -10,6 +10,9 @@ import { store } from './app/redux';
 import './assets/scss/index.scss';
 import registerServiceWorker from './registerServiceWorker';
 
+// Translations.
+import './translation/translation';
+
 ReactDOM.render(
   <Provider store={store}>
     <MuiThemeProvider theme={theme}>

@@ -9,7 +9,6 @@ import { store } from 'src/app/redux';
 // Icons.
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 
 // Actions.
@@ -19,6 +18,9 @@ import { logoutUser } from 'src/app/redux/user/actions/logout';
 // Assets.
 import logo from '../../../assets/images/logo.png';
 import './Header.scss';
+import { useTranslation, Trans, withTranslation } from 'react-i18next';
+import { materialTranslated } from 'src/utils';
+import { Languages } from 'src/translation/translation';
 
 /**
  * Header component.
@@ -38,6 +40,8 @@ class Header extends React.Component<IProps, IState> {
   };
 
   handleClose = () => {
+    // TODO: Remove.
+    this.props.i18n.changeLanguage(Languages.English);
     this.setState({ anchorEl: null });
   };
 
@@ -116,7 +120,9 @@ class Header extends React.Component<IProps, IState> {
                 <ListItemIcon>
                   <SettingsIcon/>
                 </ListItemIcon>
-                <ListItemText inset primary="Compte"/>
+                <ListItemText inset>
+                  {this.props.t('HEADER.ACCOUNT')}
+                </ListItemText>
               </MenuItem>
 
               <MenuItem onClick={this.disconnect}>
@@ -134,7 +140,5 @@ class Header extends React.Component<IProps, IState> {
   }
 }
 
-/** Export with material theme. */
-export default withStyles(styles, {
-  withTheme: true
-})(Header);
+/** Export with material theme and translations. */
+export default materialTranslated(Header, styles);
