@@ -11,9 +11,10 @@ import { materialTranslated } from 'src/utils';
 
 // Model.
 import { IProps, IState, Form, styles } from './Profile.model';
-import { interval } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { store } from 'src/app/redux';
+import { ApiService } from 'src/app/services/api/api';
+import { Subscription } from 'indefinite-observable';
+import { Unsubscribe } from 'redux';
 
 /** Time before the informations get sent (in miliseconds). */
 const FORM_TIMEOUT = 800;
@@ -37,6 +38,18 @@ class Profile extends React.Component<IProps, IState> {
 
   /** Form timeout. */
   private timeout: NodeJS.Timeout;
+
+  /** Api. */
+  private api: ApiService = ApiService.instance();
+
+  /** Subscription to API. */
+  private subscriptionApi: Subscription;
+
+  /** Subscription to Redux. */
+  private subscriptionRedux: Unsubscribe;
+
+  /** Says if the component is mounted. */
+  private _isMounted: boolean;
 
   private handleMenu = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
@@ -102,23 +115,55 @@ class Profile extends React.Component<IProps, IState> {
     this.setState({ loading: true });
     const { form } = this.state;
 
-    interval(1000).pipe(take(1)).subscribe(() => {
-      console.log(form);
-      this.setState({ loading: false });
-    })
+    const stopLoading = () => {
+      if (this._isMounted) {
+        this.setState({ loading: false });
+      }
+    }
+
+    this.subscriptionApi = this.api.put('/player/@me', form)
+      .subscribe(stopLoading, (error) => {
+        console.log(error);
+        stopLoading();
+      });
   };
 
   componentDidMount() {
-    // TODO: Fetch informations from redux.
+    this._isMounted = true;
 
-    this.setState({
-      loading: false,
-      form: {
-        username: 'Kaboom',
-        email: 'anthony@gmail.com',
-        language: Language.French
+    const user = store.getState().userReducer;
+
+    const setState = (user: Form) => {
+      if (this._isMounted) {
+        this.setState({
+          loading: false,
+          form: {
+            ...user
+          }
+        });
       }
-    });
+    };
+
+    if (user.username) {
+      setState(user as Form);
+    } else {
+      this.subscriptionRedux = store.subscribe(() => {
+        const { userReducer } = store.getState();
+        setState(userReducer as Form);
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+
+    if (this.subscriptionApi) {
+      this.subscriptionApi.unsubscribe();
+    }
+
+    if (this.subscriptionRedux) {
+      this.subscriptionRedux();
+    }
   }
 
   render() {

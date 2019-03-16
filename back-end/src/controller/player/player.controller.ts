@@ -33,7 +33,6 @@ export class PlayerController {
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
   async current(@Req() request): Promise<PlayerDTO.CurrentPlayer> {
-    console.log(request.player);
     return new PlayerDTO.CurrentPlayer(request.player);
   }
 
@@ -157,8 +156,7 @@ export class PlayerController {
   private generateToken(player: Player): string {
     return this.tokenService.generateFrom({
       id: player.id,
-      uuid: player.uuid,
-      username: player.username
+      uuid: player.uuid
     });
   }
 }

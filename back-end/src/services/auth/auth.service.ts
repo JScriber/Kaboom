@@ -9,7 +9,6 @@ import { TokenService } from '@service/token/token.service';
 export interface Payload {
   id: number;
   uuid: string;
-  username: string;
 }
 
 @Injectable()

@@ -78,13 +78,6 @@ class LoginComponent extends FormComponent<Login.Props, Login.State> {
     };
 
     this.api.post<string>('/player/login', data).subscribe((token) => {
-      store.dispatch(
-        loginUser({
-          username: data.username,
-          token 
-        })
-      );
-
       store.dispatch(push(pathRoutes.home));
     }, (err) => console.log('Error', err));
   }

@@ -50,12 +50,12 @@ class SigninComponent extends FormComponent<SignIn.Props, SignIn.State> {
     // Request the back-end.
     this.api.post<SignIn.NewUser>('/player', dto)
       .subscribe(user => {
-        store.dispatch(
-          loginUser({
-            username: user.username,
-            token: user.token 
-          })
-        );
+        // store.dispatch(
+        //   loginUser({
+        //     username: user.username,
+        //     token: user.token 
+        //   })
+        // );
 
         store.dispatch(push(pathRoutes.home));
       }, e => {
