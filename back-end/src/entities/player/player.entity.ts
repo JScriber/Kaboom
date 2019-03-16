@@ -2,6 +2,12 @@ import { Entity, PrimaryGeneratedColumn, Column, Generated, Unique, OneToMany, J
 import { Map } from '@entity/map/map.entity';
 import { Participant } from '@entity/participant/participant.entity';
 
+/** Supported languages. */
+export enum Language {
+  English = 'en',
+  French = 'fr'
+}
+
 @Entity()
 export class Player {
   /** Auto-generated id in database. */
@@ -13,10 +19,6 @@ export class Player {
   @Generated('uuid')
   uuid: string;
 
-  /** Authentification token. */
-  @Column('varchar', { length: 255, nullable: true })
-  token: string;
-
   /** Date at which the user is created. */
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -25,9 +27,13 @@ export class Player {
   @Column('varchar', { length: 255, unique: true })
   email: string;
 
-  /** A user only has a username. No firstname nor lastname. */
+  /** A user has only a username. No firstname nor lastname. */
   @Column('varchar', { length: 255, unique: true })
   username: string;
+
+  /** Language used by client. */
+  @Column('varchar', { length: 3 })
+  language: Language;
 
   /** Encrypted password. */
   @Column('varchar', { length: 255 })

@@ -1,14 +1,22 @@
 import * as React from 'react';
-import { CardContent, Card, Button, CardHeader, IconButton, TextField, MenuItem,
-  CardActions, Menu, ListItemIcon, ListItemText, OutlinedInput } from '@material-ui/core';
+import { CardContent, Card, CardHeader, IconButton, TextField, MenuItem,
+  Menu, ListItemIcon, ListItemText, Divider, LinearProgress } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SecurityIcon from '@material-ui/icons/Security';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 
-// Style.
-import { materialTranslated } from 'src/utils';
-import { IProps, IState, Form, styles } from './Profile.model';
+// System-wide.
 import { Language, languages } from 'src/translation/translation';
+import { materialTranslated } from 'src/utils';
+
+// Model.
+import { IProps, IState, Form, styles } from './Profile.model';
+import { interval } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { store } from 'src/app/redux';
+
+/** Time before the informations get sent (in miliseconds). */
+const FORM_TIMEOUT = 800;
 
 /**
  * Component used to create a server.
@@ -19,24 +27,28 @@ class Profile extends React.Component<IProps, IState> {
   /** State initialization. */
   state: IState = {
     anchorEl: null,
+    loading: true,
     form: {
-      username: 'Kaboom',
-      email: 'anthony@gmail.com',
-      language: Language.French
+      username: '',
+      email: '',
+      language: Language.English
     }
   };
 
-  handleMenu = (event: any) => {
+  /** Form timeout. */
+  private timeout: NodeJS.Timeout;
+
+  private handleMenu = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleClose = () => this.setState({ anchorEl: null });
+  private handleClose = () => this.setState({ anchorEl: null });
 
   /**
    * Handles form value change.
    * @param key
    */
-  handleChange = (key: keyof(Form)) => (event: React.FormEvent) => {
+  private handleChange = (key: keyof(Form)) => (event: React.FormEvent) => {
     const value = (event.target as HTMLInputElement).value;
 
     this.setState(({ form }: IState) => {
@@ -56,62 +68,114 @@ class Profile extends React.Component<IProps, IState> {
       const time: NodeJS.Timeout = setTimeout(() => this.props.i18n
         .changeLanguage(language) && clearTimeout(time), 50);
     });
+
+    // Apply changes.
+    this.sendInformations();
   };
+
+  /**
+   * Handle form value change with timeout.
+   * @param key
+   */
+  private handleTimeoutChange = (key: keyof(Form)) => (event: React.FormEvent) => {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.setState(({ form }: IState) => {
+      const oldValue = form[key];
+      form[key] = value;
+
+      if (oldValue !== value) this.updateTimeout();
+
+      return { form };
+    });
+  };
+
+  /** Updates the timeout. */
+  private updateTimeout() {
+    if (this.timeout) clearTimeout(this.timeout);
+
+    this.timeout = setTimeout(this.sendInformations, FORM_TIMEOUT);
+  };
+
+  /** Sends user informations to back-end. */
+  private sendInformations = () => {
+    this.setState({ loading: true });
+    const { form } = this.state;
+
+    interval(1000).pipe(take(1)).subscribe(() => {
+      console.log(form);
+      this.setState({ loading: false });
+    })
+  };
+
+  componentDidMount() {
+    // TODO: Fetch informations from redux.
+
+    this.setState({
+      loading: false,
+      form: {
+        username: 'Kaboom',
+        email: 'anthony@gmail.com',
+        language: Language.French
+      }
+    });
+  }
 
   render() {
     const { classes, t } = this.props;
-    const { form } = this.state;
+    const { form, loading } = this.state;
     const open = Boolean(this.state.anchorEl);
 
     return (
       <React.Fragment>
         <Card className={classes.card}>
-        <CardHeader
-          action={
-            <React.Fragment>
-              <IconButton
-                aria-owns={open ? 'menu-profile' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleMenu}
-                color="inherit"
-              >
-                <MoreVertIcon/>
-              </IconButton>
+          { loading && <LinearProgress/> }
+          <CardHeader
+            action={
+              <React.Fragment>
+                <IconButton
+                  aria-owns={open ? 'menu-profile' : undefined}
+                  aria-haspopup="true"
+                  onClick={this.handleMenu}
+                >
+                  <MoreVertIcon/>
+                </IconButton>
 
-              <Menu id="menu-profile"
-                anchorEl={this.state.anchorEl}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={open}
-                onClose={this.handleClose}>
-                <MenuItem>
-                  <ListItemIcon>
-                    <SecurityIcon/>
-                  </ListItemIcon>
-                  <ListItemText inset>
-                    {t('PROFILE.MENU.CHANGE_PASSWORD')}
-                  </ListItemText>
-                </MenuItem>
+                <Menu id="menu-profile"
+                  anchorEl={this.state.anchorEl}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={open}
+                  onClose={this.handleClose}>
+                  <MenuItem>
+                    <ListItemIcon>
+                      <SecurityIcon/>
+                    </ListItemIcon>
+                    <ListItemText inset>
+                      {t('PROFILE.MENU.CHANGE_PASSWORD')}
+                    </ListItemText>
+                  </MenuItem>
 
-                <MenuItem>
-                  <ListItemIcon>
-                    <DeleteIcon/>
-                  </ListItemIcon>
-                  <ListItemText inset>
-                    {t('PROFILE.MENU.DELETE_ACCOUNT')}
-                  </ListItemText>
-                </MenuItem>
-              </Menu>
-            </React.Fragment>
-          }
-          title={t('PROFILE.TITLE')}
-        />
+                  <MenuItem>
+                    <ListItemIcon>
+                      <DeleteIcon/>
+                    </ListItemIcon>
+                    <ListItemText inset>
+                      {t('PROFILE.MENU.DELETE_ACCOUNT')}
+                    </ListItemText>
+                  </MenuItem>
+                </Menu>
+              </React.Fragment>
+            }
+            title={t('PROFILE.TITLE')}
+          />
+
           <CardContent>
             <form>
               <TextField
@@ -119,7 +183,7 @@ class Profile extends React.Component<IProps, IState> {
                 margin="normal"
                 variant="outlined"
                 value={form.username}
-                onChange={this.handleChange('username')}
+                onChange={this.handleTimeoutChange('username')}
                 className={classes.input}
               />
 
@@ -128,9 +192,11 @@ class Profile extends React.Component<IProps, IState> {
                 margin="normal"
                 variant="outlined"
                 value={form.email}
-                onChange={this.handleChange('email')}
+                onChange={this.handleTimeoutChange('email')}
                 className={classes.input}
               />
+
+              <Divider className={classes.divider}/>
 
               <TextField
                 select
@@ -156,12 +222,6 @@ class Profile extends React.Component<IProps, IState> {
               </TextField>
             </form>
           </CardContent>
-
-          <CardActions>
-            <Button variant="contained" className={classes.button} color="primary">
-              {t('PROFILE.SAVE_ACTION')}
-            </Button>
-          </CardActions>
         </Card>
       </React.Fragment>
     );

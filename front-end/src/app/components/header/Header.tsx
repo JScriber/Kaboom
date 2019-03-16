@@ -176,8 +176,8 @@ class Header extends React.Component<IProps, IState> {
               open={open}
               onClose={this.handleClose}>
               {
-                languages.map(language => (
-                  <MenuItem onClick={this.translate(language.language)}>
+                languages.map((language, i) => (
+                  <MenuItem key={i} onClick={this.translate(language.language)}>
                     {this.props.t(language.name)}
                   </MenuItem>
                 ))

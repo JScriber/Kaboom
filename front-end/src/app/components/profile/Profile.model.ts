@@ -17,6 +17,9 @@ export const styles = (theme: Theme) => createStyles({
   },
   button: {
     marginBottom: 12,
+  },
+  divider: {
+    margin: '10px 0'
   }
 });
 
@@ -30,5 +33,6 @@ export interface Form {
 
 export interface IState {
   anchorEl: any;
+  loading: boolean;
   form: Form;
 }
