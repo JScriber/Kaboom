@@ -8,6 +8,7 @@ import ServerListComponent from './app/components/serverlist/ServerList';
 import CreateServer from './app/components/create-server/CreateServer';
 import TestComponent from './app/components/test/Test';
 import NotFoundComponent from './app/components/not-found/NotFound';
+import Profile from './app/components/profile/Profile';
 
 /** All known routes. */
 export const pathRoutes = {
@@ -17,7 +18,8 @@ export const pathRoutes = {
   game: '/game',
   signin: '/signin',
   serverList: '/server/list',
-  serverCreate: '/server/create'
+  serverCreate: '/server/create',
+  profile: '/profile'
 };
 
 /** Routes where authentification isn't required. */
@@ -63,6 +65,11 @@ export const rootRoutes: RouteProps[] = [
     path: pathRoutes.serverCreate,
     exact: true,
     component: CreateServer
+  },
+  {
+    path: pathRoutes.profile,
+    exact: true,
+    component: Profile
   },
   // TODO: Remove after tests.
   {

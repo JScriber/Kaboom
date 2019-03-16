@@ -1,5 +1,22 @@
 {
+  "LANGUAGES": {
+    "ENGLISH": "Anglais",
+    "FRENCH": "Français"
+  },
   "HEADER": {
-    "ACCOUNT": "Compte"
+    "ACCOUNT": "Compte",
+    "DECONNECTION": "Déconnexion",
+    "LANGUAGE": "Langage"
+  },
+  "PROFILE": {
+    "TITLE": "Votre profil",
+    "USERNAME": "Nom d'utilisateur",
+    "EMAIL": "Adresse mail",
+    "LANGUAGE": "Langue",
+    "SAVE_ACTION": "Sauvegarder",
+    "MENU": {
+      "CHANGE_PASSWORD": "Nouveau mot de passe",
+      "DELETE_ACCOUNT": "Supprimer le compte"
+    }
   }
 }

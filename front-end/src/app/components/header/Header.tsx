@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { AppBar, withStyles, Toolbar, IconButton, Menu, MenuItem,
-  ListItemIcon, ListItemText, ButtonBase } from '@material-ui/core';
+import { AppBar, Toolbar, IconButton, Menu, MenuItem,
+  ListItemIcon, ListItemText, ButtonBase, Tooltip } from '@material-ui/core';
 
 import { IProps, styles, IState } from './Header.model';
 import { pathRoutes } from 'src/root.routes';
@@ -10,6 +10,7 @@ import { store } from 'src/app/redux';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import TranslateIcon from '@material-ui/icons/Translate';
 
 // Actions.
 import { push } from 'connected-react-router';
@@ -18,9 +19,8 @@ import { logoutUser } from 'src/app/redux/user/actions/logout';
 // Assets.
 import logo from '../../../assets/images/logo.png';
 import './Header.scss';
-import { useTranslation, Trans, withTranslation } from 'react-i18next';
 import { materialTranslated } from 'src/utils';
-import { Languages } from 'src/translation/translation';
+import { Language, languages } from 'src/translation/translation';
 
 /**
  * Header component.
@@ -40,8 +40,6 @@ class Header extends React.Component<IProps, IState> {
   };
 
   handleClose = () => {
-    // TODO: Remove.
-    this.props.i18n.changeLanguage(Languages.English);
     this.setState({ anchorEl: null });
   };
 
@@ -79,6 +77,21 @@ class Header extends React.Component<IProps, IState> {
   /** Redirects to login page. */
   private loginPage = () => store.dispatch(push(pathRoutes.login));
 
+  /** Redirects to profile page. */
+  private profilePage = () => {
+    store.dispatch(push(pathRoutes.profile));
+    this.handleClose();
+  }
+
+  /**
+   * Changes used language.
+   * @param {Language} language
+   */
+  private translate = (language: Language) => () => {
+    this.props.i18n.changeLanguage(language);
+    this.handleClose();
+  };
+
   public render() {
     const { classes } = this.props;
     const { authentificated } = this.state;
@@ -93,16 +106,18 @@ class Header extends React.Component<IProps, IState> {
 
           <span className={classes.grow}></span>
 
-          { authentificated && (
+          { authentificated ? (
           <React.Fragment>
-            <IconButton
-              aria-owns={open ? 'menu-appbar' : undefined}
-              aria-haspopup="true"
-              onClick={this.handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
+            <Tooltip title={this.props.t('HEADER.ACCOUNT')} aria-label="Account">
+              <IconButton
+                aria-owns={open ? 'menu-appbar' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleMenu}
+                color="inherit"
+              >
+                <AccountCircle />
+              </IconButton>
+            </Tooltip>
 
             <Menu id="menu-appbar"
               anchorEl={this.state.anchorEl}
@@ -116,7 +131,7 @@ class Header extends React.Component<IProps, IState> {
               }}
               open={open}
               onClose={this.handleClose}>
-              <MenuItem>
+              <MenuItem onClick={this.profilePage}>
                 <ListItemIcon>
                   <SettingsIcon/>
                 </ListItemIcon>
@@ -129,8 +144,44 @@ class Header extends React.Component<IProps, IState> {
                 <ListItemIcon>
                   <ExitToAppIcon/>
                 </ListItemIcon>
-                <ListItemText inset primary="Déconnexion"/>
+                <ListItemText inset>
+                  {this.props.t('HEADER.DECONNECTION')}
+                </ListItemText>
               </MenuItem>
+            </Menu>
+          </React.Fragment>
+          ): (
+          <React.Fragment>
+            <Tooltip title={this.props.t('HEADER.LANGUAGE')} aria-label="Language">
+              <IconButton
+                aria-owns={open ? 'menu-appbar' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleMenu}
+                color="inherit"
+              >
+                <TranslateIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Menu id="menu-appbar"
+              anchorEl={this.state.anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={open}
+              onClose={this.handleClose}>
+              {
+                languages.map(language => (
+                  <MenuItem onClick={this.translate(language.language)}>
+                    {this.props.t(language.name)}
+                  </MenuItem>
+                ))
+              }
             </Menu>
           </React.Fragment>
           )}

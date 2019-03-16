@@ -15,5 +15,5 @@ export const theme = createMuiTheme({
       contrastText: '#ffcc00',
     },
     type: 'light',
-  },
+  }
 });
