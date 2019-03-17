@@ -1,56 +1,76 @@
 import * as React from 'react';
-import { Button, Card, CardContent, CardHeader, LinearProgress, Tooltip, IconButton, TextField } from '@material-ui/core';
+import { Card, CardContent, CardHeader, LinearProgress, Tooltip, IconButton } from '@material-ui/core';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
+import { Formik, FormikActions } from 'formik';
+import * as Yup from 'yup';
 
 import { pathRoutes } from 'src/root.routes';
 import { store } from 'src/app/redux';
 import { push } from 'connected-react-router';
-import { FormComponent } from '../form/Form';
 import { materialTranslated } from 'src/utils';
 
+// Application related.
+import LoginForm from './form/LoginForm';
+import { ApiService } from 'src/app/services/api/api';
+
 // Model.
-import { IState, IProps, Form, Api, styles } from './Login.model';
+import { IState, IProps, styles } from './Login.model';
+import { Form } from './form/LoginForm.model';
 
 /** Login component using the Login model. */
-class Login extends FormComponent<IProps, IState> {
+class Login extends React.Component<IProps, IState> {
 
-  /** @inheritdoc */
-  protected formBuilder(): Form {
-    return {
-      username: '',
-      password: ''
-    };
-  }
+  /** State initialization. */
+  state: IState = {
+    loading: false
+  };
 
-  /** @inheritdoc */
-  protected formValid(): boolean {
-    return true;
-  }
-
-  /** @inheritdoc */
-  protected invalidForm(): void {}
+  /** Api. */
+  private readonly api: ApiService = ApiService.instance();
 
   /** Redirects to sign in view. */
   private signUpPage = () => store.dispatch(push(pathRoutes.signUp));
 
-  /**
-   * Handles form value change.
-   * @param key
+  /** 
+   * Submits the form.
+   * @param {Form} form
    */
-  private handleChange = (key: keyof(Form)) => (event: React.FormEvent) => {
-    const value = (event.target as HTMLInputElement).value;
+  private submit = (form: Form, actions: FormikActions<Form>) => {
+    this.setState({ loading: true });
 
-    this.setState(({ form }: IState) => {
-      form[key] = value;
+    const stopLoading = () => this.setState({ loading: false }); 
 
-      return { form };
+    this.api.post<string>('/player/login', form).subscribe((token) => {
+      // TODO: Handle token.
+      console.log('Token', token);
+      store.dispatch(push(pathRoutes.home));
+      stopLoading();
+    }, (err) => {
+      if (err.statusCode === 400 && err.message === 'Incorrect credentials.') {
+        console.log('bad password');
+      }
+
+      // Clear password field.
+      actions.setFieldValue('password', '');
+      actions.setFieldTouched('password', false);
+
+      stopLoading();
     });
   };
 
-  /** @inheritdoc */
-  public render() {
+  render() {
     const { classes, t } = this.props;
-    const { loading, form } = this.state;
+    const { loading } = this.state;
+
+    const validationSchema = Yup.object({
+      username: Yup.string()
+        .required('LOGIN.ERRORS.USERNAME_REQUIRED')
+        .min(3, 'LOGIN.ERRORS.USERNAME_LENGTH'),
+
+      password: Yup.string()
+        .required('LOGIN.ERRORS.PASSWORD_REQUIRED')
+        .matches(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/, 'LOGIN.ERRORS.PASSWORD_REGEX')
+    });
 
     return (
       <Card className={classes.card}>
@@ -66,45 +86,18 @@ class Login extends FormComponent<IProps, IState> {
           title={t('LOGIN.TITLE')}/>
 
         <CardContent>
-          <form onSubmit={this.submit}>
-            <TextField
-              label={t('LOGIN.USERNAME')}
-              margin="normal"
-              variant="outlined"
-              value={form.username}
-              onChange={this.handleChange('username')}
-              className={classes.input}
-            />
-
-            <TextField
-              label={t('LOGIN.PASSWORD')}
-              margin="normal"
-              variant="outlined"
-              value={form.password}
-              type="password"
-              onChange={this.handleChange('password')}
-              className={classes.input}
-            />
-
-            <Button variant="contained" color="primary" className={classes.button} type="submit">
-              {t('LOGIN.SUBMIT_ACTION')}
-            </Button>
-          </form>
+          <Formik
+            render={(props) => <LoginForm {...props} />}
+            initialValues={{
+              username: '',
+              password: ''
+            }}
+            validationSchema={validationSchema}
+            onSubmit={this.submit}
+          />
         </CardContent>
       </Card>
     );
-  }
-
-  /** @inheritdoc */
-  protected submition(): void {
-    const data: Api = {
-      username: this.state.form.username,
-      password: this.state.form.password
-    };
-
-    this.api.post<string>('/player/login', data).subscribe((token) => {
-      store.dispatch(push(pathRoutes.home));
-    }, (err) => console.log('Error', err));
   }
 }
 

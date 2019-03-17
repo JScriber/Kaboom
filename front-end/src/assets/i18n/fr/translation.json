@@ -34,6 +34,12 @@
     "SIGNUP_BUTTON": "Créer un compte",
     "USERNAME": "Nom d'utilisateur",
     "PASSWORD": "Mot de passe",
-    "SUBMIT_ACTION": "Valider"
+    "SUBMIT_ACTION": "Valider",
+    "ERRORS": {
+      "USERNAME_REQUIRED": "Champs obligatoire.",
+      "USERNAME_LENGTH": "Vous devriez avoir au moins 3 caractères.",
+      "PASSWORD_REQUIRED": "Champs obligatoire.",
+      "PASSWORD_REGEX": "Doit contenir 6 caractères, des lettres majuscules et minuscules, ainsi qu'un caractère spécial."
+    }
   }
 }

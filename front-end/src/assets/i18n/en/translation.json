@@ -34,6 +34,12 @@
     "SIGNUP_BUTTON": "Create an account",
     "USERNAME": "Username",
     "PASSWORD": "Password",
-    "SUBMIT_ACTION": "Validate"
+    "SUBMIT_ACTION": "Validate",
+    "ERRORS": {
+      "USERNAME_REQUIRED": "You must give your username.",
+      "USERNAME_LENGTH": "You should have at least 3 characters.",
+      "PASSWORD_REQUIRED": "Mandatory field.",
+      "PASSWORD_REGEX": "Should contain 6 characters, uppercase and lowercase letters, and a special character."
+    }
   }
 }
