@@ -123,7 +123,7 @@ class SignUp extends FormComponent<IProps, IState> {
           title={t('SIGNUP.TITLE')}/>
 
         <CardContent>
-          <form>
+          <form onSubmit={this.submit}>
             <TextField
               label={t('SIGNUP.USERNAME')}
               margin="normal"

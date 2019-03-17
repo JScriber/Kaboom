@@ -66,7 +66,7 @@ class Login extends FormComponent<IProps, IState> {
           title={t('LOGIN.TITLE')}/>
 
         <CardContent>
-          <form>
+          <form onSubmit={this.submit}>
             <TextField
               label={t('LOGIN.USERNAME')}
               margin="normal"

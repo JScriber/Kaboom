@@ -96,7 +96,9 @@ export class PlayerController {
         // Generate and assign a token.
         const token = this.generateToken(player);
 
-        res.status(HttpStatus.OK).send(token);
+        res.status(HttpStatus.OK).send(
+          new PlayerDTO.NewCredentials(player, token)
+        );
       } else {
         throw new BadRequestException(incorrectCredentials);
       }
