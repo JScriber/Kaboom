@@ -15,31 +15,37 @@ class LoginForm extends BaseForm<Form, IProps> {
   render() {
     const { classes, t, values, handleSubmit } = this.props;
 
+    // Username key.
+    const USERNAME: keyof(Form) = 'username';
+
+    // Password key.
+    const PASSWORD: keyof(Form) = 'password';
+
     return (
       <form onSubmit={handleSubmit}>
         <TextField
           className={classes.input}
           label={t('LOGIN.USERNAME')}
-          name="username"
           margin="normal"
           variant="outlined"
-          value={values.username}
-          helperText={this.showError('username')}
-          error={this.hasError('username')}
-          onChange={this.change('username')}
+          name={USERNAME}
+          value={values[USERNAME]}
+          helperText={this.showError(USERNAME)}
+          error={this.hasError(USERNAME)}
+          onChange={this.change(USERNAME)}
         />
 
         <TextField
           className={classes.input}
           label={t('LOGIN.PASSWORD')}
-          name="password"
           margin="normal"
           variant="outlined"
-          value={values.password}
-          helperText={this.showError('password')}
           type="password"
-          error={this.hasError('password')}
-          onChange={this.change('password')}
+          name={PASSWORD}
+          value={values[PASSWORD]}
+          helperText={this.showError(PASSWORD)}
+          error={this.hasError(PASSWORD)}
+          onChange={this.change(PASSWORD)}
         />
 
         <Button
