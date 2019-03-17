@@ -18,5 +18,22 @@
       "CHANGE_PASSWORD": "New password",
       "DELETE_ACCOUNT": "Delete account"
     }
+  },
+  "SIGNUP": {
+    "TITLE": "Sign Up",
+    "LOGIN_BUTTON": "Login with existing account",
+    "USERNAME": "Username",
+    "EMAIL": "Email address",
+    "PASSWORD": "Password",
+    "CONFIRM_PASSWORD": "Confirm password",
+    "LANGUAGE": "Language",
+    "SUBMIT_ACTION": "Validate"
+  },
+  "LOGIN": {
+    "TITLE": "Login",
+    "SIGNUP_BUTTON": "Create an account",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "SUBMIT_ACTION": "Validate"
   }
 }

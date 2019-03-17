@@ -1,10 +1,14 @@
 import * as F from '../form/Form.model';
+import { WithStyles, Theme, createStyles } from '@material-ui/core';
+import { WithTranslation } from 'react-i18next';
+import { Language } from 'src/translation/translation';
 
 export interface Form extends F.Form {
   username: string;
   email: string;
   password: string;
-  confirm_password: string;
+  confirmPassword: string;
+  language: Language;
 }
 
 export interface FormErrors {
@@ -12,8 +16,8 @@ export interface FormErrors {
   [key: string]: string;
 }
 
-/** State of the Signin component. */
-export interface State {
+/** State of component. */
+export interface IState {
   /* The field values. */
   form: Form;
 
@@ -25,13 +29,39 @@ export interface State {
 
   /* Should redirect the user to home page. */
   redirect: boolean;
+
+  /* Page is loading. */
+  loading: boolean;
 }
 
-/** Props of the signin component. */
-export interface Props {
+/** Props of the component. */
+export interface IProps extends WithStyles<typeof styles>, WithTranslation {
   /** The HTTP path that the form will be posted to. */
   action: string;
 }
+
+/**
+ * Component styling.
+ * @param theme 
+ */
+export const styles = (theme: Theme) => createStyles({
+  card: {
+    minWidth: 275,
+    maxWidth: 500,
+    margin: 'auto'
+  },
+  input: {
+    width: '100%'
+  },
+  button: {
+    marginTop: 12,
+    width: '100%'
+  },
+  divider: {
+    margin: '10px 0'
+  }
+});
+
 
 export interface Api {
   username: string;

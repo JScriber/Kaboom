@@ -18,5 +18,22 @@
       "CHANGE_PASSWORD": "Nouveau mot de passe",
       "DELETE_ACCOUNT": "Supprimer le compte"
     }
+  },
+  "SIGNUP": {
+    "TITLE": "Inscription",
+    "LOGIN_BUTTON": "Compte existant",
+    "USERNAME": "Nom d'utilisateur",
+    "EMAIL": "Adresse mail",
+    "PASSWORD": "Mot de passe",
+    "CONFIRM_PASSWORD": "Confirmation mot de passe",
+    "LANGUAGE": "Langue",
+    "SUBMIT_ACTION": "Valider"
+  },
+  "LOGIN": {
+    "TITLE": "Connexion",
+    "SIGNUP_BUTTON": "Créer un compte",
+    "USERNAME": "Nom d'utilisateur",
+    "PASSWORD": "Mot de passe",
+    "SUBMIT_ACTION": "Valider"
   }
 }

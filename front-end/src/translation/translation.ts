@@ -22,7 +22,7 @@ export const languages = [
 ];
 
 /** Default language. */
-const DEFAULT_LANGUAGE = Language.French;
+export const DEFAULT_LANGUAGE = Language.French;
 
 /** Fallback language. */
 const FALLBACK_LANGUAGE = Language.English;

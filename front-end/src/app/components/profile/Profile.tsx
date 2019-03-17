@@ -6,7 +6,7 @@ import SecurityIcon from '@material-ui/icons/Security';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
 
 // System-wide.
-import { Language, languages } from 'src/translation/translation';
+import { Language } from 'src/translation/translation';
 import { materialTranslated } from 'src/utils';
 
 // Model.
@@ -15,6 +15,7 @@ import { store } from 'src/app/redux';
 import { ApiService } from 'src/app/services/api/api';
 import { Subscription } from 'indefinite-observable';
 import { Unsubscribe } from 'redux';
+import LanguageSelector from '../shared/language-selector/LanguageSelector';
 
 /** Time before the informations get sent (in miliseconds). */
 const FORM_TIMEOUT = 800;
@@ -74,15 +75,6 @@ class Profile extends React.Component<IProps, IState> {
   /** Handles language changes. */
   private handleLanguage = (event: React.FormEvent) => {
     this.handleChange('language')(event);
-    const language: Language = (event.target as HTMLInputElement).value as Language;
-
-    // Magic hack. DON'T TOUCH.
-    this.props.i18n.changeLanguage(language, () => {
-      const time: NodeJS.Timeout = setTimeout(() => this.props.i18n
-        .changeLanguage(language) && clearTimeout(time), 50);
-    });
-
-    // Apply changes.
     this.sendInformations();
   };
 
@@ -243,28 +235,11 @@ class Profile extends React.Component<IProps, IState> {
 
               <Divider className={classes.divider}/>
 
-              <TextField
-                select
+              <LanguageSelector
                 label={t('PROFILE.LANGUAGE')}
                 value={form.language}
-                className={classes.input}
-                SelectProps={{
-                  MenuProps: {
-                    className: classes.input
-                  },
-                }}
                 onChange={this.handleLanguage}
-                margin="normal"
-                variant="outlined"
-              >
-                {
-                  languages.map((language, i) => (
-                    <MenuItem key={i} value={language.language}>
-                      {t(language.name)}
-                    </MenuItem>
-                  ))
-                }
-              </TextField>
+              ></LanguageSelector>
             </form>
           </CardContent>
         </Card>
