@@ -236,6 +236,7 @@ class Profile extends React.Component<IProps, IState> {
               <Divider className={classes.divider}/>
 
               <LanguageSelector
+                name="temporary"
                 label={t('PROFILE.LANGUAGE')}
                 value={form.language}
                 onChange={this.handleLanguage}

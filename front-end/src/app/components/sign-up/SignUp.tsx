@@ -1,57 +1,41 @@
 import * as React from 'react';
-import { CardContent, CardHeader, TextField, LinearProgress, Divider, Button, IconButton, Tooltip} from '@material-ui/core';
+import { CardContent, CardHeader, LinearProgress, IconButton, Tooltip} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { Formik, FormikActions } from 'formik';
+import * as Yup from 'yup';
 
 import { pathRoutes } from 'src/root.routes';
-import { DEFAULT_LANGUAGE } from 'src/translation/translation';
 import { materialTranslated } from 'src/utils';
 
 import { store } from 'src/app/redux';
 import { push } from 'connected-react-router';
 
-import { FormComponent } from '../form/Form';
-import LanguageSelector from '../shared/language-selector/LanguageSelector';
-// import { Validator } from '../form/Validators';
+import { ApiService } from 'src/app/services/api/api';
+import SignUpForm from './form/SignUpForm';
+import { DEFAULT_LANGUAGE } from 'src/translation/translation';
 
 // Model.
 import { IProps, IState, Form, styles, NewUser } from './SignUp.model';
 
-class SignUp extends FormComponent<IProps, IState> {
+class SignUp extends React.Component<IProps, IState> {
 
-  /** @inheritdoc */
-  protected formBuilder(): Form {
-    return {
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      language: DEFAULT_LANGUAGE
-    };
-  }
+  /** State initialization. */
+  state: IState = {
+    loading: false
+  };
 
-  /** @inheritdoc */
-  protected formValid(): boolean {
-    // const { username, email, password, confirm_password } = this.state.form;
+  /** Api. */
+  private readonly api: ApiService = ApiService.instance();
 
-    // Values are set.
-    return true;
-    // return ((Validator.set(username) && Validator.set(email)
-    // && Validator.set(password) && Validator.set(confirm_password))
-    // // Special validations.
-    // && (Validator.email(email) && Validator.password(password, 6))
-    // // Matching passwords.
-    // && (password === confirm_password)) as boolean;
-  }
+  /** 
+   * Submits the form.
+   * @param {Form} form
+   */
+  private submit = (form: Form, actions: FormikActions<Form>) => {
 
-  /** @inheritdoc */
-  protected submition(form: Form): void {
-    // Object to send.
-    const dto = {
-      username: form.username,
-      email: form.email,
-      password: form.password
-    };
+    const dto: Partial<Form> = form;
+    delete dto.confirmPassword;
 
     // Request the back-end.
     this.api.post<NewUser>('/player', dto)
@@ -74,40 +58,33 @@ class SignUp extends FormComponent<IProps, IState> {
         }
 
         console.log('Error', e);
-
-        // TODO: Handle errors.
       });
   }
-
-  /** @inheritdoc */
-  protected invalidForm(): void {}
-
-  /**
-   * Handles form value change.
-   * @param key
-   */
-  private handleChange = (key: keyof(Form)) => (event: React.FormEvent) => {
-    const value = (event.target as HTMLInputElement).value;
-
-    this.setState(({ form }: IState) => {
-      form[key] = value;
-
-      return { form };
-    });
-  };
 
   /** Redirects to the login page. */
   private loginPage = () => store.dispatch(push(pathRoutes.login));
 
-  componentDidMount() {
-    this.setState({
-      redirect: false
-    });
-  }
-
   render() {
     const { classes, t } = this.props;
-    const { loading, form } = this.state;
+    const { loading } = this.state;
+
+    const validationSchema = Yup.object({
+      username: Yup.string()
+        .required('SIGNUP.ERRORS.REQUIRED')
+        .min(3, 'SIGNUP.ERRORS.USERNAME_LENGTH'),
+
+      email: Yup.string()
+        .required('SIGNUP.ERRORS.REQUIRED')
+        .email('SIGNUP.ERRORS.EMAIL_REGEX'),
+
+      password: Yup.string()
+        .required('SIGNUP.ERRORS.REQUIRED')
+        .matches(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/, 'SIGNUP.ERRORS.PASSWORD_REGEX'),
+
+      confirmPassword: Yup.string()
+        .required('SIGNUP.ERRORS.REQUIRED')
+        .oneOf([Yup.ref('password'), null], 'SIGNUP.ERRORS.PASSWORD_MATCH')
+    });
 
     return (
       <Card className={classes.card}>
@@ -123,58 +100,18 @@ class SignUp extends FormComponent<IProps, IState> {
           title={t('SIGNUP.TITLE')}/>
 
         <CardContent>
-          <form onSubmit={this.submit}>
-            <TextField
-              label={t('SIGNUP.USERNAME')}
-              margin="normal"
-              variant="outlined"
-              value={form.username}
-              onChange={this.handleChange('username')}
-              className={classes.input}
-            />
-
-            <TextField
-              label={t('SIGNUP.EMAIL')}
-              margin="normal"
-              variant="outlined"
-              type="email"
-              value={form.email}
-              onChange={this.handleChange('email')}
-              className={classes.input}
-            />
-
-            <TextField
-              label={t('SIGNUP.PASSWORD')}
-              margin="normal"
-              variant="outlined"
-              value={form.password}
-              type="password"
-              onChange={this.handleChange('password')}
-              className={classes.input}
-            />
-
-            <TextField
-              label={t('SIGNUP.CONFIRM_PASSWORD')}
-              margin="normal"
-              variant="outlined"
-              value={form.confirmPassword}
-              type="password"
-              onChange={this.handleChange('confirmPassword')}
-              className={classes.input}
-            />
-
-            <Divider className={classes.divider}/>
-
-            <LanguageSelector
-              label={t('SIGNUP.LANGUAGE')}
-              value={form.language}
-              onChange={this.handleChange('language')}
-            ></LanguageSelector>
-
-            <Button variant="contained" color="primary" className={classes.button} type="submit">
-              {t('SIGNUP.SUBMIT_ACTION')}
-            </Button>
-          </form>
+          <Formik
+            render={(props) => <SignUpForm {...props} />}
+            initialValues={{
+              username: '',
+              email: '',
+              password: '',
+              confirmPassword: '',
+              language: DEFAULT_LANGUAGE
+            }}
+            validationSchema={validationSchema}
+            onSubmit={this.submit}
+          />
         </CardContent>
       </Card>
     );

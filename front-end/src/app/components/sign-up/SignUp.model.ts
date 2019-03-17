@@ -18,19 +18,6 @@ export interface FormErrors {
 
 /** State of component. */
 export interface IState {
-  /* The field values. */
-  form: Form;
-
-  /* The field validation error messages. */
-  errors: FormErrors;
-
-  /* Whether the form has been successfully submitted. */
-  submitSuccess?: boolean;
-
-  /* Should redirect the user to home page. */
-  redirect: boolean;
-
-  /* Page is loading. */
   loading: boolean;
 }
 
@@ -57,9 +44,6 @@ export const styles = (theme: Theme) => createStyles({
     marginTop: 12,
     width: '100%'
   },
-  divider: {
-    margin: '10px 0'
-  }
 });
 
 

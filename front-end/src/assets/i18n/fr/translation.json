@@ -27,7 +27,14 @@
     "PASSWORD": "Mot de passe",
     "CONFIRM_PASSWORD": "Confirmation mot de passe",
     "LANGUAGE": "Langue",
-    "SUBMIT_ACTION": "Valider"
+    "SUBMIT_ACTION": "Valider",
+    "ERRORS": {
+      "REQUIRED": "Champs obligatoire.",
+      "USERNAME_LENGTH": "Vous devriez avoir au moins 3 caractères.",
+      "EMAIL_REGEX": "Adresse invalide",
+      "PASSWORD_REGEX": "Doit contenir 6 caractères, des lettres majuscules et minuscules, ainsi qu'un caractère spécial.",
+      "PASSWORD_MATCH": "Les mots de passe ne correspondent pas."
+    }
   },
   "LOGIN": {
     "TITLE": "Connexion",

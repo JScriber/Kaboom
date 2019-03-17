@@ -27,11 +27,12 @@ class LanguageSelector extends React.Component<IProps> {
   };
 
   render() {
-    const { classes, t, label, value } = this.props;
+    const { classes, t, name, label, value } = this.props;
 
     return (
       <TextField
         select
+        name={name}
         label={label}
         value={value}
         className={classes.input}

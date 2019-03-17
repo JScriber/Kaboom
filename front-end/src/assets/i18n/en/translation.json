@@ -27,7 +27,14 @@
     "PASSWORD": "Password",
     "CONFIRM_PASSWORD": "Confirm password",
     "LANGUAGE": "Language",
-    "SUBMIT_ACTION": "Validate"
+    "SUBMIT_ACTION": "Validate",
+    "ERRORS": {
+      "REQUIRED": "Mandatory field.",
+      "USERNAME_LENGTH": "You should have at least 3 characters.",
+      "EMAIL_REGEX": "Invalid email",
+      "PASSWORD_REGEX": "Should contain 6 characters, uppercase and lowercase letters, and a special character.",
+      "PASSWORD_MATCH": "Passwords don't match."
+    }
   },
   "LOGIN": {
     "TITLE": "Login",

@@ -13,6 +13,7 @@ export const styles = (theme: Theme) => createStyles({
 });
 
 export interface IProps extends TranslateAndStyle<typeof styles> {
+  name: string;
   label: string;
   value: Language;
   onChange: (event: React.FormEvent) => void;
