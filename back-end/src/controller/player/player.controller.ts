@@ -1,21 +1,23 @@
-import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, HttpStatus, ConflictException, InternalServerErrorException, BadRequestException, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, HttpStatus, ConflictException, InternalServerErrorException, BadRequestException, UseGuards, Req, Put } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
 import { DeleteResult } from 'typeorm';
 import { Response } from 'express-serve-static-core';
-import { Observable } from 'rxjs';
 
 // Encryption purposes.
 import * as Bcrypt from 'bcrypt';
 
 import { environment } from '@environment';
 import { PlayerRepository } from '@repository/player/player.repository';
-import { Player } from '@entity/player/player.entity';
+import { Player, Language } from '@entity/player/player.entity';
 import { TokenService } from '@service/token/token.service';
 
 // Inputs and outputs.
 import * as PlayerDTO from '@dto/player/index';
+
+/** Default language. */
+const DEFAULT_LANGUAGE = Language.English;
 
 @ApiUseTags('Player')
 @Controller('player')
@@ -27,15 +29,44 @@ export class PlayerController {
     private readonly tokenService: TokenService) {}
 
   /** Informations on the current user. */
-  @Get('self/info')
+  @Get('@me')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
   async current(@Req() request): Promise<PlayerDTO.CurrentPlayer> {
     return new PlayerDTO.CurrentPlayer(request.player);
   }
 
+  /** Updates informations on the current user. */
+  @Put('@me')
+  @UseGuards(AuthGuard('bearer'))
+  @ApiBearerAuth()
+  async update(@Res() res, @Req() request, @Body(new ValidationPipe()) patch: PlayerDTO.UpdatePlayer) {
+    const player: Player = request.player;
+
+    // Patches informations.
+    player.username = patch.username;
+    player.email = patch.email;
+    player.language = patch.language || DEFAULT_LANGUAGE;
+
+    try {
+      res.status(HttpStatus.OK).send(
+        new PlayerDTO.CreatedPlayer(
+          await this.playerRepository.save(player)
+        )
+      );
+    } catch (error) {
+       // Credentials already used.
+       if (error.code === '23505') {
+        throw new ConflictException('The credentials are already used.');
+      } else {
+        // Unknown error.
+        throw new InternalServerErrorException('Cannot update the current user.');
+      }
+    }
+  }
+
   /** Deletion of the current user. */
-  @Delete('self/delete')
+  @Delete('@me')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
   async delete(@Req() request) {
@@ -57,20 +88,17 @@ export class PlayerController {
 
     try {
       // Get the requested player.
-      let player: Player = await this.playerRepository.findOne({
+      const player: Player = await this.playerRepository.findOne({
         username: credentials.username
       });
 
       if (await this.passwordMatch(credentials.password, player)) {
         // Generate and assign a token.
-        player = this.generateToken(player);
+        const token = this.generateToken(player);
 
-        if (player.token !== null) {
-          // Updates the user to store the token.
-          this.playerRepository.save(player).then(() => {
-            res.status(HttpStatus.OK).send(player.token);
-          });
-        }
+        res.status(HttpStatus.OK).send(
+          new PlayerDTO.NewCredentials(player, token)
+        );
       } else {
         throw new BadRequestException(incorrectCredentials);
       }
@@ -87,6 +115,7 @@ export class PlayerController {
     // Set basic informations.
     player.username = info.username;
     player.email = info.email;
+    player.language = info.language || DEFAULT_LANGUAGE;
 
     // Set the salt.
     player.salt = await Bcrypt.genSalt(environment.security.roundEncryption);
@@ -95,15 +124,11 @@ export class PlayerController {
 
     // Persist the user.
     try {
-      // First persist for the token.
-      let savedPlayer = await this.playerRepository.save(player);
-      savedPlayer = this.generateToken(savedPlayer);
+      const savedPlayer = await this.playerRepository.save(player);
+      const createdPlayer = new PlayerDTO.CreatedPlayer(savedPlayer);
+      createdPlayer.token = this.generateToken(savedPlayer); 
 
-      res.status(HttpStatus.CREATED).send(
-        new PlayerDTO.CreatedPlayer(
-          await this.playerRepository.save(savedPlayer)
-        )
-      );
+      res.status(HttpStatus.CREATED).send(createdPlayer);
     } catch (error) {
       // Credentials already used.
       if (error.code === '23505') {
@@ -128,15 +153,12 @@ export class PlayerController {
   /**
    * Generates a token from the given player.
    * @param {Player} player
-   * @returns {Player}
+   * @returns {string}
    */
-  private generateToken(player: Player): Player {
-    player.token = this.tokenService.generateFrom({
+  private generateToken(player: Player): string {
+    return this.tokenService.generateFrom({
       id: player.id,
-      uuid: player.uuid,
-      username: player.username
+      uuid: player.uuid
     });
-
-    return player;
   }
 }

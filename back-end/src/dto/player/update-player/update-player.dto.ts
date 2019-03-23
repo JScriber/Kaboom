@@ -1,8 +1,8 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional, IsEnum } from 'class-validator';
+import { IsString, IsEmail, MinLength, IsEnum, IsOptional } from 'class-validator';
 import { Language } from '@entity/player/player.entity';
 
-export class CreatePlayer {
+export class UpdatePlayer {
 
   /** Unique username. */
   @ApiModelProperty()
@@ -16,16 +16,8 @@ export class CreatePlayer {
   @IsEmail()
   @IsString() readonly email: string;
 
-  /** Language used by client. */
+  /** Language used by the client. */
   @ApiModelProperty()
   @IsOptional()
   @IsEnum(Language) readonly language: Language;
-
-  /** Front-end password. */
-  @ApiModelProperty()
-  @IsNotEmpty()
-  @Matches(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/, {
-    message: 'Password must contain lowercases, uppercases and numbers. Minimal length: 6.'
-  })
-  @IsString() readonly password: string;
 }

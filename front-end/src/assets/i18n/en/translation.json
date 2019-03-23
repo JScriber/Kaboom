@@ -1,5 +1,52 @@
 {
+  "LANGUAGES": {
+    "ENGLISH": "English",
+    "FRENCH": "French"
+  },
   "HEADER": {
-    "ACCOUNT": "Account"
+    "ACCOUNT": "Account",
+    "DECONNECTION": "Deconnection",
+    "LANGUAGE": "Language"
+  },
+  "PROFILE": {
+    "TITLE": "Your profile",
+    "USERNAME": "Username",
+    "EMAIL": "Email address",
+    "LANGUAGE": "Language",
+    "SAVE_ACTION": "Save",
+    "MENU": {
+      "CHANGE_PASSWORD": "New password",
+      "DELETE_ACCOUNT": "Delete account"
+    }
+  },
+  "SIGNUP": {
+    "TITLE": "Sign Up",
+    "LOGIN_BUTTON": "Login with existing account",
+    "USERNAME": "Username",
+    "EMAIL": "Email address",
+    "PASSWORD": "Password",
+    "CONFIRM_PASSWORD": "Confirm password",
+    "LANGUAGE": "Language",
+    "SUBMIT_ACTION": "Validate",
+    "ERRORS": {
+      "REQUIRED": "Mandatory field.",
+      "USERNAME_LENGTH": "You should have at least 3 characters.",
+      "EMAIL_REGEX": "Invalid email",
+      "PASSWORD_REGEX": "Should contain 6 characters, uppercase and lowercase letters, and a special character.",
+      "PASSWORD_MATCH": "Passwords don't match."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Login",
+    "SIGNUP_BUTTON": "Create an account",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "SUBMIT_ACTION": "Validate",
+    "ERRORS": {
+      "USERNAME_REQUIRED": "You must give your username.",
+      "USERNAME_LENGTH": "You should have at least 3 characters.",
+      "PASSWORD_REQUIRED": "Mandatory field.",
+      "PASSWORD_REGEX": "Should contain 6 characters, uppercase and lowercase letters, and a special character."
+    }
   }
 }

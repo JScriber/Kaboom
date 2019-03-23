@@ -10,9 +10,9 @@ export class NewCredentials {
   /** Authentification token. */
   private readonly token: string;
 
-  constructor(player: Player) {
+  constructor(player: Player, token: string) {
     this.id = player.id;
     this.username = player.username;
-    this.token = player.token;
+    this.token = token;
   }
 }

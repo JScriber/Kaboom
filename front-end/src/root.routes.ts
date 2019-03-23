@@ -1,13 +1,14 @@
 import { RouteProps } from 'react-router';
 
-import LoginComponent from './app/components/login/LoginComponent';
+import Login from './app/components/login/Login';
 import Game from './app/components/game/Game';
-import SigninComponent from './app/components/signin/SigninComponent';
 import MenuComponent from './app/components/home/Home';
 import ServerListComponent from './app/components/serverlist/ServerList';
 import CreateServer from './app/components/create-server/CreateServer';
 import TestComponent from './app/components/test/Test';
 import NotFoundComponent from './app/components/not-found/NotFound';
+import Profile from './app/components/profile/Profile';
+import SignUp from './app/components/sign-up/SignUp';
 
 /** All known routes. */
 export const pathRoutes = {
@@ -15,15 +16,16 @@ export const pathRoutes = {
   home: '/',
   login: '/login',
   game: '/game',
-  signin: '/signin',
+  signUp: '/sign-up',
   serverList: '/server/list',
-  serverCreate: '/server/create'
+  serverCreate: '/server/create',
+  profile: '/profile'
 };
 
 /** Routes where authentification isn't required. */
 export const freeRoutes = [
   pathRoutes.login,
-  pathRoutes.signin,
+  pathRoutes.signUp,
   pathRoutes.notFound
 ];
 
@@ -42,7 +44,7 @@ export const rootRoutes: RouteProps[] = [
   {
     path: pathRoutes.login,
     exact: true,
-    component: LoginComponent
+    component: Login
   },
   {
     path: pathRoutes.game,
@@ -50,9 +52,9 @@ export const rootRoutes: RouteProps[] = [
     component: Game
   },
   {
-    path: pathRoutes.signin,
+    path: pathRoutes.signUp,
     exact: true,
-    component: SigninComponent
+    component: SignUp
   },
   {
     path: pathRoutes.serverList,
@@ -63,6 +65,11 @@ export const rootRoutes: RouteProps[] = [
     path: pathRoutes.serverCreate,
     exact: true,
     component: CreateServer
+  },
+  {
+    path: pathRoutes.profile,
+    exact: true,
+    component: Profile
   },
   // TODO: Remove after tests.
   {

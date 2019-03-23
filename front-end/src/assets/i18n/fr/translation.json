@@ -1,5 +1,52 @@
 {
+  "LANGUAGES": {
+    "ENGLISH": "Anglais",
+    "FRENCH": "Français"
+  },
   "HEADER": {
-    "ACCOUNT": "Compte"
+    "ACCOUNT": "Compte",
+    "DECONNECTION": "Déconnexion",
+    "LANGUAGE": "Langage"
+  },
+  "PROFILE": {
+    "TITLE": "Votre profil",
+    "USERNAME": "Nom d'utilisateur",
+    "EMAIL": "Adresse mail",
+    "LANGUAGE": "Langue",
+    "SAVE_ACTION": "Sauvegarder",
+    "MENU": {
+      "CHANGE_PASSWORD": "Nouveau mot de passe",
+      "DELETE_ACCOUNT": "Supprimer le compte"
+    }
+  },
+  "SIGNUP": {
+    "TITLE": "Inscription",
+    "LOGIN_BUTTON": "Compte existant",
+    "USERNAME": "Nom d'utilisateur",
+    "EMAIL": "Adresse mail",
+    "PASSWORD": "Mot de passe",
+    "CONFIRM_PASSWORD": "Confirmation mot de passe",
+    "LANGUAGE": "Langue",
+    "SUBMIT_ACTION": "Valider",
+    "ERRORS": {
+      "REQUIRED": "Champs obligatoire.",
+      "USERNAME_LENGTH": "Vous devriez avoir au moins 3 caractères.",
+      "EMAIL_REGEX": "Adresse invalide",
+      "PASSWORD_REGEX": "Doit contenir 6 caractères, des lettres majuscules et minuscules, ainsi qu'un caractère spécial.",
+      "PASSWORD_MATCH": "Les mots de passe ne correspondent pas."
+    }
+  },
+  "LOGIN": {
+    "TITLE": "Connexion",
+    "SIGNUP_BUTTON": "Créer un compte",
+    "USERNAME": "Nom d'utilisateur",
+    "PASSWORD": "Mot de passe",
+    "SUBMIT_ACTION": "Valider",
+    "ERRORS": {
+      "USERNAME_REQUIRED": "Champs obligatoire.",
+      "USERNAME_LENGTH": "Vous devriez avoir au moins 3 caractères.",
+      "PASSWORD_REQUIRED": "Champs obligatoire.",
+      "PASSWORD_REGEX": "Doit contenir 6 caractères, des lettres majuscules et minuscules, ainsi qu'un caractère spécial."
+    }
   }
 }

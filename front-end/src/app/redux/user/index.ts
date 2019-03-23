@@ -18,8 +18,6 @@ export const userReducer = (state = initialState, { type, payload }: AnyAction) 
   switch (type) {
     /** Login action. */
     case LOGIN_USER:
-      api.setToken((payload as User).token);
-
       return setState(state, payload);
 
     /** Logout action. */
