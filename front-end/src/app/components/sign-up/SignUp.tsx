@@ -33,21 +33,19 @@ class SignUp extends React.Component<IProps, IState> {
    * @param {Form} form
    */
   private submit = (form: Form, actions: FormikActions<Form>) => {
+    this.setState({ loading: true });
 
-    const dto: Partial<Form> = form;
+    const stopLoading = () => this.setState({ loading: false });
+
+    const dto: Partial<Form> = JSON.parse(JSON.stringify(form));
     delete dto.confirmPassword;
 
     // Request the back-end.
     this.api.post<NewUser>('/player', dto)
       .subscribe(user => {
-        // store.dispatch(
-        //   loginUser({
-        //     username: user.username,
-        //     token: user.token 
-        //   })
-        // );
-
+        this.api.setToken(user.token);
         store.dispatch(push(pathRoutes.home));
+        stopLoading();
       }, e => {
         if (e.error === 'Bad Request') {
           if (e.message) {
@@ -57,7 +55,17 @@ class SignUp extends React.Component<IProps, IState> {
           }
         }
 
+        const clearField = (field: string) => {
+          actions.setFieldValue(field, '');
+          actions.setFieldTouched(field, false);
+        };
+
+        // Clear password field.
+        clearField('password');
+        clearField('confirmPassword');
+
         console.log('Error', e);
+        stopLoading();
       });
   }
 

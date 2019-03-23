@@ -52,7 +52,7 @@ export const routingMiddleware: Middleware = store => next => async action => {
   
       try {
         const api: ApiService = ApiService.instance();
-        const token = api.fetchToken();
+        api.fetchToken();
   
         const user: User = await api.get<User>(USER_INFORMATIONS).toPromise();
   
@@ -60,8 +60,7 @@ export const routingMiddleware: Middleware = store => next => async action => {
         store.dispatch(loginUser({
           username: user.username,
           email: user.email,
-          language: user.language,
-          token: token as string
+          language: user.language
         }));
 
         // Set language.

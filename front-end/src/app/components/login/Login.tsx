@@ -14,7 +14,7 @@ import LoginForm from './form/LoginForm';
 import { ApiService } from 'src/app/services/api/api';
 
 // Model.
-import { IState, IProps, styles } from './Login.model';
+import { IState, IProps, styles, LoginUser } from './Login.model';
 import { Form } from './form/LoginForm.model';
 
 /** Login component using the Login model. */
@@ -40,9 +40,8 @@ class Login extends React.Component<IProps, IState> {
 
     const stopLoading = () => this.setState({ loading: false }); 
 
-    this.api.post<string>('/player/login', form).subscribe((token) => {
-      // TODO: Handle token.
-      console.log('Token', token);
+    this.api.post<LoginUser>('/player/login', form).subscribe(({ token }) => {
+      this.api.setToken(token);
       store.dispatch(push(pathRoutes.home));
       stopLoading();
     }, (err) => {

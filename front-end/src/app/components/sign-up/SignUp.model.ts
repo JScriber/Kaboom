@@ -1,9 +1,8 @@
-import * as F from '../form/Form.model';
 import { WithStyles, Theme, createStyles } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';
 import { Language } from 'src/translation/translation';
 
-export interface Form extends F.Form {
+export interface Form {
   username: string;
   email: string;
   password: string;

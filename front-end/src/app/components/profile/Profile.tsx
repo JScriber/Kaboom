@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { CardContent, Card, CardHeader, IconButton, TextField, MenuItem,
-  Menu, ListItemIcon, ListItemText, Divider, LinearProgress } from '@material-ui/core';
+import { CardContent, Card, CardHeader, IconButton, MenuItem,
+  Menu, ListItemIcon, ListItemText, LinearProgress } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import SecurityIcon from '@material-ui/icons/Security';
 import DeleteIcon from '@material-ui/icons/DeleteForever';
+import { Formik, FormikActions } from 'formik';
+import * as Yup from 'yup';
 
 // System-wide.
-import { Language } from 'src/translation/translation';
+import { Language, DEFAULT_LANGUAGE } from 'src/translation/translation';
 import { materialTranslated } from 'src/utils';
 
 // Model.
@@ -15,10 +17,7 @@ import { store } from 'src/app/redux';
 import { ApiService } from 'src/app/services/api/api';
 import { Subscription } from 'indefinite-observable';
 import { Unsubscribe } from 'redux';
-import LanguageSelector from '../shared/language-selector/LanguageSelector';
-
-/** Time before the informations get sent (in miliseconds). */
-const FORM_TIMEOUT = 800;
+import ProfileForm from './form/ProfileForm';
 
 /**
  * Component used to create a server.
@@ -36,9 +35,6 @@ class Profile extends React.Component<IProps, IState> {
       language: Language.English
     }
   };
-
-  /** Form timeout. */
-  private timeout: NodeJS.Timeout;
 
   /** Api. */
   private api: ApiService = ApiService.instance();
@@ -58,60 +54,14 @@ class Profile extends React.Component<IProps, IState> {
 
   private handleClose = () => this.setState({ anchorEl: null });
 
-  /**
-   * Handles form value change.
-   * @param key
+  /** 
+   * Submits the form.
+   * @param {Form} form
    */
-  private handleChange = (key: keyof(Form)) => (event: React.FormEvent) => {
-    const value = (event.target as HTMLInputElement).value;
-
-    this.setState(({ form }: IState) => {
-      form[key] = value;
-
-      return { form };
-    });
-  };
-
-  /** Handles language changes. */
-  private handleLanguage = (event: React.FormEvent) => {
-    this.handleChange('language')(event);
-    this.sendInformations();
-  };
-
-  /**
-   * Handle form value change with timeout.
-   * @param key
-   */
-  private handleTimeoutChange = (key: keyof(Form)) => (event: React.FormEvent) => {
-    const value = (event.target as HTMLInputElement).value;
-
-    this.setState(({ form }: IState) => {
-      const oldValue = form[key];
-      form[key] = value;
-
-      if (oldValue !== value) this.updateTimeout();
-
-      return { form };
-    });
-  };
-
-  /** Updates the timeout. */
-  private updateTimeout() {
-    if (this.timeout) clearTimeout(this.timeout);
-
-    this.timeout = setTimeout(this.sendInformations, FORM_TIMEOUT);
-  };
-
-  /** Sends user informations to back-end. */
-  private sendInformations = () => {
+  private submit = (form: Form, actions: FormikActions<Form>) => {
     this.setState({ loading: true });
-    const { form } = this.state;
 
-    const stopLoading = () => {
-      if (this._isMounted) {
-        this.setState({ loading: false });
-      }
-    }
+    const stopLoading = () => this.setState({ loading: false });
 
     this.subscriptionApi = this.api.put('/player/@me', form)
       .subscribe(stopLoading, (error) => {
@@ -162,6 +112,16 @@ class Profile extends React.Component<IProps, IState> {
     const { classes, t } = this.props;
     const { form, loading } = this.state;
     const open = Boolean(this.state.anchorEl);
+
+    const validationSchema = Yup.object({
+      username: Yup.string()
+        .required('SIGNUP.ERRORS.REQUIRED')
+        .min(3, 'SIGNUP.ERRORS.USERNAME_LENGTH'),
+
+      email: Yup.string()
+        .required('SIGNUP.ERRORS.REQUIRED')
+        .email('SIGNUP.ERRORS.EMAIL_REGEX')
+    });
 
     return (
       <React.Fragment>
@@ -214,34 +174,14 @@ class Profile extends React.Component<IProps, IState> {
           />
 
           <CardContent>
-            <form>
-              <TextField
-                label={t('PROFILE.USERNAME')}
-                margin="normal"
-                variant="outlined"
-                value={form.username}
-                onChange={this.handleTimeoutChange('username')}
-                className={classes.input}
-              />
-
-              <TextField
-                label={t('PROFILE.EMAIL')}
-                margin="normal"
-                variant="outlined"
-                value={form.email}
-                onChange={this.handleTimeoutChange('email')}
-                className={classes.input}
-              />
-
-              <Divider className={classes.divider}/>
-
-              <LanguageSelector
-                name="temporary"
-                label={t('PROFILE.LANGUAGE')}
-                value={form.language}
-                onChange={this.handleLanguage}
-              ></LanguageSelector>
-            </form>
+            <Formik
+              render={(props) => <ProfileForm {...props} />}
+              initialValues={form}
+              // Values are retrieved asynchronously.
+              enableReinitialize={true}
+              validationSchema={validationSchema}
+              onSubmit={this.submit}
+            />
           </CardContent>
         </Card>
       </React.Fragment>

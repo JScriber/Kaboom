@@ -20,3 +20,13 @@ export interface IProps extends TranslateAndStyle<typeof styles> {}
 export interface IState {
   loading: boolean;
 }
+
+/** Logged in user. */
+export interface LoginUser {
+  /** Unique id. */
+  id: number;
+  /** Unique username. */
+  username: string;
+  /** Authentification token. */
+  token: string;
+}
