@@ -66,8 +66,6 @@ class Profile extends React.Component<IProps, IState> {
 
     const stopLoading = () => this.setState({ loading: false });
 
-    console.log('Submit');
-
     this.api.put('/player/@me', form)
       .pipe(takeUntil(this.destroy$))
       .subscribe((user: UpdatedUser) => {
@@ -77,7 +75,6 @@ class Profile extends React.Component<IProps, IState> {
           language: user.language
         }));
 
-        console.log('data', user);
         stopLoading();
       }, (error) => {
         console.log(error);

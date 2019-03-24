@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { TextField, Button, Divider } from '@material-ui/core';
+import { TextField, Divider } from '@material-ui/core';
 
 import { materialTranslated } from 'src/utils';
-import { BaseForm } from '../../form/Formik';
+import { BaseForm } from '../../../shared/form/Formik';
 
 // Models.
 import { IProps, Form, styles } from './ProfileForm.model';
-import LanguageSelector from '../../shared/language-selector/LanguageSelector';
+import LanguageSelector from '../../../shared/language-selector/LanguageSelector';
 
 /** Time before the informations get sent (in miliseconds). */
 const FORM_TIMEOUT = 800;

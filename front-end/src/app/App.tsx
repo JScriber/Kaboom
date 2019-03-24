@@ -1,14 +1,16 @@
 import * as React from 'react';
-import './App.scss';
+import { Theme, withStyles, WithStyles } from '@material-ui/core';
 import * as classNames from 'classnames';
 import RouterOutlet from '../RouterOutlet';
 
 // Components.
-import Header from './components/header/Header';
-import Drawer from './components/drawer/Drawer';
+import Header from './components/layout/header/Header';
+import Drawer from './components/layout/drawer/Drawer';
+import { drawerWidth } from './components/layout/drawer/Drawer.model';
 
-import { Theme, withStyles, WithStyles } from '@material-ui/core';
-import { drawerWidth } from './components/drawer/Drawer.model';
+// Style.
+import './App.scss';
+import { store } from './redux';
 
 const styles = (theme: Theme) => ({
   app: {
@@ -37,6 +39,7 @@ const styles = (theme: Theme) => ({
 interface IProps extends WithStyles<typeof styles> {}
 
 interface IState {
+  authentificated: boolean;
   drawerOpen: boolean;
 }
 
@@ -44,13 +47,17 @@ interface IState {
 class App extends React.Component<IProps, IState> {
 
   state: IState = {
-    drawerOpen: true
+    drawerOpen: true,
+    authentificated: false
   };
 
   /** Toggles the drawer. */
   private toggleDrawer = () => this.setState(state => {
     return { drawerOpen: !state.drawerOpen };
   });
+
+  /** Sets the drawer state. */
+  private setDrawerState = (drawerOpen: boolean) => this.setState({ drawerOpen });
 
   /** Determines which classes to apply. */
   private contentClass = () => {
@@ -63,13 +70,39 @@ class App extends React.Component<IProps, IState> {
     }
   };
 
+  componentDidMount() {
+    store.subscribe(() => {
+      const { authentificated } = this.state;
+      const { username } = store.getState().userReducer;
+      const hasUser = username !== undefined;
+
+      if (authentificated && !hasUser) {
+        this.setState({ authentificated: false });
+      } else {
+        if (!authentificated && hasUser) {
+          this.setState({ authentificated: true });
+        }
+      }
+    });
+  }
+
   render() {
     const { classes } = this.props;
+    const { authentificated } = this.state;
 
     return (
       <div className={classNames(classes.app, 'App')}>
-        <Header toggleDrawer={this.toggleDrawer}/>
-        <Drawer open={this.state.drawerOpen}/>
+        <Header
+          authentificated={authentificated}
+          toggleDrawer={this.toggleDrawer}
+          setDrawer={this.setDrawerState}
+        />
+
+        {
+          authentificated && (
+            <Drawer open={this.state.drawerOpen}/>
+          )
+        }
 
         <main className={this.contentClass()}>
           <RouterOutlet/>

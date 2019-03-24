@@ -17,11 +17,17 @@ export const styles = (theme: Theme) => ({
 
 /** Props of the component. */
 export interface IProps extends WithStyles<typeof styles>, WithTranslation {
+  /** User is authentificated. */
+  authentificated: boolean;
+
+  /** Toggles the drawer. */
   toggleDrawer: () => void;
+
+  /** Sets the state of the drawer. */
+  setDrawer: (state: boolean) => void;
 }
 
 /** State of the component. */
 export interface IState {
-  authentificated: boolean;
   anchorEl: any;
 }
