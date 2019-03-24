@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TextField, Button } from '@material-ui/core';
 
 import { materialTranslated } from 'src/utils';
-import { BaseForm } from '../../form/Formik';
+import { BaseForm } from '../../../shared/form/Formik';
 
 // Models.
 import { IProps, Form, styles } from './LoginForm.model';

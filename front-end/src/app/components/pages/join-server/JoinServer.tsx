@@ -1,15 +1,14 @@
 import * as React from 'react';
-import './ServerList.scss';
-import {Button} from '@material-ui/core';
-import {Link} from 'react-router-dom';
 import 'material-design-icons/iconfont/material-icons.css';
 
-import star from '../../../assets/images/star.png';
-import map from '../../../assets/images/sky.png';
+import './JoinServer.scss';
 
-export default class ServerListComponent extends React.Component {
+import star from '../../../../assets/images/star.png';
+import map from '../../../../assets/images/sky.png';
 
-  public render() {
+export default class JoinServer extends React.Component {
+
+  render() {
 
     const items = [];
     // items est temporaire et sera à remplacer par la liste des serveurs avec la map en cours et l'avatar des joueurs
@@ -34,24 +33,9 @@ export default class ServerListComponent extends React.Component {
 
     return (
       <div className='server-list-component'>
-        <div className='row'>
-          <div className='col-2'>
-          <Link to={{
-                      pathname: '/home'
-                  }}>
-            <Button className='button waves-effect waves-light mx-1' variant='outlined'>Accueil</Button>
-            </Link>
-          </div>
-          <h2 className='col-8'>Liste des parties</h2>
-        </div>
-
         <div className='server-list col-8 my-4 p-2'>
           {items}
         </div>
-        <Button className='purple-button waves-effect waves-light mx-1' variant='outlined'>
-          <i className='material-icons mr-2 md-24'>add_circle</i>
-          <p className='my-auto'>Créer une partie</p>
-        </Button>
       </div>
     );
   }

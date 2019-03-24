@@ -19,7 +19,7 @@ import { push } from 'connected-react-router';
 import { logoutUser } from 'src/app/redux/user/actions/logout';
 
 // Assets.
-import logo from '../../../assets/images/logo.png';
+import logo from '../../../../assets/images/logo.png';
 import './Header.scss';
 import { materialTranslated } from 'src/utils';
 
@@ -32,8 +32,7 @@ class Header extends React.Component<IProps, IState> {
 
   /** State initialization. */
   state: IState = {
-    authentificated: false,
-    anchorEl: null,
+    anchorEl: null
   };
 
   handleMenu = (event: any) => {
@@ -43,22 +42,6 @@ class Header extends React.Component<IProps, IState> {
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
-
-  componentDidMount() {
-    store.subscribe(() => {
-      const { authentificated } = this.state;
-      const { username } = store.getState().userReducer;
-      const hasUser = username !== undefined;
-
-      if (authentificated && !hasUser) {
-        this.setState({ authentificated: false });
-      } else {
-        if (!authentificated && hasUser) {
-          this.setState({ authentificated: true });
-        }
-      }
-    });
-  }
 
   /** Disconnects the user. */
   private disconnect = () => {
@@ -70,7 +53,7 @@ class Header extends React.Component<IProps, IState> {
 
   /** Redirects to home page. */
   private homePage = () => {
-    if (this.state.authentificated) {
+    if (this.props.authentificated) {
       store.dispatch(push(pathRoutes.home));
     }
   };
@@ -82,7 +65,7 @@ class Header extends React.Component<IProps, IState> {
   private profilePage = () => {
     store.dispatch(push(pathRoutes.profile));
     this.handleClose();
-  }
+  };
 
   /**
    * Changes used language.
@@ -94,21 +77,23 @@ class Header extends React.Component<IProps, IState> {
   };
 
   public render() {
-    const { toggleDrawer, classes } = this.props;
-    const { authentificated } = this.state;
+    const { toggleDrawer, authentificated, classes } = this.props;
     const open = Boolean(this.state.anchorEl);
 
     return (
       <AppBar position="fixed" className={classes.root}>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="Open drawer"
-            onClick={toggleDrawer}
-            className={classes.menuButton}
-          >
-            <MenuIcon/>
-          </IconButton>
+          { authentificated && (
+              <IconButton
+                color="inherit"
+                aria-label="Open drawer"
+                onClick={toggleDrawer}
+                className={classes.menuButton}
+              >
+                <MenuIcon/>
+              </IconButton>
+            )
+          }
 
           <ButtonBase focusRipple onClick={this.homePage}>
             <img className='kaboom-logo' src={logo} alt='KABOOM logo'/>
