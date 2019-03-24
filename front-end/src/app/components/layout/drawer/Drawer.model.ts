@@ -1,6 +1,7 @@
 import { WithStyles, Theme } from '@material-ui/core';
 import { WithTranslation } from 'react-i18next';
 
+/** Width of the drawer. */
 export const drawerWidth = 260;
 
 export const styles = (theme: Theme) => ({
@@ -24,6 +25,7 @@ export const styles = (theme: Theme) => ({
   toolbar: theme.mixins.toolbar,
 });
 
+/** Representation of a link. */
 export interface Link {
   name: string;
   icon: any;
@@ -33,7 +35,6 @@ export interface Link {
 /** Props of the component. */
 export interface IProps extends WithStyles<typeof styles>, WithTranslation {
   open: boolean;
+  location: string;
 }
 
-/** State of the component. */
-export interface IState {}
