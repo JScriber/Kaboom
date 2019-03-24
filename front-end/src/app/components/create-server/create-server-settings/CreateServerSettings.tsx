@@ -1,8 +1,13 @@
 import * as React from 'react';
 import { CircularProgress } from '@material-ui/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+// Internal mechanism.
+import { materialTranslated } from 'src/utils';
 
 // Models.
-import { IProps, IState, ListAllAlterations, Alteration } from './CreateServerSettings.model';
+import { IProps, IState, ListAllAlterations, Alteration, styles } from './CreateServerSettings.model';
 
 // Local components.
 import ListSelector from './list-selector/ListSelector';
@@ -16,7 +21,7 @@ import './CreateServerSettings.scss';
 /**
  * Main settings to create a server.
  */
-export default class CreateServerSettings extends React.Component<IProps, IState> {
+class CreateServerSettings extends React.Component<IProps, IState> {
 
   /** State initialization. */
   state: IState = {
@@ -25,6 +30,9 @@ export default class CreateServerSettings extends React.Component<IProps, IState
     loading: true,
     numberPlayers: 4
   };
+
+  /** Subscription manager. */
+  private destroy$: Subject<void> = new Subject();
 
   /** API request. */
   private api: ApiService = ApiService.instance();
@@ -43,6 +51,7 @@ export default class CreateServerSettings extends React.Component<IProps, IState
 
   componentDidMount() {
     this.api.get('/alterations')
+      .pipe(takeUntil(this.destroy$))
       .subscribe((lists: ListAllAlterations) => this.setState({
         bonus: lists.bonus.map(b => this.setAsToggled(b)),
         penalty: lists.penalties.map(p => this.setAsToggled(p)),
@@ -50,34 +59,54 @@ export default class CreateServerSettings extends React.Component<IProps, IState
       }));
   }
 
+  componentWillUnmount() {
+    this.destroy$.next();
+  }
+
   render() {
+    const { classes, t } = this.props;
+
     return (
       <React.Fragment>
-        <ValuePicker
-          initialValue={4}
-          min={2}
-          max={4}
-          expanded={true}
-          togglable={false}
-          title="Nombre de joueurs"
-          displaying={v => v + ' joueurs'}
-        />
-
-        <ValuePicker
-          initialValue={5}
-          min={3}
-          max={20}
-          expanded={true}
-          togglable={true}
-          title="Limite de temps"
-          displaying={v => v + ' min'}
-        />
-
         {
-          this.state.loading ? <CircularProgress className="alterationLoader"/> : (
+          this.state.loading
+          ? (
+              <div className={classes.loader}>
+                <CircularProgress/>
+              </div>
+            ) : (
             <React.Fragment>
-              <ListSelector title="Bonus" placeholder="Rechercher un bonus" items={this.state.bonus}/>
-              <ListSelector title="Malus" placeholder="Rechercher un malus" items={this.state.penalty}/>
+              <ValuePicker
+                initialValue={4}
+                min={2}
+                max={4}
+                expanded={true}
+                togglable={false}
+                title={t('SERVER_CREATE.SETTINGS.PLAYERS.TITLE')}
+                displaying={v => v + ' ' + t('SERVER_CREATE.SETTINGS.PLAYERS.UNIT')}
+              />
+      
+              <ValuePicker
+                initialValue={5}
+                min={3}
+                max={20}
+                expanded={true}
+                togglable={true}
+                title={t('SERVER_CREATE.SETTINGS.TIME_LIMIT.TITLE')}
+                displaying={v => v + ' ' + t('SERVER_CREATE.SETTINGS.TIME_LIMIT.UNIT')}
+              />
+      
+              <ListSelector
+                title={t('SERVER_CREATE.SETTINGS.BONUS.TITLE')}
+                placeholder={t('SERVER_CREATE.SETTINGS.BONUS.SEARCH')}
+                items={this.state.bonus}
+              />
+
+              <ListSelector
+                title={t('SERVER_CREATE.SETTINGS.PENALTIES.TITLE')}
+                placeholder={t('SERVER_CREATE.SETTINGS.PENALTIES.SEARCH')}
+                items={this.state.penalty}
+              />
             </React.Fragment>
           )
         }
@@ -85,3 +114,6 @@ export default class CreateServerSettings extends React.Component<IProps, IState
     );
   }
 }
+
+/** Export with material theme and translations. */
+export default materialTranslated(CreateServerSettings, styles);

@@ -36,3 +36,10 @@ export interface IState {
   loading: boolean;
   form: Form;
 }
+
+/** User after API update. */
+export interface UpdatedUser {
+  username: string;
+  email: string;
+  language: Language;
+}

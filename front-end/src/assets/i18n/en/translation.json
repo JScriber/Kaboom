@@ -8,6 +8,13 @@
     "DECONNECTION": "Deconnection",
     "LANGUAGE": "Language"
   },
+  "DRAWER": {
+    "JOIN_GAME": "Join game",
+    "CREATE_GAME": "Create game",
+    "EDIT_MAPS": "Edit maps",
+    "MY_STATS": "My stats",
+    "INFORMATIONS": "Help"
+  },
   "PROFILE": {
     "TITLE": "Your profile",
     "USERNAME": "Username",
@@ -47,6 +54,30 @@
       "USERNAME_LENGTH": "You should have at least 3 characters.",
       "PASSWORD_REQUIRED": "Mandatory field.",
       "PASSWORD_REGEX": "Should contain 6 characters, uppercase and lowercase letters, and a special character."
+    }
+  },
+  "SERVER_CREATE": {
+    "SETTINGS": {
+      "PLAYERS": {
+        "TITLE": "Number of players",
+        "UNIT": "players"
+      },
+      "TIME_LIMIT": {
+        "TITLE": "Limit",
+        "UNIT": "min"
+      },
+      "BONUS": {
+        "TITLE": "Bonus",
+        "SEARCH": "Search for a bonus"
+      },
+      "PENALTIES": {
+        "TITLE": "Penalties",
+        "SEARCH": "Search for a penalty"
+      }
+    },
+    "MAPS": {
+      "PREDEFINED": "Predefined maps",
+      "MY_MAPS": "My maps"
     }
   }
 }
