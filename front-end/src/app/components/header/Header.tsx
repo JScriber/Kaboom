@@ -2,11 +2,13 @@ import * as React from 'react';
 import { AppBar, Toolbar, IconButton, Menu, MenuItem,
   ListItemIcon, ListItemText, ButtonBase, Tooltip } from '@material-ui/core';
 
+import { Language, languages } from 'src/translation/translation';
 import { IProps, styles, IState } from './Header.model';
 import { pathRoutes } from 'src/root.routes';
 import { store } from 'src/app/redux';
 
 // Icons.
+import MenuIcon from '@material-ui/icons/Menu';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -20,7 +22,6 @@ import { logoutUser } from 'src/app/redux/user/actions/logout';
 import logo from '../../../assets/images/logo.png';
 import './Header.scss';
 import { materialTranslated } from 'src/utils';
-import { Language, languages } from 'src/translation/translation';
 
 /**
  * Header component.
@@ -93,15 +94,24 @@ class Header extends React.Component<IProps, IState> {
   };
 
   public render() {
-    const { classes } = this.props;
+    const { toggleDrawer, classes } = this.props;
     const { authentificated } = this.state;
     const open = Boolean(this.state.anchorEl);
 
     return (
-      <AppBar position="static" className={classes.root}>
+      <AppBar position="fixed" className={classes.root}>
         <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="Open drawer"
+            onClick={toggleDrawer}
+            className={classes.menuButton}
+          >
+            <MenuIcon/>
+          </IconButton>
+
           <ButtonBase focusRipple onClick={this.homePage}>
-            <img className='kaboom-logo' src={logo} alt='KABOOM logo bomb'/>
+            <img className='kaboom-logo' src={logo} alt='KABOOM logo'/>
           </ButtonBase>
 
           <span className={classes.grow}></span>

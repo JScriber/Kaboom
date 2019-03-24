@@ -1,7 +1,22 @@
+import { Theme, createStyles } from '@material-ui/core';
+
+import { TranslateAndStyle } from 'src/utils';
 import { Item } from './list-selector/ListSelector.model';
 
+/**
+ * Component styling.
+ * @param theme 
+ */
+export const styles = (theme: Theme) => createStyles({
+  loader: {
+    padding: '35px 0',
+    width: '100%',
+    textAlign: 'center'
+  }
+});
+
 /** Props of the component. */
-export interface IProps {}
+export interface IProps extends TranslateAndStyle<typeof styles> {}
 
 /** State of the component. */
 export interface IState {

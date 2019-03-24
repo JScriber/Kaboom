@@ -8,6 +8,13 @@
     "DECONNECTION": "Déconnexion",
     "LANGUAGE": "Langage"
   },
+  "DRAWER": {
+    "JOIN_GAME": "Rejoindre partie",
+    "CREATE_GAME": "Créer partie",
+    "EDIT_MAPS": "Éditer cartes",
+    "MY_STATS": "Mes statistiques",
+    "INFORMATIONS": "Informations"
+  },
   "PROFILE": {
     "TITLE": "Votre profil",
     "USERNAME": "Nom d'utilisateur",
@@ -47,6 +54,30 @@
       "USERNAME_LENGTH": "Vous devriez avoir au moins 3 caractères.",
       "PASSWORD_REQUIRED": "Champs obligatoire.",
       "PASSWORD_REGEX": "Doit contenir 6 caractères, des lettres majuscules et minuscules, ainsi qu'un caractère spécial."
+    }
+  },
+  "SERVER_CREATE": {
+    "SETTINGS": {
+      "PLAYERS": {
+        "TITLE": "Nombre de joueurs",
+        "UNIT": "joueurs"
+      },
+      "TIME_LIMIT": {
+        "TITLE": "Limite de temps",
+        "UNIT": "min"
+      },
+      "BONUS": {
+        "TITLE": "Bonus",
+        "SEARCH": "Rechercher un bonus"
+      },
+      "PENALTIES": {
+        "TITLE": "Malus",
+        "SEARCH": "Rechercher un malus"
+      }
+    },
+    "MAPS": {
+      "PREDEFINED": "Cartes prédéfinies",
+      "MY_MAPS": "Mes cartes"
     }
   }
 }

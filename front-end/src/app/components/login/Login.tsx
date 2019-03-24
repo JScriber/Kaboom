@@ -16,6 +16,8 @@ import { ApiService } from 'src/app/services/api/api';
 // Model.
 import { IState, IProps, styles, LoginUser } from './Login.model';
 import { Form } from './form/LoginForm.model';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /** Login component using the Login model. */
 class Login extends React.Component<IProps, IState> {
@@ -24,6 +26,9 @@ class Login extends React.Component<IProps, IState> {
   state: IState = {
     loading: false
   };
+
+  /** Subscription manager. */
+  private readonly destroy$: Subject<void> = new Subject();
 
   /** Api. */
   private readonly api: ApiService = ApiService.instance();
@@ -40,22 +45,28 @@ class Login extends React.Component<IProps, IState> {
 
     const stopLoading = () => this.setState({ loading: false }); 
 
-    this.api.post<LoginUser>('/player/login', form).subscribe(({ token }) => {
-      this.api.setToken(token);
-      store.dispatch(push(pathRoutes.home));
-      stopLoading();
-    }, (err) => {
-      if (err.statusCode === 400 && err.message === 'Incorrect credentials.') {
-        console.log('bad password');
-      }
+    this.api.post<LoginUser>('/player/login', form)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ token }) => {
+        stopLoading();
+        this.api.setToken(token);
+        store.dispatch(push(pathRoutes.home));
+      }, (err) => {
+        if (err.statusCode === 400 && err.message === 'Incorrect credentials.') {
+          console.log('bad password');
+        }
 
-      // Clear password field.
-      actions.setFieldValue('password', '');
-      actions.setFieldTouched('password', false);
+        // Clear password field.
+        actions.setFieldValue('password', '');
+        actions.setFieldTouched('password', false);
 
-      stopLoading();
-    });
+        stopLoading();
+      });
   };
+
+  componentWillUnmount() {
+    this.destroy$.next();
+  }
 
   render() {
     const { classes, t } = this.props;

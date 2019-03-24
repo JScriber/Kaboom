@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { Typography, Tabs, Tab, CircularProgress } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import SwipeableViews from 'react-swipeable-views';
+import { interval, Subject } from 'rxjs';
+
+// Internal mechanism.
+import { materialTranslated } from 'src/utils';
 
 // Local models.
-import { IMapState, IMapProps, styles } from './CreateServerMap.model';
+import { IState, IProps, styles } from './CreateServerMap.model';
 
 // Local components.
 import ListMap from './list-maps/ListMaps';
 
 // Style.
 import './CreateServerMap.scss';
-import { interval } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 /** Tabs encapsulation. */
 const TabContainer = (props: any) => (
@@ -23,13 +26,13 @@ const TabContainer = (props: any) => (
 /**
  * Map select orchestrator.
  */
-class CreateServerMap extends React.Component<IMapProps, IMapState> {
+class CreateServerMap extends React.Component<IProps, IState> {
 
   /** Default tab index. */
   private static readonly DEFAULT_TAB: number = 0;
 
   /** State initialisation. */
-  state: IMapState = {
+  state: IState = {
     selectedId: 0,
     value: CreateServerMap.DEFAULT_TAB,
     defaultMapsLoaded: false,
@@ -37,6 +40,8 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
     customMapsLoaded: false,
     customMaps: []
   };
+
+  private destroy$: Subject<void> = new Subject();
 
   /** Called when a tab is clicked. */
   handleChange = (e: React.FormEvent<{}>, value: number) => {
@@ -48,60 +53,12 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
     this.setState({ value });
   };
 
-  componentDidMount() {
-    // TODO: Replace with real request.
-    interval(1000).subscribe(() => {
-      this.setState({
-        defaultMapsLoaded: true,
-        customMapsLoaded: true,
-        defaultMaps: [
-          {
-            id: 0,
-            name: 'Golden arena'
-          },
-          {
-            id: 1,
-            name: 'Platinum stadium'
-          },
-          {
-            id: 2,
-            name: 'Lost heaven'
-          },
-          {
-            id: 3,
-            name: 'Shouting star'
-          },
-          {
-            id: 4,
-            name: 'Warrior arena'
-          },
-          {
-            id: 5,
-            name: 'Night sight'
-          },
-          {
-            id: 6,
-            name: 'Roaring lion'
-          },
-        ],
-        customMaps: [
-          {
-            id: 10,
-            name: 'Custom 1'
-          }
-        ]
-      });
-
-      this.forceUpdate();
-    })
-  }
-
   /**
    * Handles the selection of a map.
    * @param {number | null} id
    */
   private handleOnSelect = (id: number | null) => {
-    this.setState(({ selectedId }: IMapState) => {
+    this.setState(({ selectedId }: IState) => {
       if (id === selectedId) {
         id = null;
       }
@@ -110,7 +67,63 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
     });
   };
 
+  componentDidMount() {
+    // TODO: Replace with real request.
+    interval(1000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setState({
+          defaultMapsLoaded: true,
+          customMapsLoaded: true,
+          defaultMaps: [
+            {
+              id: 0,
+              name: 'Golden arena'
+            },
+            {
+              id: 1,
+              name: 'Platinum stadium'
+            },
+            {
+              id: 2,
+              name: 'Lost heaven'
+            },
+            {
+              id: 3,
+              name: 'Shouting star'
+            },
+            {
+              id: 4,
+              name: 'Warrior arena'
+            },
+            {
+              id: 5,
+              name: 'Night sight'
+            },
+            {
+              id: 6,
+              name: 'Roaring lion'
+            },
+          ],
+          customMaps: [
+            {
+              id: 10,
+              name: 'Custom 1'
+            }
+          ]
+        });
+
+        this.forceUpdate();
+      });
+  }
+
+  componentWillUnmount() {
+    this.destroy$.next();
+  }
+
   render() {
+    const { t } = this.props;
+
     return (
       <div className="create-server-map">
         <Tabs
@@ -119,8 +132,8 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
           textColor="primary"
           indicatorColor="primary"
         >
-          <Tab label="Cartes prédéfinies"/>
-          <Tab label="Mes cartes"/>
+          <Tab label={t('SERVER_CREATE.MAPS.PREDEFINED')}/>
+          <Tab label={t('SERVER_CREATE.MAPS.MY_MAPS')}/>
         </Tabs>
         <SwipeableViews
           axis='x'
@@ -148,7 +161,5 @@ class CreateServerMap extends React.Component<IMapProps, IMapState> {
   }
 }
 
-/** Export with material theme. */
-export default withStyles(styles, {
-  withTheme: true
-})(CreateServerMap);
+/** Export with material theme and translations. */
+export default materialTranslated(CreateServerMap, styles);

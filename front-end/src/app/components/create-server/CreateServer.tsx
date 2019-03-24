@@ -1,6 +1,9 @@
 import * as React from 'react';
-import { Grid, Paper, Fab, Theme, createStyles, WithStyles, withStyles } from '@material-ui/core';
+import { Grid, Paper, Fab, Theme, createStyles } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
+
+// App mechanism.
+import { TranslateAndStyle, materialTranslated } from 'src/utils';
 
 // Style.
 import './CreateServer.scss';
@@ -21,7 +24,7 @@ export const styles = ({ spacing }: Theme) => createStyles({
   }
 });
 
-interface IProps extends WithStyles<typeof styles> {}
+interface IProps extends TranslateAndStyle<typeof styles> {}
 
 /**
  * Component used to create a server.
@@ -60,7 +63,5 @@ class CreateServer extends React.Component<IProps> {
   }
 }
 
-/** Export with material theme. */
-export default withStyles(styles, {
-  withTheme: true
-})(CreateServer);
+/** Export with material theme and translations. */
+export default materialTranslated(CreateServer, styles);

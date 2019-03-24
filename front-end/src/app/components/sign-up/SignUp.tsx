@@ -43,9 +43,9 @@ class SignUp extends React.Component<IProps, IState> {
     // Request the back-end.
     this.api.post<NewUser>('/player', dto)
       .subscribe(user => {
+        stopLoading();
         this.api.setToken(user.token);
         store.dispatch(push(pathRoutes.home));
-        stopLoading();
       }, e => {
         if (e.error === 'Bad Request') {
           if (e.message) {

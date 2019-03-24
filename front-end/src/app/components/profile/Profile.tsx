@@ -12,12 +12,15 @@ import { Language, DEFAULT_LANGUAGE } from 'src/translation/translation';
 import { materialTranslated } from 'src/utils';
 
 // Model.
-import { IProps, IState, Form, styles } from './Profile.model';
+import { IProps, IState, Form, styles, UpdatedUser } from './Profile.model';
 import { store } from 'src/app/redux';
 import { ApiService } from 'src/app/services/api/api';
 import { Subscription } from 'indefinite-observable';
 import { Unsubscribe } from 'redux';
 import ProfileForm from './form/ProfileForm';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { loginUser } from 'src/app/redux/user/actions/login';
 
 /**
  * Component used to create a server.
@@ -39,8 +42,8 @@ class Profile extends React.Component<IProps, IState> {
   /** Api. */
   private api: ApiService = ApiService.instance();
 
-  /** Subscription to API. */
-  private subscriptionApi: Subscription;
+  /** Unsubscription manager. */
+  private destroy$: Subject<void> = new Subject();
 
   /** Subscription to Redux. */
   private subscriptionRedux: Unsubscribe;
@@ -63,8 +66,20 @@ class Profile extends React.Component<IProps, IState> {
 
     const stopLoading = () => this.setState({ loading: false });
 
-    this.subscriptionApi = this.api.put('/player/@me', form)
-      .subscribe(stopLoading, (error) => {
+    console.log('Submit');
+
+    this.api.put('/player/@me', form)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((user: UpdatedUser) => {
+        store.dispatch(loginUser({
+          username: user.username,
+          email: user.email,
+          language: user.language
+        }));
+
+        console.log('data', user);
+        stopLoading();
+      }, (error) => {
         console.log(error);
         stopLoading();
       });
@@ -97,11 +112,7 @@ class Profile extends React.Component<IProps, IState> {
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
-
-    if (this.subscriptionApi) {
-      this.subscriptionApi.unsubscribe();
-    }
+    this.destroy$.next();
 
     if (this.subscriptionRedux) {
       this.subscriptionRedux();

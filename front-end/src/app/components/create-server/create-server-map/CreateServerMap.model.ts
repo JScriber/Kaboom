@@ -1,4 +1,5 @@
 import { WithStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { TranslateAndStyle } from 'src/utils';
 
 /**
  * Component styling.
@@ -6,7 +7,7 @@ import { WithStyles, createStyles, Theme } from '@material-ui/core/styles';
  */
 export const styles = ({ spacing }: Theme) => createStyles({
   fab: {
-    position: "absolute",
+    position: 'absolute',
     bottom: spacing.unit * 2,
     right: spacing.unit * 2,
   }
@@ -15,12 +16,12 @@ export const styles = ({ spacing }: Theme) => createStyles({
 /**
  * Props of the component.
  */
-export interface IMapProps extends WithStyles<typeof styles> {}
+export interface IProps extends TranslateAndStyle<typeof styles> {}
 
 /**
  * State of the component.
  */
-export interface IMapState {
+export interface IState {
   /** Tab index. */
   value: number;
 

@@ -28,10 +28,8 @@ class ProfileForm extends BaseForm<Form, IProps> {
     (e: React.ChangeEvent) => {
       this.change(field)(e);
 
-      if (this.props.isValid) {
-        timeout ? this.updateTimeout()
-                : this.directSubmit();
-      }
+      timeout ? this.updateTimeout()
+              : this.directSubmit();
     };
 
   /** Updates the timeout. */
@@ -46,6 +44,10 @@ class ProfileForm extends BaseForm<Form, IProps> {
     if (this.timeout) clearTimeout(this.timeout);
 
     setTimeout(this.props.submitForm);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
   }
 
   render() {
