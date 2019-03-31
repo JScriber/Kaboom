@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, DialogContentText, LinearProgress, Snackbar } from '@material-ui/core';
+import { Dialog, DialogTitle, LinearProgress, Snackbar } from '@material-ui/core';
 import { generate } from 'generate-password';
 import * as Yup from 'yup';
 import { materialTranslated } from 'src/utils';
@@ -32,7 +32,7 @@ class NewPassword extends React.Component<IProps, IState> {
   /** Api call manager. */
   private apiManager: Subject<void> = new Subject();
 
-  /**  */
+  /** List of all wrong passwords. */
   private wrongPasswords: string[] = [];
 
   /**
@@ -68,7 +68,7 @@ class NewPassword extends React.Component<IProps, IState> {
 
         this.props.onClose();
       }, (error) => {
-        if (error.message === 'Wrong password.') {
+        if (error.message === 'Incorrect password.') {
 
           this.wrongPasswords.push(form.oldPassword);
 

@@ -87,24 +87,33 @@ export class PlayerController {
         throw new InternalServerErrorException('Couldn\'t update the password.');
       }
     } else {
-      throw new BadRequestException('Wrong password.');
+      throw new BadRequestException('Incorrect password.');
     }
   }
 
-  /** Deletion of the current user. */
-  @Delete('@me')
+  /**
+   * Deletion of the current user.
+   * Usage of post as delete cannot have a payload.
+   */
+  @Post('@me/delete')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async delete(@Req() request) {
-    // TODO: Ask for password to insist on deletion.
+  async delete(@Res() res, @Req() request, @Body(new ValidationPipe()) dto: PlayerDTO.DeletePlayer) {
     const player: Player = request.player;
-    const result: DeleteResult = await this.playerRepository.delete(player.id);
 
-    if (result.affected === 0) {
-      throw new InternalServerErrorException('Couldn\'t delete current user');
+    if (await this.passwordMatch(dto.password, player)) {
+      const result: DeleteResult = await this.playerRepository.delete(player.id);
+  
+      if (result.affected === 0) {
+        throw new InternalServerErrorException('Couldn\'t delete current user');
+      } else {
+        res.status(HttpStatus.OK).send({
+          message: 'Player deleted'
+        });
+      }
+    } else {
+      throw new BadRequestException('Incorrect password');
     }
-
-    return 'Successfully deleted.';
   }
 
   @Post('login')

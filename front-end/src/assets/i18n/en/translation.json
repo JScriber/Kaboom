@@ -45,6 +45,14 @@
         "SAME_AS_OLD": "Same as old password.",
         "INCORRECT_PASSWORD": "Incorrect password."
       }
+    },
+    "DELETE_ACCOUNT": {
+      "TITLE": "Delete the account",
+      "PASSWORD": "Password",
+      "BUTTONS": {
+        "CANCEL": "Cancel",
+        "VALIDATE": "Delete"
+      }
     }
   },
   "SIGNUP": {
