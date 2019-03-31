@@ -23,6 +23,7 @@ import ProfileForm from './form/ProfileForm';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { loginUser } from 'src/app/redux/user/actions/login';
+import DeleteAccount from './delete-account/DeleteAccount';
 
 /**
  * Component used to create a server.
@@ -94,8 +95,17 @@ class Profile extends React.Component<IProps, IState> {
     this.stateModal('newPassword', true);
   };
 
+  /** Opens the delete account modal. */
+  private openDeleteAccount = () => {
+    this.handleClose();
+    this.stateModal('deleteAccount', true);
+  };
+
   /** Handles new password modal closing. */
   private handleNewPasswordClose = () => this.stateModal('newPassword', false);
+
+  /** Handles delete account modal closing. */
+  private handleDeleteAccountClose = () => this.stateModal('deleteAccount', false);
 
   /**
    * Changes a modal state.
@@ -193,7 +203,7 @@ class Profile extends React.Component<IProps, IState> {
                     </ListItemText>
                   </MenuItem>
 
-                  <MenuItem>
+                  <MenuItem onClick={this.openDeleteAccount}>
                     <ListItemIcon>
                       <DeleteIcon/>
                     </ListItemIcon>
@@ -220,6 +230,8 @@ class Profile extends React.Component<IProps, IState> {
         </Card>
 
         <NewPassword open={modal.newPassword} onClose={this.handleNewPasswordClose}/>
+
+        <DeleteAccount open={modal.deleteAccount} onClose={this.handleDeleteAccountClose}/>
       </React.Fragment>
     );
   }
