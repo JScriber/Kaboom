@@ -1,17 +1,15 @@
 import * as React from 'react';
-import { ButtonBase, Typography } from '@material-ui/core';
+import { ButtonBase, Typography, withStyles } from '@material-ui/core';
 import * as classNames from 'classnames';
 
-// Style.
-import './ListMapsTile.scss';
-
 // Class models.
-import { IProps, IState } from './ListMapsTile.model';
+import { IProps, IState, styles } from './ListMapsTile.model';
+import MapPreview from 'src/app/components/layout/map-preview/MapPreview';
 
 /**
  * Displays the map preview.
  */
-export class ListMapTile extends React.Component<IProps, IState> {
+class ListMapTile extends React.Component<IProps, IState> {
 
   /** State initialisation. */
   state: IState = {
@@ -37,18 +35,29 @@ export class ListMapTile extends React.Component<IProps, IState> {
   }
 
   render() {
+    const { classes } = this.props;
+
     const { selected, map } = this.state;
-    const classes = classNames('list-tile-container', { selected });
+    let baseClasses;
+    
+    if (selected) {
+      baseClasses = classNames(classes.container, classes.selected);
+    } else {
+      baseClasses = classNames(classes.container);      
+    }
 
     return (
-      <ButtonBase focusRipple className={classes} onClick={this.select} color="primary">
-        <div className="list-tile">
-          <div className="list-tile-image">
-            
-          </div>
-          <Typography>{map.name}</Typography>
-        </div>
+      <ButtonBase focusRipple className={baseClasses} onClick={this.select} color="primary">
+        <MapPreview/>
+
+        <Typography
+          className={classes.label}
+          noWrap={true}
+          color={selected ? 'primary' : 'default'}
+        >{map.name}</Typography>
       </ButtonBase>
     )
   }
 }
+
+export default withStyles(styles)(ListMapTile);

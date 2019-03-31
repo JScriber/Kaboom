@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { IProps, IState } from './ListMaps.model';
-import { ListMapTile } from '../list-maps-tile/ListMapsTile';
-import { Grid } from '@material-ui/core';
+import { IProps, IState, styles } from './ListMaps.model';
+import ListMapTile from '../list-maps-tile/ListMapsTile';
+import { Grid, withStyles } from '@material-ui/core';
 import { GridSpacing } from '@material-ui/core/Grid';
 
 /** No content to display. */
@@ -10,7 +10,7 @@ const NoContent = () => <div>No content</div>;
 /**
  * Map list.
  */
-export default class ListMap extends React.Component<IProps, IState> {
+class ListMap extends React.Component<IProps, IState> {
 
   /** Space between the tiles. */
   private static readonly TILE_SPACING: GridSpacing = 24;
@@ -37,14 +37,15 @@ export default class ListMap extends React.Component<IProps, IState> {
    * @returns {JSX.Element}
    */
   private renderTiles = (): JSX.Element => (
-    <Grid container spacing={ListMap.TILE_SPACING}>
+    <Grid container zeroMinWidth className={this.props.classes.gridContainer} spacing={ListMap.TILE_SPACING}>
       {
         this.state.previews.map((p, i) => (
-          <Grid item md={4} sm={3} key={i}>
+          <Grid item className={this.props.classes.grid} sm={4} xs={6} key={i}>
             <ListMapTile
               map={p}
               selected={this.state.selectedId === p.id}
-              onSelect={this.selection}/>
+              onSelect={this.selection}
+            />
           </Grid>
         ))
       }
@@ -65,3 +66,5 @@ export default class ListMap extends React.Component<IProps, IState> {
     );
   }
 }
+
+export default withStyles(styles)(ListMap);

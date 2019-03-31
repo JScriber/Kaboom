@@ -91,19 +91,7 @@ class CreateServerMap extends React.Component<IProps, IState> {
             {
               id: 3,
               name: 'Shouting star'
-            },
-            {
-              id: 4,
-              name: 'Warrior arena'
-            },
-            {
-              id: 5,
-              name: 'Night sight'
-            },
-            {
-              id: 6,
-              name: 'Roaring lion'
-            },
+            }
           ],
           customMaps: [
             {
