@@ -5,6 +5,9 @@ import { history } from './app/redux';
 
 import { rootRoutes } from './root.routes';
 
+/**
+ * Handles switch between the components depending on the route.
+ */
 export default class RouterOutlet extends React.Component {
 
   /** Component rendering. */

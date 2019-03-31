@@ -8,6 +8,11 @@
     "DECONNECTION": "Deconnection",
     "LANGUAGE": "Language"
   },
+  "FORMS": {
+    "REQUIRED": "Mandatory field.",
+    "PASSWORD_REQUIRED": "Mandatory field.",
+    "PASSWORD_REGEX": "Must contain 6 characters, uppercase and lowercase letters, and a special character."
+  },
   "DRAWER": {
     "JOIN_GAME": "Join game",
     "CREATE_GAME": "Create game",
@@ -24,6 +29,22 @@
     "MENU": {
       "CHANGE_PASSWORD": "New password",
       "DELETE_ACCOUNT": "Delete account"
+    },
+    "PASSWORD_NEW": {
+      "TITLE": "Reset password",
+      "DESCRIPTION": "Often change your password to improve the security of your account.",
+      "OLD": "Old password",
+      "NEW": "New password",
+      "GENERATE": "Generate random password",
+      "SUCCESS": "Password updated!",
+      "BUTTONS": {
+        "CANCEL": "Cancel",
+        "VALIDATE": "Validate"
+      },
+      "ERRORS": {
+        "SAME_AS_OLD": "Same as old password.",
+        "INCORRECT_PASSWORD": "Incorrect password."
+      }
     }
   },
   "SIGNUP": {
@@ -36,11 +57,9 @@
     "LANGUAGE": "Language",
     "SUBMIT_ACTION": "Validate",
     "ERRORS": {
-      "REQUIRED": "Mandatory field.",
       "USERNAME_LENGTH": "You should have at least 3 characters.",
-      "EMAIL_REGEX": "Invalid email",
-      "PASSWORD_REGEX": "Should contain 6 characters, uppercase and lowercase letters, and a special character.",
-      "PASSWORD_MATCH": "Passwords don't match."
+      "EMAIL_REGEX": "Invalid email.",
+      "PASSWORD_MATCH": "The passwords don't match."
     }
   },
   "LOGIN": {
@@ -50,10 +69,7 @@
     "PASSWORD": "Password",
     "SUBMIT_ACTION": "Validate",
     "ERRORS": {
-      "USERNAME_REQUIRED": "You must give your username.",
-      "USERNAME_LENGTH": "You should have at least 3 characters.",
-      "PASSWORD_REQUIRED": "Mandatory field.",
-      "PASSWORD_REGEX": "Should contain 6 characters, uppercase and lowercase letters, and a special character."
+      "USERNAME_LENGTH": "You should have at least 3 characters."
     }
   },
   "SERVER_CREATE": {

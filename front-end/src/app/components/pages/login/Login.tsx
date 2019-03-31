@@ -18,6 +18,7 @@ import { IState, IProps, styles, LoginUser } from './Login.model';
 import { Form } from './form/LoginForm.model';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { Validations } from 'src/app/services/validations/validations';
 
 /** Login component using the Login model. */
 class Login extends React.Component<IProps, IState> {
@@ -74,12 +75,12 @@ class Login extends React.Component<IProps, IState> {
 
     const validationSchema = Yup.object({
       username: Yup.string()
-        .required('LOGIN.ERRORS.USERNAME_REQUIRED')
+        .required('FORMS.REQUIRED')
         .min(3, 'LOGIN.ERRORS.USERNAME_LENGTH'),
 
       password: Yup.string()
-        .required('LOGIN.ERRORS.PASSWORD_REQUIRED')
-        .matches(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/, 'LOGIN.ERRORS.PASSWORD_REGEX')
+        .required('FORMS.PASSWORD_REQUIRED')
+        .matches(Validations.password, 'FORMS.PASSWORD_REGEX')
     });
 
     return (
