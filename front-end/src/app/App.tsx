@@ -1,52 +1,30 @@
 import * as React from 'react';
-import { Theme, withStyles, WithStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import * as classNames from 'classnames';
+
+// Internal mechnism.
 import RouterOutlet from '../RouterOutlet';
+import { store } from './redux';
 
 // Components.
 import Header from './components/layout/header/Header';
 import Drawer from './components/layout/drawer/Drawer';
-import { drawerWidth } from './components/layout/drawer/Drawer.model';
 
 // Style.
 import './App.scss';
-import { store } from './redux';
 
-const styles = (theme: Theme) => ({
-  app: {
-    display: 'flex',
-    backgroundColor: theme.palette.background.default,
-  },
-  content: {
-    flexGrow: 1,
-    padding: 10,
-    paddingTop: 80,
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
-});
+// Model.
+import { IProps, IState, styles } from './App.model';
 
-interface IProps extends WithStyles<typeof styles> {}
-
-interface IState {
-  authentificated: boolean;
-  drawerOpen: boolean;
-}
-
-/** Main component of the app. */
+/**
+ * Main component of the app.
+ * Gathers the header, the drawer and the router outlet.
+ * Takes care of the current location and the authentification state.
+ */
 class App extends React.Component<IProps, IState> {
 
   state: IState = {
+    location: '',
     drawerOpen: true,
     authentificated: false
   };
@@ -70,25 +48,49 @@ class App extends React.Component<IProps, IState> {
     }
   };
 
-  componentDidMount() {
-    store.subscribe(() => {
-      const { authentificated } = this.state;
-      const { username } = store.getState().userReducer;
-      const hasUser = username !== undefined;
+  /** Handles the changes made in the store. */
+  private handleStoreChanges() {
+    const { authentificated, location } = this.state;
 
-      if (authentificated && !hasUser) {
-        this.setState({ authentificated: false });
-      } else {
-        if (!authentificated && hasUser) {
-          this.setState({ authentificated: true });
-        }
+    const newLocation = this.getLocation();
+
+    // Test if has user.
+    const { username } = store.getState().userReducer;
+    const hasUser = username !== undefined;
+
+    if (authentificated && !hasUser) {
+      this.setState({ authentificated: false });
+    } else {
+      if (!authentificated && hasUser) {
+        this.setState({ authentificated: true });
       }
-    });
+    }
+
+    if (newLocation !== location) {
+      this.setState({ location: newLocation });
+    }
+  }
+
+  /**
+   * Returns the current route location.
+   * @returns {string}
+   */
+  private getLocation(): string {
+    return store.getState().router.location.pathname;
+  }
+
+  componentDidMount() {
+    // Get initial location.
+    const location = this.getLocation();
+    this.setState({ location });
+
+    // Listen for store changes.
+    store.subscribe(() => this.handleStoreChanges());
   }
 
   render() {
     const { classes } = this.props;
-    const { authentificated } = this.state;
+    const { authentificated, location } = this.state;
 
     return (
       <div className={classNames(classes.app, 'App')}>
@@ -100,7 +102,10 @@ class App extends React.Component<IProps, IState> {
 
         {
           authentificated && (
-            <Drawer open={this.state.drawerOpen}/>
+            <Drawer
+              location={location}
+              open={this.state.drawerOpen}
+            />
           )
         }
 

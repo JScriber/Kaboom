@@ -14,3 +14,6 @@ export const environment = {
 }
 
 export const maxCreatedMaps = 20;
+
+/** Password regex. */
+export const PASSWORD_REGEX: RegExp = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;

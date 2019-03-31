@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, HttpStatus, ConflictException, InternalServerErrorException, BadRequestException, UseGuards, Req, Put } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, ValidationPipe, Delete, HttpStatus, ConflictException, InternalServerErrorException, BadRequestException, UseGuards, Req, Put, UnauthorizedException, HttpCode } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
@@ -62,6 +62,32 @@ export class PlayerController {
         // Unknown error.
         throw new InternalServerErrorException('Cannot update the current user.');
       }
+    }
+  }
+
+  /** Updates the password of the given user. */
+  @Put('@me/password')
+  @UseGuards(AuthGuard('bearer'))
+  @ApiBearerAuth()
+  async updatePassword(@Res() res, @Req() request, @Body(new ValidationPipe()) dto: PlayerDTO.UpdatePassword) {
+    const player: Player = request.player;
+
+    const goodPassword: boolean = await this.passwordMatch(dto.oldPassword, player);
+
+    if (goodPassword) {
+      player.password = await Bcrypt.hash(dto.newPassword, player.salt);
+
+      try {
+        await this.playerRepository.save(player);
+
+        res.status(HttpStatus.OK).send({
+          message: 'Password updated!'
+        });
+      } catch (error) {
+        throw new InternalServerErrorException('Couldn\'t update the password.');
+      }
+    } else {
+      throw new BadRequestException('Wrong password.');
     }
   }
 

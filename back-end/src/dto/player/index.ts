@@ -4,6 +4,7 @@ export * from './create-player/created-player.dto';
 
 // Related to player update.
 export * from './update-player/update-player.dto';
+export * from './update-player/update-password.dto';
 
 // Related to current player.
 export * from './current-player/current-player.dto';

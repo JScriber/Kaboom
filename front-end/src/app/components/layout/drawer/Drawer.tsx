@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { ListItemIcon, ListItemText, Divider, List, ListItem } from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
+import i18next from 'i18next';
 
-import { IProps, styles, IState, Link } from './Drawer.model';
+import { IProps, styles, Link } from './Drawer.model';
 import { materialTranslated } from 'src/utils';
 import { pathRoutes } from 'src/root.routes';
 import { push } from 'connected-react-router';
@@ -14,7 +15,6 @@ import AddIcon from '@material-ui/icons/LibraryAddOutlined';
 import MapIcon from '@material-ui/icons/MapOutlined';
 import ChartIcon from '@material-ui/icons/BarChartOutlined';
 import HelpIcon from '@material-ui/icons/HelpOutline';
-import i18next from 'i18next';
 
 /**
  * Drawer component.
@@ -62,12 +62,19 @@ class DrawerComponent extends React.Component<IProps> {
    */
   private displayLinks = (links: Link[], t: i18next.TFunction) => {
     return links.map((link, index) => (
-      <ListItem button key={index} onClick={() => store.dispatch(push(link.link))}>
+      <ListItem button
+        key={index}
+        onClick={() => store.dispatch(push(link.link))}
+        selected={this.isCurrentLocation(link.link)}
+      >
         <ListItemIcon>{link.icon}</ListItemIcon>
         <ListItemText primary={t(link.name)} />
       </ListItem>
     ));
   };
+
+  /** Says if the link is the current location. */
+  private isCurrentLocation = (link: string) => this.props.location === link;
 
   render() {
     const { open, classes, t } = this.props;

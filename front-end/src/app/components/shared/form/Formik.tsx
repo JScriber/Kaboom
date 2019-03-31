@@ -8,8 +8,9 @@ interface IProps<F> extends FormikProps<F>, WithTranslation {}
  * Base formik form.
  * @template F - Form architecture.
  * @template P - Props.
+ * @template S - State.
  */
-export abstract class BaseForm<F, P extends IProps<F>> extends React.Component<P> {
+export abstract class BaseForm<F, P extends IProps<F>, S = {}> extends React.Component<P, S> {
 
   /**
    * Says if the given field has an error.

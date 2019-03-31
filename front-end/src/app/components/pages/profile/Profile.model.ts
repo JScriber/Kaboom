@@ -31,10 +31,17 @@ export interface Form {
   language: Language;
 }
 
+export interface Modals {
+  newPassword: boolean;
+  deleteAccount: boolean;
+}
+
 export interface IState {
   anchorEl: any;
   loading: boolean;
   form: Form;
+  /** Modal state. */
+  modal: Modals;
 }
 
 /** User after API update. */

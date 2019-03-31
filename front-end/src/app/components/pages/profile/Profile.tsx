@@ -8,14 +8,16 @@ import { Formik, FormikActions } from 'formik';
 import * as Yup from 'yup';
 
 // System-wide.
-import { Language, DEFAULT_LANGUAGE } from 'src/translation/translation';
+import { Language } from 'src/translation/translation';
 import { materialTranslated } from 'src/utils';
 
+// Linked components.
+import NewPassword from './new-password/NewPassword';
+
 // Model.
-import { IProps, IState, Form, styles, UpdatedUser } from './Profile.model';
+import { IProps, IState, Form, Modals, styles, UpdatedUser } from './Profile.model';
 import { store } from 'src/app/redux';
 import { ApiService } from 'src/app/services/api/api';
-import { Subscription } from 'indefinite-observable';
 import { Unsubscribe } from 'redux';
 import ProfileForm from './form/ProfileForm';
 import { Subject } from 'rxjs';
@@ -36,6 +38,10 @@ class Profile extends React.Component<IProps, IState> {
       username: '',
       email: '',
       language: Language.English
+    },
+    modal: {
+      newPassword: false,
+      deleteAccount: false
     }
   };
 
@@ -82,6 +88,26 @@ class Profile extends React.Component<IProps, IState> {
       });
   };
 
+  /** Opens the new password modal. */
+  private openNewPassword = () => {
+    this.handleClose();
+    this.stateModal('newPassword', true);
+  };
+
+  /** Handles new password modal closing. */
+  private handleNewPasswordClose = () => this.stateModal('newPassword', false);
+
+  /**
+   * Changes a modal state.
+   * @param {keyof(Modals)} modal - Target
+   * @param {boolean} state - New state.
+   */
+  private stateModal = (modal: keyof(Modals), state: boolean) => this.setState(s => {
+    s.modal[modal] = state;
+
+    return s;
+  });
+
   componentDidMount() {
     this._isMounted = true;
 
@@ -118,7 +144,7 @@ class Profile extends React.Component<IProps, IState> {
 
   render() {
     const { classes, t } = this.props;
-    const { form, loading } = this.state;
+    const { form, loading, modal } = this.state;
     const open = Boolean(this.state.anchorEl);
 
     const validationSchema = Yup.object({
@@ -158,7 +184,7 @@ class Profile extends React.Component<IProps, IState> {
                   }}
                   open={open}
                   onClose={this.handleClose}>
-                  <MenuItem>
+                  <MenuItem onClick={this.openNewPassword}>
                     <ListItemIcon>
                       <SecurityIcon/>
                     </ListItemIcon>
@@ -192,6 +218,8 @@ class Profile extends React.Component<IProps, IState> {
             />
           </CardContent>
         </Card>
+
+        <NewPassword open={modal.newPassword} onClose={this.handleNewPasswordClose}/>
       </React.Fragment>
     );
   }

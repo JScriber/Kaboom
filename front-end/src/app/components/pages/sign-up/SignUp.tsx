@@ -17,6 +17,7 @@ import { DEFAULT_LANGUAGE } from 'src/translation/translation';
 
 // Model.
 import { IProps, IState, Form, styles, NewUser } from './SignUp.model';
+import { Validations } from 'src/app/services/validations/validations';
 
 class SignUp extends React.Component<IProps, IState> {
 
@@ -78,19 +79,19 @@ class SignUp extends React.Component<IProps, IState> {
 
     const validationSchema = Yup.object({
       username: Yup.string()
-        .required('SIGNUP.ERRORS.REQUIRED')
+        .required('FORMS.REQUIRED')
         .min(3, 'SIGNUP.ERRORS.USERNAME_LENGTH'),
 
       email: Yup.string()
-        .required('SIGNUP.ERRORS.REQUIRED')
+        .required('FORMS.REQUIRED')
         .email('SIGNUP.ERRORS.EMAIL_REGEX'),
 
       password: Yup.string()
-        .required('SIGNUP.ERRORS.REQUIRED')
-        .matches(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/, 'SIGNUP.ERRORS.PASSWORD_REGEX'),
+        .required('FORMS.REQUIRED')
+        .matches(Validations.password, 'FORMS.PASSWORD_REGEX'),
 
       confirmPassword: Yup.string()
-        .required('SIGNUP.ERRORS.REQUIRED')
+        .required('FORMS.REQUIRED')
         .oneOf([Yup.ref('password'), null], 'SIGNUP.ERRORS.PASSWORD_MATCH')
     });
 
