@@ -1,42 +1,60 @@
 import * as React from 'react';
-import 'material-design-icons/iconfont/material-icons.css';
+import { Grid } from '@material-ui/core';
 
-import './JoinServer.scss';
+import { materialTranslated } from 'src/utils';
+import { IProps, IState, styles } from './JoinServer.model';
 
-import star from '../../../../assets/images/star.png';
-import map from '../../../../assets/images/sky.png';
+import Server from './server/Server';
 
-export default class JoinServer extends React.Component {
+/**
+ * Allows the user to join a server.
+ * Servers are automatically refreshed.
+ */
+class JoinServer extends React.Component<IProps, IState> {
+
+  /** State initialization. */
+  state: IState = {
+    games: []
+  };
+
+  componentDidMount() {
+    this.setState({
+      games: [
+        {
+          duration: 5,
+          slots: [
+            'Maelenn',
+            'Anthony'
+          ],
+          totalSlots: 3
+        },
+        {
+          duration: 10,
+          slots: [
+            'J1',
+            'J2',
+            'J3'
+          ],
+          totalSlots: 4
+        }
+      ]
+    })
+  }
 
   render() {
-
-    const items = [];
-    // items est temporaire et sera à remplacer par la liste des serveurs avec la map en cours et l'avatar des joueurs
-    // Il faut garder les className pour le SCSS
-    for (let i = 0; i < 15; i++) {
-      items.push(
-      <div className='item row m-1 p-2'>
-        <div className='col-4 p-0'>
-          <img className='map' src={map}/>
-        </div>
-        <div className='col-8 p-0'>
-          <p>10 minutes</p>
-          <div className='avatar-list'>
-            <img className='m-1' src={star}/>
-            <img className='m-1' src={star}/>
-            <img className='m-1' src={star}/>
-            <img className='m-1' src={star}/>
-          </div>
-        </div>
-      </div>);
-      }
-
     return (
-      <div className='server-list-component'>
-        <div className='server-list col-8 my-4 p-2'>
-          {items}
-        </div>
-      </div>
+      <Grid container spacing={16}>
+        {
+          this.state.games.map((game, i) => (
+            <Grid item lg={3} md={4} sm={6} key={i}>
+              <Server key={i} {... game}/>
+            </Grid>
+          ))
+        }
+      </Grid>
     );
   }
 }
+
+/** Export with material theme and translations. */
+export default materialTranslated(JoinServer, styles);

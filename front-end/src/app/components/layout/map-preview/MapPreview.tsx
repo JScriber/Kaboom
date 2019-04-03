@@ -12,9 +12,9 @@ class MapPreview extends React.Component<IProps> {
   state: IState = {};
 
   render() {
-    const { classes } = this.props;
+    const { classes, dimensions } = this.props;
 
-    return <div className={classes.root}></div>
+    return <div className={classes.root} style={{ width: dimensions, height: dimensions }}></div>
   }
 }
 

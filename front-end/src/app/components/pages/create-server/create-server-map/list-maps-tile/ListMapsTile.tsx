@@ -48,7 +48,7 @@ class ListMapTile extends React.Component<IProps, IState> {
 
     return (
       <ButtonBase focusRipple className={baseClasses} onClick={this.select} color="primary">
-        <MapPreview/>
+        <MapPreview dimensions="100px"/>
 
         <Typography
           className={classes.label}
