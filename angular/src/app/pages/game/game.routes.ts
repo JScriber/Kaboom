@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
-import { PlayGameComponent } from './play-game/play-game/play-game.component';
 import { JoinGameComponent } from './join-game/join-game/join-game.component';
 import { CreateGameComponent } from './create-game/create-game/create-game.component';
+import { GameComponent } from '../../game/game/game.component';
 
 export const gameRoutes: Routes = [
   {
     path: '',
-    component: PlayGameComponent
+    component: GameComponent
   },
   {
     path: 'join',

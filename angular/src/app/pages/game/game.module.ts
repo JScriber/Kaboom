@@ -3,15 +3,15 @@ import { CommonModule } from '@angular/common';
 
 import { CreateGameModule } from './create-game/create-game.module';
 import { JoinGameModule } from './join-game/join-game.module';
-import { PlayGameModule } from './play-game/play-game.module';
+import { PhaserGameModule } from '../../game/game.module';
 
 @NgModule({
   imports: [
     CommonModule,
+    PhaserGameModule,
 
     CreateGameModule,
-    JoinGameModule,
-    PlayGameModule
+    JoinGameModule
   ],
   declarations: [],
 })

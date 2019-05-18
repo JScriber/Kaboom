@@ -34,7 +34,9 @@
                 "src/assets/styles/"
               ]
             },
-            "scripts": []
+            "scripts": [
+              "node_modules/phaser/dist/phaser.js"
+            ]
           },
           "configurations": {
             "production": {
