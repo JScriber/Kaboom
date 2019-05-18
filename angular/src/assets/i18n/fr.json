@@ -1,0 +1,21 @@
+{
+  "PAGE_NOT_FOUND": "La page n'existe pas sur le serveur",
+  "SIDENAV": {
+    "JOIN_GAME": "Rejoindre partie",
+    "CREATE_GAME": "Créer partie",
+    "EDIT_MAP": "Éditer cartes",
+    "STATS": "Mes statistiques",
+    "INFORMATIONS": "Informations"
+  },
+  "TOOLBAR": {
+    "LANGUAGES": {
+      "TITLE": "Langue interface",
+      "ITEMS": {
+        "ENGLISH": "Anglais",
+        "FRENCH": "Français"
+      }
+    },
+    "SETTINGS": "Paramètres",
+    "LOGOUT": "Déconnexion"
+  }
+}

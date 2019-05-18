@@ -1,0 +1,41 @@
+<mat-toolbar color="primary" class="mat-elevation-z5">
+  <div class="left-side">
+    <button mat-icon-button>
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <mat-divider [vertical]="true"></mat-divider>
+
+    <a class="logo" matRipple routerLink="/">
+      <img src="assets/images/layout/logo.png"/>
+    </a>
+  </div>
+
+  <div class="right-side">
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item [matMenuTriggerFor]="languages">
+        <mat-icon class="material-icons-outlined">language</mat-icon>
+        <span translate>TOOLBAR.LANGUAGES.TITLE</span>
+      </button>
+
+      <button mat-menu-item routerLink="/account">
+        <mat-icon class="material-icons-outlined">settings</mat-icon>
+        <span translate>TOOLBAR.SETTINGS</span>
+      </button>
+
+      <button mat-menu-item>
+        <mat-icon class="material-icons-outlined">exit_to_app</mat-icon>
+        <span translate>TOOLBAR.LOGOUT</span>
+      </button>
+    </mat-menu>
+
+    <mat-menu #languages="matMenu">
+      <button mat-menu-item translate>TOOLBAR.LANGUAGES.ITEMS.ENGLISH</button>
+      <button mat-menu-item translate>TOOLBAR.LANGUAGES.ITEMS.FRENCH</button>
+    </mat-menu>
+  </div>
+</mat-toolbar>

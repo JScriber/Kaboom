@@ -1,0 +1,25 @@
+@import 'variables';
+
+footer {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  padding: 15px 20px;
+  box-sizing: content-box;
+
+  p {
+    box-sizing: content-box;
+
+    strong {
+      color: $accent;
+      text-transform: uppercase;
+    }
+
+    a {
+      color: $accent;
+      text-decoration: none;
+    }
+  }
+}
