@@ -1,17 +1,23 @@
-<app-toolbar></app-toolbar>
+<ng-container *ngIf="minimized$ | async; else normalLayout">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<ng-template #normalLayout>
+  <app-toolbar></app-toolbar>
   
-<mat-drawer-container class="example-container">
-  <mat-drawer mode="side" opened>
-    <app-sidenav></app-sidenav>
-  </mat-drawer>
+  <mat-drawer-container class="example-container">
+    <mat-drawer mode="side" opened>
+      <app-sidenav></app-sidenav>
+    </mat-drawer>
+  
+    <mat-drawer-content>
+      <div class="page">
+        <router-outlet></router-outlet>
+  
+        <div class="spacer"></div>
 
-  <mat-drawer-content>
-    <div class="page">
-      <router-outlet></router-outlet>
-
-      <div class="spacer"></div>
-
-      <app-footer></app-footer>
-    </div>
-  </mat-drawer-content>
-</mat-drawer-container>
+        <app-footer></app-footer>
+      </div>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</ng-template>

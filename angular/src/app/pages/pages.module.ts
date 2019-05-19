@@ -9,6 +9,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 // Modules.
 import { AuthentificationModule } from './authentification/authentification.module';
 import { GameModule } from './game/game.module';
+import { AccountModule } from './account/account.module';
 
 @NgModule({
   imports: [
@@ -18,6 +19,7 @@ import { GameModule } from './game/game.module';
     MatButtonModule,
     MatIconModule,
 
+    AccountModule,
     AuthentificationModule,
     GameModule
   ],

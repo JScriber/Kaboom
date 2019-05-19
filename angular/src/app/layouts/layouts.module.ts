@@ -11,6 +11,9 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { FooterComponent } from './footer/footer.component';
 
+// Modules.
+import { WebServiceModule } from '../web-service/web-service.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -23,7 +26,9 @@ import { FooterComponent } from './footer/footer.component';
     MatDividerModule,
     MatRippleModule,
     MatMenuModule,
-    MatButtonModule
+    MatButtonModule,
+
+    WebServiceModule
   ],
   declarations: [
     SidenavComponent,

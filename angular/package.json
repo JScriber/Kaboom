@@ -1,6 +1,6 @@
 {
-  "name": "angular",
-  "version": "0.0.0",
+  "name": "kaboom_client",
+  "version": "0.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -8,8 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "phaser-typings": "curl -o src/phaser.d.ts https://raw.githubusercontent.com/photonstorm/phaser3-docs/master/typescript/phaser.d.ts",
-    "postinstall": "npm run phaser-typings"
+    "phaser-typings": "curl -o src/phaser.d.ts https://raw.githubusercontent.com/photonstorm/phaser/master/types/phaser.d.ts"
   },
   "private": true,
   "dependencies": {
@@ -25,12 +24,13 @@
     "@angular/router": "~7.1.0",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
+    "@types/jwt-decode": "^2.2.1",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
+    "json2typescript": "^1.2.3",
+    "jwt-decode": "^2.2.0",
     "matter-js": "^0.14.2",
     "phaser": "3.16.2",
-    "phaser-component-library": "^2.0.0",
-    "phaser-matter-collision-plugin": "^0.10.2",
     "rxjs": "~6.3.3",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"

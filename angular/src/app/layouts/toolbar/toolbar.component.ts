@@ -1,15 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { AuthentificationService } from '../../web-service/authentification/authentification.service';
 
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
   styleUrls: ['./toolbar.component.scss']
 })
-export class ToolbarComponent implements OnInit {
+export class ToolbarComponent {
 
-  constructor() { }
+  constructor(private readonly auth: AuthentificationService) {}
 
-  ngOnInit() {
+  /** Logout the user. */
+  logout() {
+    this.auth.logout();
   }
-
 }

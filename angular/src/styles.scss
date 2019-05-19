@@ -16,3 +16,45 @@ app-root {
   display: flex;
   flex-flow: column wrap;
 }
+
+
+/* Input outline style. */
+.mat-form-field-outline {
+  .mat-form-field-outline-start,
+  .mat-form-field-outline-gap,
+  .mat-form-field-outline-end {
+    border-width: 1px !important;
+  }
+}
+
+/* Sign in and sign up card. */
+.form-card {
+  max-width: 500px;
+  margin: 30px auto 0;
+
+  mat-card-header {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  
+    mat-icon {
+      opacity: .75;
+    }
+  }
+  
+  form {
+    mat-form-field {
+      width: 100%;
+    }
+  }
+
+  .divider {
+    width: 99%;
+    height: 1px;
+    background: #000;
+    opacity: .1;
+    margin: 0 auto 18px;
+  }
+}

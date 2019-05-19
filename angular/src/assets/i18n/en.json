@@ -1,6 +1,42 @@
 {
+  "PAGE_NOT_FOUND": "The page doesn't exist on the server",
+  "FORM": {
+    "ERRORS": {
+      "REQUIRED": "Mandatory field.",
+      "EMAIL": "Invalid email address.",
+      "PASSWORD": "Must contain at least 6 characters, uppercase and lowercase letters, and a special character.",
+      "PASSWORD_CONFIRM": "The passwords are not identical."
+    }
+  },
   "SIDENAV": {
     "JOIN_GAME": "Join game",
-    "CREATE_GAME": "Create game"
+    "CREATE_GAME": "Create game",
+    "EDIT_MAP": "Edit maps",
+    "STATS": "My stats",
+    "INFORMATIONS": "Informations"
+  },
+  "TOOLBAR": {
+    "LANGUAGES": {
+      "TITLE": "Interface language",
+      "ITEMS": {
+        "ENGLISH": "English",
+        "FRENCH": "French"
+      }
+    },
+    "SETTINGS": "Parameters",
+    "LOGOUT": "Log out"
+  },
+  "SIGN_UP": {
+    "TITLE": "Sign-Up",
+    "USERNAME": "Username",
+    "EMAIL_ADDRESS": "Email address",
+    "PASSWORD": "Password",
+    "CONFIRM_PASSWORD": "Confirm password",
+    "LANGUAGE": "Language"
+  },
+  "SIGN_IN": {
+    "TITLE": "Sign-In",
+    "USERNAME": "Username",
+    "PASSWORD": "Password"
   }
 }
