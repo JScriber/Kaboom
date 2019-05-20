@@ -1,0 +1,69 @@
+{
+  "PAGE_NOT_FOUND": "La page n'existe pas sur le serveur",
+  "NOTIFICATION": {
+    "SIGN_IN": "You're signed in!",
+    "ACCOUNT_ERROR": "An error occurred while updating your informations."
+  },
+  "FORM": {
+    "ERRORS": {
+      "REQUIRED": "Champs obligatoire.",
+      "EMAIL": "Adresse email invalide.",
+      "PASSWORD": "Doit contenir 6 caractères, des lettres majuscules et minuscules, ainsi qu'un caractère spécial.",
+      "PASSWORD_CONFIRM": "Les mots de passe ne sont pas identiques."
+    },
+    "CANCEL": "Annuler",
+    "SUBMIT": "Valider"
+  },
+  "SIDENAV": {
+    "JOIN_GAME": "Rejoindre partie",
+    "CREATE_GAME": "Créer partie",
+    "EDIT_MAP": "Éditer cartes",
+    "STATS": "Mes statistiques",
+    "INFORMATIONS": "Informations"
+  },
+  "TOOLBAR": {
+    "LANGUAGES": {
+      "TITLE": "Langue interface",
+      "ITEMS": {
+        "ENGLISH": "Anglais",
+        "FRENCH": "Français"
+      }
+    },
+    "SETTINGS": "Paramètres",
+    "LOGOUT": "Déconnexion"
+  },
+  "SIGN_UP": {
+    "TITLE": "Inscription",
+    "USERNAME": "Nom d'utilisateur",
+    "EMAIL_ADDRESS": "Adresse mail",
+    "PASSWORD": "Mot de passe",
+    "CONFIRM_PASSWORD": "Confirmation mot de passe",
+    "LANGUAGE": "Langue"
+  },
+  "SIGN_IN": {
+    "TITLE": "Connexion",
+    "USERNAME": "Nom d'utilisateur",
+    "PASSWORD": "Mot de passe"
+  },
+  "ACCOUNT": {
+    "TITLE": "Mon compte",
+    "ACTIONS": {
+      "PASSWORD": "Changer mot de passe",
+      "DELETE": "Supprimer le compte"
+    },
+    "FORM": {
+      "USERNAME": "Nom d'utilisateur",
+      "EMAIL_ADDRESS": "Adresse mail",
+      "LANGUAGE": "Langue"
+    },
+    "DIALOG_PASSWORD": {
+      "TITLE": "Modifier votre mot de passe",
+      "OLD_PASSWORD": "Ancien mot de passe",
+      "NEW_PASSWORD": "Nouveau mot de passe"
+    },
+    "DIALOG_DELETE": {
+      "TITLE": "Supprimer le compte",
+      "PASSWORD": "Mot de passe"
+    }
+  }
+}

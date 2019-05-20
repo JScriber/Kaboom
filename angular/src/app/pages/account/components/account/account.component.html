@@ -1,0 +1,51 @@
+<mat-card class="form-card">
+  <mat-progress-bar *ngIf="loading" color="accent" mode="indeterminate"></mat-progress-bar>
+
+  <mat-card-header>
+    <mat-card-title translate>ACCOUNT.TITLE</mat-card-title>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form">
+      <mat-form-field appearance="outline">
+        <mat-label translate>ACCOUNT.FORM.USERNAME</mat-label>
+        <input matInput required formControlName="username"/>
+        <mat-error>{{ getErrorMessage('username') | translate }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label translate>ACCOUNT.FORM.EMAIL_ADDRESS</mat-label>
+        <input matInput required formControlName="email"/>
+        <mat-error>{{ getErrorMessage('email') | translate }}</mat-error>
+      </mat-form-field>
+
+      <div class="divider"></div>
+
+      <mat-form-field appearance="outline">
+        <mat-label translate>ACCOUNT.FORM.LANGUAGE</mat-label>
+        <mat-select required formControlName="language">
+          <mat-option value="fr">{{ 'TOOLBAR.LANGUAGES.ITEMS.FRENCH' | translate }}</mat-option>
+          <mat-option value="en">{{ 'TOOLBAR.LANGUAGES.ITEMS.ENGLISH' | translate }}</mat-option>
+        </mat-select>
+
+        <mat-error>{{ getErrorMessage('language') | translate }}</mat-error>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="openPasswordDialog()">
+    <mat-icon class="material-icons-outlined">vpn_key</mat-icon>
+    <span translate>ACCOUNT.ACTIONS.PASSWORD</span>
+  </button>
+
+  <button mat-menu-item (click)="openDeleteDialog()">
+    <mat-icon class="material-icons-outlined">delete</mat-icon>
+    <span translate>ACCOUNT.ACTIONS.DELETE</span>
+  </button>
+</mat-menu>

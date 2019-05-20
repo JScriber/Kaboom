@@ -1,0 +1,26 @@
+@import 'variables';
+
+mat-nav-list {
+  width: 100%;
+
+  a {
+    width: 100%;
+    margin-bottom: 1px;
+    border-radius: 0 25px 25px 0;
+    overflow: hidden;
+    color: rgba(0, 0, 0, .65);
+
+    &.active {
+      background-color: rgba($accent, .15);
+      color: $accent;
+    }
+
+    mat-icon {
+      margin: 0 10px;  
+    }
+
+    p {
+      margin-left: 10px;
+    }
+  }
+}

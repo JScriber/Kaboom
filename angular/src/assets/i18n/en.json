@@ -1,0 +1,67 @@
+{
+  "PAGE_NOT_FOUND": "The page doesn't exist on the server",
+  "NOTIFICATION": {
+    "SIGN_IN": "Vous êtes authentifié !",
+    "ACCOUNT_ERROR": "Une erreur est survenue lors de la mise à jour de vos informations."
+  },
+  "FORM": {
+    "ERRORS": {
+      "REQUIRED": "Mandatory field.",
+      "EMAIL": "Invalid email address.",
+      "PASSWORD": "Must contain at least 6 characters, uppercase and lowercase letters, and a special character.",
+      "PASSWORD_CONFIRM": "The passwords are not identical."
+    }
+  },
+  "SIDENAV": {
+    "JOIN_GAME": "Join game",
+    "CREATE_GAME": "Create game",
+    "EDIT_MAP": "Edit maps",
+    "STATS": "My stats",
+    "INFORMATIONS": "Informations"
+  },
+  "TOOLBAR": {
+    "LANGUAGES": {
+      "TITLE": "Interface language",
+      "ITEMS": {
+        "ENGLISH": "English",
+        "FRENCH": "French"
+      }
+    },
+    "SETTINGS": "Parameters",
+    "LOGOUT": "Log out"
+  },
+  "SIGN_UP": {
+    "TITLE": "Sign-Up",
+    "USERNAME": "Username",
+    "EMAIL_ADDRESS": "Email address",
+    "PASSWORD": "Password",
+    "CONFIRM_PASSWORD": "Confirm password",
+    "LANGUAGE": "Language"
+  },
+  "SIGN_IN": {
+    "TITLE": "Sign-In",
+    "USERNAME": "Username",
+    "PASSWORD": "Password"
+  },
+  "ACCOUNT": {
+    "TITLE": "My account",
+    "ACTIONS": {
+      "PASSWORD": "Change password",
+      "DELETE": "Delete the account"
+    },
+    "FORM": {
+      "USERNAME": "Username",
+      "EMAIL_ADDRESS": "Email address",
+      "LANGUAGE": "Language"
+    },
+    "DIALOG_PASSWORD": {
+      "TITLE": "Change your password",
+      "OLD_PASSWORD": "Old password",
+      "NEW_PASSWORD": "New password"
+    },
+    "DIALOG_DELETE": {
+      "TITLE": "Delete the account",
+      "PASSWORD": "Password"
+    }
+  }
+}
