@@ -4,6 +4,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 
+// Services.
+import { SidenavService } from './layouts/services/sidenav.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -22,8 +25,14 @@ export class AppComponent {
 
   constructor(translate: TranslateService,
               private readonly router: Router,
-              private readonly activatedRoute: ActivatedRoute) {
+              private readonly activatedRoute: ActivatedRoute,
+              private readonly sidenav: SidenavService) {
 
     translate.setDefaultLang('fr');
+  }
+
+  /** State of the sidenav. */
+  get sidenavState() {
+    return this.sidenav.state;
   }
 }

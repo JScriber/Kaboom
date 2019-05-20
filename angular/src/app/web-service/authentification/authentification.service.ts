@@ -43,12 +43,20 @@ export class AuthentificationService {
   }
 
   /**
+   * Retrieves the token from local storage.
+   * @returns {string | undefined}
+   */
+  getToken(): string | undefined {
+    return localStorage.getItem(AuthentificationService.LOCAL_TOKEN);
+  }
+
+  /**
    * Says if the user is currently authentificated.
    * @returns {boolean}
    */
   isAuthentificated(): boolean {
     let authentificated = false;
-    const token = localStorage.getItem(AuthentificationService.LOCAL_TOKEN);
+    const token = this.getToken();
 
     if (token) {
       authentificated = !this.tokenHasExpired(decode(token));

@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" class="mat-elevation-z5">
   <div class="left-side">
-    <button mat-icon-button>
+    <button mat-icon-button (click)="toggleSidenav()">
       <mat-icon>menu</mat-icon>
     </button>
 
@@ -17,11 +17,6 @@
     </button>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item [matMenuTriggerFor]="languages">
-        <mat-icon class="material-icons-outlined">language</mat-icon>
-        <span translate>TOOLBAR.LANGUAGES.TITLE</span>
-      </button>
-
       <button mat-menu-item routerLink="/account">
         <mat-icon class="material-icons-outlined">settings</mat-icon>
         <span translate>TOOLBAR.SETTINGS</span>
@@ -31,11 +26,6 @@
         <mat-icon class="material-icons-outlined">exit_to_app</mat-icon>
         <span translate>TOOLBAR.LOGOUT</span>
       </button>
-    </mat-menu>
-
-    <mat-menu #languages="matMenu">
-      <button mat-menu-item translate>TOOLBAR.LANGUAGES.ITEMS.ENGLISH</button>
-      <button mat-menu-item translate>TOOLBAR.LANGUAGES.ITEMS.FRENCH</button>
     </mat-menu>
   </div>
 </mat-toolbar>

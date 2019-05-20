@@ -16,7 +16,7 @@ export abstract class BaseApi {
   protected abstract baseUrl: string;
 
   constructor(private readonly http: HttpClient,
-              private readonly jsonConverter: JsonConverterService) {}
+              protected readonly jsonConverter: JsonConverterService) {}
 
   /**
    * GET request.

@@ -1,4 +1,6 @@
 <mat-card class="form-card">
+  <mat-progress-bar *ngIf="loading" color="accent" mode="indeterminate"></mat-progress-bar>
+
   <mat-card-header>
     <mat-card-title translate>ACCOUNT.TITLE</mat-card-title>
 
@@ -17,8 +19,8 @@
 
       <mat-form-field appearance="outline">
         <mat-label translate>ACCOUNT.FORM.EMAIL_ADDRESS</mat-label>
-        <input matInput required formControlName="emailAddress"/>
-        <mat-error>{{ getErrorMessage('emailAddress') | translate }}</mat-error>
+        <input matInput required formControlName="email"/>
+        <mat-error>{{ getErrorMessage('email') | translate }}</mat-error>
       </mat-form-field>
 
       <div class="divider"></div>

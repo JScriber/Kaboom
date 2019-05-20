@@ -1,5 +1,9 @@
 {
   "PAGE_NOT_FOUND": "The page doesn't exist on the server",
+  "NOTIFICATION": {
+    "SIGN_IN": "Vous êtes authentifié !",
+    "ACCOUNT_ERROR": "Une erreur est survenue lors de la mise à jour de vos informations."
+  },
   "FORM": {
     "ERRORS": {
       "REQUIRED": "Mandatory field.",
@@ -38,5 +42,26 @@
     "TITLE": "Sign-In",
     "USERNAME": "Username",
     "PASSWORD": "Password"
+  },
+  "ACCOUNT": {
+    "TITLE": "My account",
+    "ACTIONS": {
+      "PASSWORD": "Change password",
+      "DELETE": "Delete the account"
+    },
+    "FORM": {
+      "USERNAME": "Username",
+      "EMAIL_ADDRESS": "Email address",
+      "LANGUAGE": "Language"
+    },
+    "DIALOG_PASSWORD": {
+      "TITLE": "Change your password",
+      "OLD_PASSWORD": "Old password",
+      "NEW_PASSWORD": "New password"
+    },
+    "DIALOG_DELETE": {
+      "TITLE": "Delete the account",
+      "PASSWORD": "Password"
+    }
   }
 }

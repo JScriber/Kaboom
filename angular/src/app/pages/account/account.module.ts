@@ -3,11 +3,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
-import { MatCardModule, MatIconModule, MatInputModule, MatSelectModule, MatMenuModule, MatButtonModule, MatDialogModule } from '@angular/material';
+import { MatCardModule, MatIconModule, MatInputModule, MatSelectModule, MatMenuModule, MatButtonModule, MatDialogModule, MatProgressBarModule } from '@angular/material';
 
-import { AccountComponent } from './account/account.component';
-import { PasswordDialogComponent } from './password-dialog/password-dialog.component';
-import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
+import { mockService } from 'src/utils';
+
+// Components.
+import { AccountComponent } from './components/account/account.component';
+import { PasswordDialogComponent } from './components/password-dialog/password-dialog.component';
+import { DeleteDialogComponent } from './components/delete-dialog/delete-dialog.component';
+
+// Modules.
+import { SharedModule } from 'src/app/shared/shared.module';
+
+// Services.
+import { UserApiService } from './services/api/user-api.service';
+import { MockUserApiService } from './services/mock/mock-user-api.service';
 
 @NgModule({
   imports: [
@@ -22,7 +32,10 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
     MatSelectModule,
     MatMenuModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressBarModule,
+
+    SharedModule
   ],
   declarations: [
     AccountComponent,
@@ -32,6 +45,9 @@ import { DeleteDialogComponent } from './delete-dialog/delete-dialog.component';
   entryComponents: [
     PasswordDialogComponent,
     DeleteDialogComponent
+  ],
+  providers: [
+    mockService(UserApiService, MockUserApiService)
   ]
 })
 export class AccountModule {}

@@ -6,7 +6,7 @@
   <app-toolbar></app-toolbar>
   
   <mat-drawer-container class="example-container">
-    <mat-drawer mode="side" opened>
+    <mat-drawer mode="side" [opened]="sidenavState | async">
       <app-sidenav></app-sidenav>
     </mat-drawer>
   

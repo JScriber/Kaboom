@@ -1,5 +1,9 @@
 {
   "PAGE_NOT_FOUND": "La page n'existe pas sur le serveur",
+  "NOTIFICATION": {
+    "SIGN_IN": "You're signed in!",
+    "ACCOUNT_ERROR": "An error occurred while updating your informations."
+  },
   "FORM": {
     "ERRORS": {
       "REQUIRED": "Champs obligatoire.",

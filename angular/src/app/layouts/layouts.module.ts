@@ -14,6 +14,9 @@ import { FooterComponent } from './footer/footer.component';
 // Modules.
 import { WebServiceModule } from '../web-service/web-service.module';
 
+// Services.
+import { SidenavService } from './services/sidenav.service';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -34,6 +37,9 @@ import { WebServiceModule } from '../web-service/web-service.module';
     SidenavComponent,
     ToolbarComponent,
     FooterComponent
+  ],
+  providers: [
+    SidenavService
   ],
   exports: [
     SidenavComponent,

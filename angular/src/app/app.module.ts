@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -14,6 +14,7 @@ import { MatSidenavModule } from '@angular/material';
 // Local modules.
 import { PagesModule } from './pages/pages.module';
 import { LayoutsModule } from './layouts/layouts.module';
+import { WebServiceModule } from './web-service/web-service.module';
 
 /** Mandatory for translations. */
 export function HttpLoaderFactory(http: HttpClient) {
@@ -37,7 +38,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatSidenavModule,
 
     PagesModule,
-    LayoutsModule
+    LayoutsModule,
+    WebServiceModule
   ],
   declarations: [
     AppComponent

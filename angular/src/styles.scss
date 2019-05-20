@@ -29,8 +29,17 @@ app-root {
 
 /* Sign in and sign up card. */
 .form-card {
+  position: relative;
   max-width: 500px;
   margin: 30px auto 0;
+  overflow: hidden;
+
+  mat-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
 
   mat-card-header {
     display: flex;

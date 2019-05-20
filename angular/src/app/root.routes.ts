@@ -6,7 +6,7 @@ import { SignInComponent } from './pages/authentification/sign-in/sign-in.compon
 import { SignUpComponent } from './pages/authentification/sign-up/sign-up.component';
 
 import { AuthGuardService } from './web-service/auth-guard.service';
-import { AccountComponent } from './pages/account/account/account.component';
+import { AccountComponent } from './pages/account/components/account/account.component';
 
 export const rootRoutes: Routes = [
   {

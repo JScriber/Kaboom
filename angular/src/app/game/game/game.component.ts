@@ -27,7 +27,7 @@ export class GameComponent implements OnInit, OnDestroy {
         gravity: { y: 0 },
         debug: false
       }
-    },
+    }
   };
 
   /** Game instance. */

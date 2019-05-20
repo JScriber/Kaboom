@@ -8,6 +8,7 @@ import { FormValidationsService } from 'src/app/shared/form/services/form-valida
 import { UserSignApiService } from 'src/app/web-service/user-sign/api/user-sign-api.service';
 import { AuthentificationService } from 'src/app/web-service/authentification/authentification.service';
 import { TranslationService, Language } from '../../../shared/translation/translation.service';
+import { NotificationService } from 'src/app/shared/notification/notification/notification.service';
 
 // Models.
 import { SignIn } from '../../../web-service/user-sign/models/sign-in.model';
@@ -40,7 +41,8 @@ export class SignInComponent {
               private readonly validation: FormValidationsService,
               private readonly translate: TranslationService,
               private readonly webService: UserSignApiService,
-              private readonly authentification: AuthentificationService) {}
+              private readonly authentification: AuthentificationService,
+              private readonly notification: NotificationService) {}
 
   /**
    * Display error message of the control.
@@ -63,7 +65,10 @@ export class SignInComponent {
       dto.password = value.password;
 
       this.webService.signIn(dto)
-        .subscribe(payload => this.authentification.login(payload), err => {
+        .subscribe(payload => {
+          this.notification.success('NOTIFICATION.SIGN_IN');
+          this.authentification.login(payload);
+        }, err => {
           // TODO: Error handling.
           console.log(err);
         });
