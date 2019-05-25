@@ -1,3 +1,15 @@
+.page-wrapper {
+  display: grid;
+  width: 100%;
+  grid-gap: 10px;
+  grid-template-columns: 1.5fr 1fr;
+}
+
+.left-card, .right-card {
+  position: relative;
+  width: 100%;
+}
+
 mat-slider {
   width: 100%;
 }
@@ -12,7 +24,17 @@ mat-panel-title {
 }
 
 ::ng-deep {
+  .left-card > mat-accordion.mat-accordion {
+    width: 100% !important;
+  }
+
   .mat-expansion-panel-header > span.mat-content, mat-panel-title {
     overflow: visible !important;
+  }
+}
+
+@media screen and (max-width: 1300px) {
+  .page-wrapper {
+    grid-template-columns: 1fr;
   }
 }

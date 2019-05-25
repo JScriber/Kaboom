@@ -17,6 +17,11 @@ app-root {
   flex-flow: column wrap;
 }
 
+/* Wrapper for a page. */
+.page-wrapper {
+  padding: 15px;
+}
+
 
 /* Input outline style. */
 .mat-form-field-outline {

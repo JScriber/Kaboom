@@ -1,8 +1,15 @@
 {
   "PAGE_NOT_FOUND": "The page doesn't exist on the server",
   "NOTIFICATION": {
-    "SIGN_IN": "Vous êtes authentifié !",
-    "ACCOUNT_ERROR": "Une erreur est survenue lors de la mise à jour de vos informations."
+    "SIGN_IN": {
+      "SUCCESS": "You are authentificated.",
+      "INCORRECT_CREDENTIALS": "Credentials are incorrect."
+    },
+    "SIGN_UP": {
+      "SUCCESS": "Welcome !",
+      "CREDENTIALS_USED": "The credentials are already used."
+    },
+    "ACCOUNT_ERROR": "An error has occurred while updating your informations."
   },
   "FORM": {
     "ERRORS": {

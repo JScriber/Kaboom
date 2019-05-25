@@ -1,25 +1,53 @@
-<mat-accordion>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Nombre de joueurs
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <mat-slider [min]="2" [max]="4" [thumbLabel]="true"></mat-slider>
-  </mat-expansion-panel>
+<div class="page-wrapper">
+  <div class="left-card">
+    <mat-accordion>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Nombre de joueurs
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-slider [min]="2" [max]="4" [thumbLabel]="true"></mat-slider>
+      </mat-expansion-panel>
+    
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-slide-toggle></mat-slide-toggle>
+            <p>Limite de temps</p>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+    
+        <mat-slider
+          [min]="5"
+          [max]="20"
+          [thumbLabel]="true"
+        ></mat-slider>
+      </mat-expansion-panel>
+  
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-slide-toggle></mat-slide-toggle>
+            <p>Bonus</p>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+  
+        <div>
+          <div class="search-bar">
+            <mat-form-field appearance="outline">
+              <mat-label translate>Rechercher un bonus</mat-label>
+              <input matInput/>
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+          </div>
+  
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
 
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-slide-toggle></mat-slide-toggle>
-        <p>Limite de temps</p>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <mat-slider
-      [min]="5"
-      [max]="20"
-      [thumbLabel]="true"
-    ></mat-slider>
-  </mat-expansion-panel>
-</mat-accordion>
+  <div class="right-card">
+    
+  </div>
+</div>
