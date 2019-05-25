@@ -1,6 +1,7 @@
-import { Player, Language } from '@entity/player/player.entity';
+import { User, Language } from '@entity/user/user.entity';
 
-export class CurrentPlayer {
+export class CurrentUser {
+
   /** Unique name of the user. */
   private readonly username: string;
 
@@ -13,10 +14,10 @@ export class CurrentPlayer {
   /** Creation date */
   private readonly createdAt: Date;
 
-  constructor(player: Player) {
-    this.username = player.username;
-    this.email = player.email;
-    this.language = player.language;
-    this.createdAt = player.createdAt;
+  constructor(user: User) {
+    this.username = user.username;
+    this.email = user.email;
+    this.language = user.language;
+    this.createdAt = user.createdAt;
   }
 }

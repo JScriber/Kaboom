@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';;
 import { Contest } from './contest/contest.entity';
 import { Map } from './map/map.entity';
 import { Participant } from './participant/participant.entity';
-import { Player } from './player/player.entity';
+import { User } from './user/user.entity';
 
 @Module({
   imports: [
@@ -11,7 +11,7 @@ import { Player } from './player/player.entity';
       Contest,
       Map,
       Participant,
-      Player
+      User
     ]),
   ],
   controllers: [],

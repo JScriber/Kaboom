@@ -18,7 +18,10 @@
       "@service/*": ["./src/services/*"],
       "@dto/*": ["./src/dto/*"],
       "@environment": ["./environment/environment.dev.ts"]
-    }
+    },
+    "types": [
+      "jest"
+    ]
   },
   "include": [
     "src/**/*"

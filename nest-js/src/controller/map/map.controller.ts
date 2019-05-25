@@ -32,7 +32,7 @@ export class MapController {
     @ApiBearerAuth()
     async findAll(@Req() req) {
         return await this.mapRepository.find({
-            where: {owner: req.player}
+            where: {owner: req.user}
         });
     }
 
@@ -42,7 +42,7 @@ export class MapController {
     async findOne(@Req() req, @Param('id') id) {
         try {
             return await this.mapRepository.findOneOrFail(id, {
-                where: {owner: req.player}
+                where: {owner: req.user}
             });
         } catch (e) {
             throw new NotFoundException();
@@ -56,7 +56,7 @@ export class MapController {
         try {
             // delete is authorized only if the current player is the owner of the map
             const map = await this.mapRepository.findOneOrFail(id, {
-                where: {owner: req.player}
+                where: {owner: req.user}
             });
             return this.mapRepository.delete(map);
         } catch (e) {
@@ -77,7 +77,7 @@ export class MapController {
                 map.name = mapDTO.name;
                 map.content = mapDTO.content;
                 map.createdAt = new Date();
-                map.owner = req.player;
+                map.owner = req.user;
                 await this.mapRepository.save(map);
             }
         } catch (e) {
@@ -90,9 +90,9 @@ export class MapController {
     @ApiBearerAuth()
     async update(@Res() res, @Req() req, @Body(new ValidationPipe()) mapDto: CreateMap, @Param('id') id) {
         try {
-            // update is authorized only if the current player is the owner of the map
+            // update is authorized only if the current user is the owner of the map
             const map = await this.mapRepository.findOneOrFail(id, {
-                where: {owner: req.player}
+                where: {owner: req.user}
             });
             map.height = mapDto.height;
             map.width = mapDto.width;

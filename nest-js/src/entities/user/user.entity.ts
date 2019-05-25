@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Generated, Unique, OneToMany, JoinColumn, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, Generated, OneToMany, JoinColumn, CreateDateColumn } from "typeorm";
 import { Map } from '@entity/map/map.entity';
 import { Participant } from '@entity/participant/participant.entity';
 
@@ -9,7 +9,8 @@ export enum Language {
 }
 
 @Entity()
-export class Player {
+export class User {
+
   /** Auto-generated id in database. */
   @PrimaryGeneratedColumn()
   id: number;
@@ -43,15 +44,15 @@ export class Player {
   @Column('varchar', { length: 255 })
   salt: string;
 
-  /** A player has many maps. */
+  /** A user has many maps. */
   @OneToMany(type => Map, map => map.owner, {
     nullable: true
   })
   @JoinColumn()
   maps: Map[];
 
-  /** A player has many involvements. */
-  @OneToMany(type => Participant, participant => participant.player, {
+  /** A user has many involvements. */
+  @OneToMany(type => Participant, participant => participant.user, {
     nullable: true
   })
   @JoinColumn()
