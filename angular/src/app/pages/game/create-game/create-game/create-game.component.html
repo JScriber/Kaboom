@@ -1,3 +1,25 @@
-<p>
-  create-game works!
-</p>
+<mat-accordion>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Nombre de joueurs
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <mat-slider [min]="2" [max]="4" [thumbLabel]="true"></mat-slider>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-slide-toggle></mat-slide-toggle>
+        <p>Limite de temps</p>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-slider
+      [min]="5"
+      [max]="20"
+      [thumbLabel]="true"
+    ></mat-slider>
+  </mat-expansion-panel>
+</mat-accordion>
