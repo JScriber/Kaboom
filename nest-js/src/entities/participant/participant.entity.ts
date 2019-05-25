@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, Generated } from "typeorm";
-import { Player } from '@entity/player/player.entity';
+import { User } from '@entity/user/user.entity';
 import { Contest } from '@entity/contest/contest.entity';
 
 @Entity()
@@ -33,12 +33,12 @@ export class Participant {
   })
   abort: boolean;
 
-  /** Player who participates. */
-  @ManyToOne(type => Player, player => player.participations, {
+  /** User who participates. */
+  @ManyToOne(type => User, user => user.participations, {
     nullable: true
   })
-  @JoinColumn({ name: 'player_id' })
-  player: Player;
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   /** A participant is a participant for only one contest. */
   @ManyToOne(type => Contest, contest => contest.participants, {

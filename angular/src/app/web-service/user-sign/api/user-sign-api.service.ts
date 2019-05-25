@@ -13,7 +13,7 @@ import { SignedIn } from '../models/signed-in.model';
 export class UserSignApiService extends BaseApi implements UserSignApi {
 
   /** @inheritdoc */
-  protected baseUrl = 'player';
+  protected baseUrl = 'user';
 
   /** @inheritdoc */
   signUp(dto: SignUp): Observable<void> {

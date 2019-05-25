@@ -6,17 +6,24 @@ import { AuthService } from '../auth.service';
 
 @Injectable()
 export class HttpStrategy extends PassportStrategy(Strategy) {
+
   constructor(private readonly authService: AuthService) {
     super();
   }
 
+  /**
+   * Validates the user with the given token.
+   * @param {string} token
+   * @returns {User}
+   * @throws UnauthorizedException
+   */
   async validate(token: string) {
-    const player = await this.authService.validatePlayer(token);
+    const user = await this.authService.validateUser(token);
 
-    if (!player) {
+    if (!user) {
       throw new UnauthorizedException();
     }
 
-    return player;
+    return user;
   }
 }
