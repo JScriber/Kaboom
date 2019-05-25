@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Player } from '../../entities/player/player.entity';
+import { User } from '../../entities/user/user.entity';
 import { Repository } from 'typeorm';
 
 import { TokenService } from '@service/token/token.service';
@@ -13,18 +13,18 @@ export interface Payload {
 
 @Injectable()
 export class AuthService {
-  constructor(@InjectRepository(Player)
-    private readonly playerRepository: Repository<Player>,
+  constructor(@InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly tokenService: TokenService) {}
 
   /**
    * Returns the user with the token.
    * @param {string} token
-   * @returns {Promise<Player>}
+   * @returns {Promise<User>}
    */
-  async validatePlayer(token: string): Promise<Player> {
+  async validateUser(token: string): Promise<User> {
     const payload = this.tokenService.extractFrom(token);
 
-    return await this.playerRepository.findOne(payload);
+    return await this.userRepository.findOne(payload);
   }
 }

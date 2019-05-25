@@ -7,11 +7,11 @@ import { Response } from 'express-serve-static-core';
 
 // Entities.
 import { Contest } from '@entity/contest/contest.entity';
-import { Player } from '@entity/player/player.entity';
+import { User } from '@entity/user/user.entity';
 import { Participant } from '@entity/participant/participant.entity';
 import { Map } from '@entity/map/map.entity';
 
-import { PlayerRepository } from '@repository/player/player.repository';
+import { UserRepository } from '@repository/user/user.repository';
 import { ContestDTO } from '@dto/contest/contest-settings.dto';
 import { PoolWebSocket } from '../../websockets/pool/pool.websocket';
 
@@ -25,8 +25,8 @@ export class ContestController {
     private readonly mapRepository: Repository<Map>,
     @InjectRepository(Participant)
     private readonly participantRepository: Repository<Participant>,
-    @InjectRepository(PlayerRepository)
-    private readonly playerRepository: PlayerRepository,
+    @InjectRepository(UserRepository)
+    private readonly playerRepository: UserRepository,
     private readonly contestWS: PoolWebSocket) {}
 
   @Post('create')
@@ -34,7 +34,7 @@ export class ContestController {
   @ApiBearerAuth()
   async create(@Req() request, @Res() res: Response, @Body(new ValidationPipe()) settings: ContestDTO.ContestSettings) {
     // Current user.
-    const player: Player = request.player;
+    const user: User = request.user;
     const contest: Contest = new Contest();
 
     // Try to retrieved the map used in the contest.
@@ -42,21 +42,21 @@ export class ContestController {
       const map: Map = await this.mapRepository.findOneOrFail({
         where: {
           id: settings.mapID,
-          owner: player
+          owner: user
         }
       });
 
       // Attach the map to the contest.
       contest.map = map;
     } catch (error) {
-      throw new BadRequestException(`Map with id ${settings.mapID} doesn't exist or is not owned by ${player.username}.`);
+      throw new BadRequestException(`Map with id ${settings.mapID} doesn't exist or is not owned by ${user.username}.`);
     }
 
     // Attach the participant.
     let participant: Participant;
 
     try {
-      participant = await this.newParticipant(player, true);
+      participant = await this.newParticipant(user, true);
     } catch (error) {
       throw new InternalServerErrorException('Cannot create a participation.');
     }
@@ -85,7 +85,7 @@ export class ContestController {
   @ApiBearerAuth()
   async join(@Req() request, @Res() res: Response, @Body(new ValidationPipe()) input: ContestDTO.ContestJoin) {
     const id: number = input.id;
-    const player: Player = request.player;
+    const user: User = request.user;
     let contest: Contest;
 
     // Check if the contest exists.
@@ -98,16 +98,16 @@ export class ContestController {
       throw new BadRequestException(`Contest with id ${id} doesn't exist.`);
     }
 
-    // Get all the contests the player has been participating to.
+    // Get all the contests the user has been participating to.
     const contests: number[] = await this.playerRepository
-      .findContests(player.id);
+      .findContests(user.id);
 
     if (contests.indexOf(id) === -1) {
       let participant: Participant;
 
       // Check if the participant has been fully created.
       try {
-        participant = await this.newParticipant(player, false);
+        participant = await this.newParticipant(user, false);
       } catch (err) {
         throw new InternalServerErrorException('Cannot create the participant.');
       }
@@ -132,20 +132,20 @@ export class ContestController {
         throw new InternalServerErrorException('Error while joining the contest');
       });
     } else {
-      throw new BadRequestException('Player is already participating.');
+      throw new BadRequestException('User is already participating.');
     }
   }
 
   /**
-   * Creates a new participation with a given player.
-   * @param {Player} player
+   * Creates a new participation with a given user.
+   * @param {User} user
    * @param {boolean} isCreator
    * @returns {Participant}
    */
-  private async newParticipant(player: Player, isCreator: boolean): Promise<Participant> {
+  private async newParticipant(user: User, isCreator: boolean): Promise<Participant> {
     const participant: Participant = new Participant();
     participant.creator = isCreator;
-    participant.player = player;
+    participant.user = user;
 
     return this.participantRepository.save(participant);
   }

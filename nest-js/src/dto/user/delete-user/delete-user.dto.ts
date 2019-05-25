@@ -2,7 +2,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, Matches } from 'class-validator';
 import { PASSWORD_REGEX } from '@environment';
 
-export class DeletePlayer {
+export class DeleteUser {
 
   /** Front-end password. */
   @ApiModelProperty()

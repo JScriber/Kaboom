@@ -1,6 +1,7 @@
-import { Player } from '@entity/player/player.entity';
+import { User } from '@entity/user/user.entity';
 
 export class NewCredentials {
+
   /** Unique id of the user. */
   private readonly id: number;
 
@@ -10,9 +11,9 @@ export class NewCredentials {
   /** Authentification token. */
   private readonly token: string;
 
-  constructor(player: Player, token: string) {
-    this.id = player.id;
-    this.username = player.username;
+  constructor(user: User, token: string) {
+    this.id = user.id;
+    this.username = user.username;
     this.token = token;
   }
 }

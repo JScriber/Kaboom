@@ -11,7 +11,7 @@ import { ChangePassword } from '../../models/change-password.model';
 export class UserApiService extends BaseApi implements UserApi {
 
   /** @inheritdoc */
-  protected baseUrl = 'player/@me';
+  protected baseUrl = 'user/@me';
 
   /** @inheritdoc */
   informations(): Observable<User> {

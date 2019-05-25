@@ -8,7 +8,7 @@ import {
   JoinColumn,
   Table
 } from "typeorm";
-import { Player } from '@entity/player/player.entity';
+import { User } from '@entity/user/user.entity';
 import { Contest } from '@entity/contest/contest.entity';
 
 @Entity()
@@ -41,11 +41,11 @@ export class Map {
   content: string[];
 
   /** A map has a owner (creator). */
-  @ManyToOne(type => Player, player => player.maps, {
+  @ManyToOne(type => User, owner => owner.maps, {
     nullable: true
   })
-  @JoinColumn({ name: 'player_id' })
-  owner: Player;
+  @JoinColumn({ name: 'user_id' })
+  owner: User;
 
   /** A map can be used and reused in many contests. */
   @OneToMany(type => Contest, contest => contest.map, {

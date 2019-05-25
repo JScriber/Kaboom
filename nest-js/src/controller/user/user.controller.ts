@@ -9,49 +9,49 @@ import { Response } from 'express-serve-static-core';
 import * as Bcrypt from 'bcrypt';
 
 import { environment } from '@environment';
-import { PlayerRepository } from '@repository/player/player.repository';
-import { Player, Language } from '@entity/player/player.entity';
+import { UserRepository } from '@repository/user/user.repository';
+import { User, Language } from '@entity/user/user.entity';
 import { TokenService } from '@service/token/token.service';
 
 // Inputs and outputs.
-import * as PlayerDTO from '@dto/player/index';
+import * as UserDTO from '@dto/user/index';
 
 /** Default language. */
 const DEFAULT_LANGUAGE = Language.English;
 
-@ApiUseTags('Player')
-@Controller('player')
-export class PlayerController {
+@ApiUseTags('User')
+@Controller('user')
+export class UserController {
 
   constructor(
-    @InjectRepository(PlayerRepository)
-    private readonly playerRepository: PlayerRepository,
+    @InjectRepository(UserRepository)
+    private readonly userRepository: UserRepository,
     private readonly tokenService: TokenService) {}
 
   /** Informations on the current user. */
   @Get('@me')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async current(@Req() request): Promise<PlayerDTO.CurrentPlayer> {
-    return new PlayerDTO.CurrentPlayer(request.player);
+  async current(@Req() request): Promise<UserDTO.CurrentUser> {
+    return new UserDTO.CurrentUser(request.user);
   }
 
   /** Updates informations on the current user. */
   @Put('@me')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async update(@Res() res, @Req() request, @Body(new ValidationPipe()) patch: PlayerDTO.UpdatePlayer) {
-    const player: Player = request.player;
+  async update(@Res() res, @Req() request, @Body(new ValidationPipe()) patch: UserDTO.UpdateUser) {
+    const user: User = request.user;
 
     // Patches informations.
-    player.username = patch.username;
-    player.email = patch.email;
-    player.language = patch.language || DEFAULT_LANGUAGE;
+    user.username = patch.username;
+    user.email = patch.email;
+    user.language = patch.language || DEFAULT_LANGUAGE;
 
     try {
       res.status(HttpStatus.OK).send(
-        new PlayerDTO.CreatedPlayer(
-          await this.playerRepository.save(player)
+        new UserDTO.CreatedUser(
+          await this.userRepository.save(user)
         )
       );
     } catch (error) {
@@ -69,16 +69,16 @@ export class PlayerController {
   @Put('@me/password')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async updatePassword(@Res() res, @Req() request, @Body(new ValidationPipe()) dto: PlayerDTO.UpdatePassword) {
-    const player: Player = request.player;
+  async updatePassword(@Res() res, @Req() request, @Body(new ValidationPipe()) dto: UserDTO.UpdatePassword) {
+    const user: User = request.user;
 
-    const goodPassword: boolean = await this.passwordMatch(dto.oldPassword, player);
+    const goodPassword: boolean = await this.passwordMatch(dto.oldPassword, user);
 
     if (goodPassword) {
-      player.password = await Bcrypt.hash(dto.newPassword, player.salt);
+      user.password = await Bcrypt.hash(dto.newPassword, user.salt);
 
       try {
-        await this.playerRepository.save(player);
+        await this.userRepository.save(user);
 
         res.status(HttpStatus.OK).send({
           message: 'Password updated!'
@@ -98,17 +98,17 @@ export class PlayerController {
   @Post('@me/delete')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async delete(@Res() res, @Req() request, @Body(new ValidationPipe()) dto: PlayerDTO.DeletePlayer) {
-    const player: Player = request.player;
+  async delete(@Res() res, @Req() request, @Body(new ValidationPipe()) dto: UserDTO.DeleteUser) {
+    const user: User = request.user;
 
-    if (await this.passwordMatch(dto.password, player)) {
-      const result: DeleteResult = await this.playerRepository.delete(player.id);
+    if (await this.passwordMatch(dto.password, user)) {
+      const result: DeleteResult = await this.userRepository.delete(user.id);
   
       if (result.affected === 0) {
         throw new InternalServerErrorException('Couldn\'t delete current user');
       } else {
         res.status(HttpStatus.OK).send({
-          message: 'Player deleted'
+          message: 'User deleted'
         });
       }
     } else {
@@ -117,22 +117,22 @@ export class PlayerController {
   }
 
   @Post('login')
-  async login(@Res() res: Response, @Body(new ValidationPipe()) credentials: PlayerDTO.Credentials) {
+  async login(@Res() res: Response, @Body(new ValidationPipe()) credentials: UserDTO.Credentials) {
     // Message returned if incorrect credentials.
     const incorrectCredentials: string = 'Incorrect credentials.';
 
     try {
-      // Get the requested player.
-      const player: Player = await this.playerRepository.findOne({
+      // Get the requested user.
+      const user: User = await this.userRepository.findOne({
         username: credentials.username
       });
 
-      if (await this.passwordMatch(credentials.password, player)) {
+      if (await this.passwordMatch(credentials.password, user)) {
         // Generate and assign a token.
-        const token = this.generateToken(player);
+        const token = this.generateToken(user);
 
         res.status(HttpStatus.OK).send(
-          new PlayerDTO.NewCredentials(player, token)
+          new UserDTO.NewCredentials(user, token)
         );
       } else {
         throw new BadRequestException(incorrectCredentials);
@@ -144,26 +144,26 @@ export class PlayerController {
 
   /** Creates a new user. */
   @Post()
-  async signup(@Res() res: Response, @Body(new ValidationPipe()) info: PlayerDTO.CreatePlayer) {
-    const player = new Player();
+  async signup(@Res() res: Response, @Body(new ValidationPipe()) info: UserDTO.CreateUser) {
+    const user = new User();
 
     // Set basic informations.
-    player.username = info.username;
-    player.email = info.email;
-    player.language = info.language || DEFAULT_LANGUAGE;
+    user.username = info.username;
+    user.email = info.email;
+    user.language = info.language || DEFAULT_LANGUAGE;
 
     // Set the salt.
-    player.salt = await Bcrypt.genSalt(environment.security.roundEncryption);
+    user.salt = await Bcrypt.genSalt(environment.security.roundEncryption);
     // Encrypt password.
-    player.password = await Bcrypt.hash(info.password, player.salt);
+    user.password = await Bcrypt.hash(info.password, user.salt);
 
     // Persist the user.
     try {
-      const savedPlayer = await this.playerRepository.save(player);
-      const createdPlayer = new PlayerDTO.CreatedPlayer(savedPlayer);
-      createdPlayer.token = this.generateToken(savedPlayer); 
+      const savedUser = await this.userRepository.save(user);
+      const createdUser = new UserDTO.CreatedUser(savedUser);
+      createdUser.token = this.generateToken(savedUser); 
 
-      res.status(HttpStatus.CREATED).send(createdPlayer);
+      res.status(HttpStatus.CREATED).send(createdUser);
     } catch (error) {
       // Credentials already used.
       if (error.code === '23505') {
@@ -178,22 +178,19 @@ export class PlayerController {
   /**
    * Says if the given password is the good password.
    * @param {string} testedPassword - Password to test.
-   * @param {Player} player
+   * @param {User} user
    * @returns {Promise<boolean>}
    */
-  private async passwordMatch(testedPassword: string, player: Player): Promise<boolean> {
-    return player.password === await Bcrypt.hash(testedPassword, player.salt);
+  private async passwordMatch(testedPassword: string, user: User): Promise<boolean> {
+    return user.password === await Bcrypt.hash(testedPassword, user.salt);
   }
 
   /**
    * Generates a token from the given player.
-   * @param {Player} player
+   * @param {User} user
    * @returns {string}
    */
-  private generateToken(player: Player): string {
-    return this.tokenService.generateFrom({
-      id: player.id,
-      uuid: player.uuid
-    });
+  private generateToken({ id, uuid }: User): string {
+    return this.tokenService.generateFrom({ id, uuid });
   }
 }

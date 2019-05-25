@@ -1,8 +1,8 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional, IsEnum } from 'class-validator';
-import { Language } from '@entity/player/player.entity';
+import { Language } from '@entity/user/user.entity';
 
-export class CreatePlayer {
+export class CreateUser {
 
   /** Unique username. */
   @ApiModelProperty()

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
-import { PlayerController } from './controller/player/player.controller';
+import { UserController } from './controller/user/user.controller';
 import { MapController } from './controller/map/map.controller';
 import { EntitiesModule } from './entities/entities.module';
 import { ContestController } from './controller/contest/contest.controller';
@@ -16,7 +16,7 @@ import { AlterationsController } from './controller/alterations/alterations.cont
     ServicesModule,
     PassportModule.register({
       defaultStrategy: 'bearer',
-      property: 'player'
+      property: 'user'
     }),
     TypeOrmModule.forRoot(),
     EntitiesModule,
@@ -24,7 +24,7 @@ import { AlterationsController } from './controller/alterations/alterations.cont
     GameModule
   ],
   controllers: [
-    PlayerController,
+    UserController,
     MapController,
     ContestController,
     AlterationsController
