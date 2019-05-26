@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, HostListener, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, HostListener, OnInit, NgZone } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -27,7 +27,8 @@ export class AppComponent implements OnInit {
   constructor(translate: TranslateService,
               private readonly router: Router,
               private readonly activatedRoute: ActivatedRoute,
-              private readonly sidenav: SidenavService) {
+              private readonly sidenav: SidenavService,
+              private readonly ngZone: NgZone) {
 
     translate.setDefaultLang('fr');
   }
@@ -44,17 +45,10 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.sidenav.bindWindowResize(window.innerWidth);
-  }
 
-  /**
-   * Listens for window resizing.
-   * @param event
-   */
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    const width = event.target.innerWidth;
-
-    this.sidenav.bindWindowResize(width);
+    // Listen for window resizing.
+    this.ngZone.runOutsideAngular(() => window.addEventListener('resize',
+      () => this.sidenav.bindWindowResize(window.innerWidth)));
   }
 
   /** Closes the sidenav. */

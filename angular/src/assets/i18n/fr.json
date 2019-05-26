@@ -72,5 +72,89 @@
       "TITLE": "Supprimer le compte",
       "PASSWORD": "Mot de passe"
     }
+  },
+  "CREATE_GAME": {
+    "SEARCH": {
+      "BONUS": "Rechercher un bonus",
+      "PENALTY": "Rechercher un malus"
+    },
+    "ACTIONS": {
+      "SEND": "Valider",
+      "APPLY": "Appliquer",
+      "CANCEL": "Annuler"
+    },
+    "FORM": {
+      "NUMBER_PLAYERS": "Nombre de joueurs",
+      "BONUS": "Bonus",
+      "PENALTY": "Malus"
+    },
+    "FIELDS": {
+      "GREEN_FOREST": {
+        "TITLE": "Forêt verte",
+        "DESCRIPTION": "La bataille a lieu dans une forêt. Utilisez vos bombes pour brûler les arbres qui vous bloquent la route de la victoire."
+      }
+    },
+    "ITEMS": {
+      "BONUS": {
+        "WALL_PASS": {
+          "TITLE": "Passe-murailles",
+          "DESCRIPTION": "Permet de passer à travers les murs."
+        },
+        "FIRE_SUIT": {
+          "TITLE": "Combinaison anti-feu",
+          "DESCRIPTION": "Protège des explosions."
+        },
+        "BOMB_UP": {
+          "TITLE": "Bomb-Up",
+          "DESCRIPTION": "Augmente le nombre de bombes pouvant être posées."
+        },
+        "SKATE": {
+          "TITLE": "Skate",
+          "DESCRIPTION": "Augmente la vitesse."
+        },
+        "YELLOW_FLAME": {
+          "TITLE": "Flamme jaune",
+          "DESCRIPTION": "La portée des bombes est augmentée."
+        },
+        "RED_FLAME": {
+          "TITLE": "Flamme rouge",
+          "DESCRIPTION": "La portée des bombes n'a plus de limites."
+        },
+        "BOMB_DISARMER": {
+          "TITLE": "Désamorceur",
+          "DESCRIPTION": "Empêche l'explosion d'une bombe."
+        },
+        "POWER_GLOVE": {
+          "TITLE": "Gant",
+          "DESCRIPTION": "Pousse les bombes et les joueurs."
+        },
+        "HEART": {
+          "TITLE": "Coeur",
+          "DESCRIPTION": "Ajoute un coeur."
+        },
+        "LIFE_UP": {
+          "TITLE": "Vie supplémentaire",
+          "DESCRIPTION": "Ajoute une vie."
+        }
+      },
+      "PENALTIES": {
+        "BOMB_DOWN": {
+          "TITLE": "Bomb-Down",
+          "DESCRIPTION": "Diminue le nombre de bombes pouvant être posées."
+        },
+        "BLUE_FLAME": {
+          "TITLE": "Flamme bleue",
+          "DESCRIPTION": "Diminue la portée des bombes."
+        },
+        "CLOG": {
+          "TITLE": "Sabot",
+          "DESCRIPTION": "Diminue la vitesse."
+        },
+        "SKULL": {
+          "TITLE": "Tête de mort",
+          "DESCRIPTION": "Amène plusieurs effets négatifs."
+        }
+      }
+    }
   }
 }

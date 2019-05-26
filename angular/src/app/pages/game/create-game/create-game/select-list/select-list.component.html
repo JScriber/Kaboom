@@ -1,0 +1,25 @@
+<div class="select-list">
+  <div mat-dialog-content>
+    <mat-selection-list #options>
+      <mat-list-option *ngFor="let item of items"
+        [value]="item.key"
+        [selected]="item.state"
+        (click)="toggle(item)"
+      >
+        <img matListAvatar [src]="item.image"/>
+        <h4 mat-line>{{ item.title | translate }}</h4>
+        <p mat-line>{{ item.description | translate }}</p>
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+  
+  <div mat-dialog-actions>
+    <button mat-button (click)="close()">
+      {{ 'CREATE_GAME.ACTIONS.CANCEL' | translate }}
+    </button>
+
+    <button mat-button color="accent" (click)="send()">
+      {{ 'CREATE_GAME.ACTIONS.APPLY' | translate }}
+    </button>
+  </div>
+</div>

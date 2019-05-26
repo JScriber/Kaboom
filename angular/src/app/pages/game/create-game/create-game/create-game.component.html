@@ -1,53 +1,75 @@
 <div class="page-wrapper">
-  <div class="left-card">
-    <mat-accordion>
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            Nombre de joueurs
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-slider [min]="2" [max]="4" [thumbLabel]="true"></mat-slider>
-      </mat-expansion-panel>
+  <mat-card class="create-game-card">
+    <mat-progress-bar *ngIf="loading" mode="indeterminate" color="accent"></mat-progress-bar>
+
+    <mat-card-content>
+      <form [formGroup]="form" (submit)="submit()">
+
+        <div matRipple class="map">
+          <div class="left-side">
+            <div class="preview">
+              <img src="assets/images/previews/wood-level.jpg"/>
+            </div>
+          </div>
+
+          <div class="right-side">
+            <h2 class="mat-h2" translate>CREATE_GAME.FIELDS.GREEN_FOREST.TITLE</h2>
+            <p class="mat-small" translate>CREATE_GAME.FIELDS.GREEN_FOREST.DESCRIPTION</p>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'CREATE_GAME.FORM.NUMBER_PLAYERS' | translate }}</mat-label>
+          <mat-select required formControlName="players">
+            <mat-option *ngFor="let option of numberPlayersOptions" [value]="option">
+              {{ option }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="time-selection">
+          <button mat-icon-button (click)="toggleTimeLimit()" type="button">
+            <mat-icon class="material-icons-outlined">
+              {{ form.get('timeLimit').value === true ? 'timer' : 'timer_off' }}
+            </mat-icon>
+          </button>
+
+          <mat-slider formControlName="timeDuration" [min]="3" [max]="20"></mat-slider>
+
+          <p [ngClass]="{disabled: !form.get('timeLimit').value}">
+            {{ form.get('timeDuration').value }} min
+          </p>
+        </div>
+
+        <div class="group-alterations">
+          <div class="alterations">
+            <mat-slide-toggle formControlName="bonus">
+              <p translate>CREATE_GAME.FORM.BONUS</p>
+            </mat-slide-toggle>
     
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <mat-slide-toggle></mat-slide-toggle>
-            <p>Limite de temps</p>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-    
-        <mat-slider
-          [min]="5"
-          [max]="20"
-          [thumbLabel]="true"
-        ></mat-slider>
-      </mat-expansion-panel>
-  
-      <mat-expansion-panel>
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            <mat-slide-toggle></mat-slide-toggle>
-            <p>Bonus</p>
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-  
-        <div>
-          <div class="search-bar">
-            <mat-form-field appearance="outline">
-              <mat-label translate>Rechercher un bonus</mat-label>
-              <input matInput/>
-              <mat-icon matSuffix>search</mat-icon>
-            </mat-form-field>
+            <button type="button" (click)="openBonus()" mat-icon-button [disabled]="!form.get('bonus').value">
+              <mat-icon class="material-icons-outlined">settings</mat-icon>
+            </button>
           </div>
   
-        </div>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </div>
+          <div class="alterations">
+            <mat-slide-toggle formControlName="malus">
+              <p translate>CREATE_GAME.FORM.PENALTY</p>
+            </mat-slide-toggle>
 
-  <div class="right-card">
-    
-  </div>
+            <button type="button" (click)="openMalus()" mat-icon-button [disabled]="!form.get('malus').value">
+              <mat-icon class="material-icons-outlined">settings</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" mat-raised-button color="accent">
+          {{ 'CREATE_GAME.ACTIONS.SEND' | translate }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
 </div>
+

@@ -1,139 +1,245 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { SelectItem } from '../select-list/select-list.component';
+import { SelectItem, SelectListComponent } from './select-list/select-list.component';
+import { MatDialog } from '@angular/material';
+import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { CreateGameApiService } from '../services/api/create-game-api.service';
+import { CreateGame } from '../models/create-game.model';
+import { JsonConverterService, Class } from '../../../../web-service/json-converter/json-converter.service';
+import { Bonus } from '../models/alterations/bonus.model';
+import { Penalties } from '../models/alterations/penalties.model';
 
 @Component({
   selector: 'app-create-game',
   templateUrl: './create-game.component.html',
-  styleUrls: ['./create-game.component.scss']
+  styleUrls: ['./create-game.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CreateGameComponent {
+export class CreateGameComponent implements OnInit {
 
+  /** Options for the number of players. */
+  readonly numberPlayersOptions = [2, 3, 4];
+
+  /** List of bonus. */
   bonusItems: SelectItem[] = [
     {
       key: 'wallPass',
-      title: 'Passe murailles',
-      description: 'Permet de passer à travers les murs. Ne rend pas intangible.',
-      image: '',
-      initialState: false
-    },
-    {
-      key: 'teleportation',
-      title: 'Téléportation',
-      description: 'Téléporte aléatoirement à un autre endroit.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.WALL_PASS.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.WALL_PASS.DESCRIPTION',
+      image: 'assets/game/items/wall-pass.jpg',
+      state: true
     },
     {
       key: 'fireSuit',
-      title: 'Combinaison anti-feu',
-      description: 'Permet de résister aux déflagrations des bombes.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.FIRE_SUIT.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.FIRE_SUIT.DESCRIPTION',
+      image: 'assets/game/items/fire-suit.jpg',
+      state: true
     },
     {
       key: 'bombUp',
-      title: 'Bomb-Up',
-      description: 'Augmente le nombre de bombes pouvant être posées simultanément.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.BOMB_UP.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.BOMB_UP.DESCRIPTION',
+      image: 'assets/game/items/bomb-up.jpg',
+      state: true
     },
     {
       key: 'skate',
-      title: 'Skate',
-      description: 'Augmente la vitesse du personnage.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.SKATE.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.SKATE.DESCRIPTION',
+      image: 'assets/game/items/skate.jpg',
+      state: true
     },
     {
       key: 'yellowFlame',
-      title: 'Flamme jaune',
-      description: 'Augmente la portée des bombes.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.YELLOW_FLAME.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.YELLOW_FLAME.DESCRIPTION',
+      image: 'assets/game/items/yellow-flame.jpg',
+      state: true
     },
     {
       key: 'redFlame',
-      title: 'Flamme rouge',
-      description: 'L\'explosion d\'une bombe ne connait aucune limite.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.RED_FLAME.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.RED_FLAME.DESCRIPTION',
+      image: 'assets/game/items/red-flame.jpg',
+      state: true
     },
     {
       key: 'bombDisarmer',
-      title: 'Désamorceur',
-      description: 'Permet de désamorcer une bombe avant son explosion.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.BOMB_DISARMER.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.BOMB_DISARMER.DESCRIPTION',
+      image: 'assets/game/items/disarm.jpg',
+      state: true
     },
     {
       key: 'powerGlove',
-      title: 'Gant',
-      description: 'Permet de pousser les bombes.',
-      image: '',
-      initialState: false
-    },
-    {
-      key: 'push',
-      title: 'Poussée',
-      description: 'Permet de pousser d\'autres joueurs.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.POWER_GLOVE.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.POWER_GLOVE.DESCRIPTION',
+      image: 'assets/game/items/glove.jpg',
+      state: true
     },
     {
       key: 'heart',
-      title: 'Coeur',
-      description: 'Permet de gagner un coeur',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.HEART.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.HEART.DESCRIPTION',
+      image: 'assets/game/items/heart.jpg',
+      state: true
     },
     {
       key: 'lifeUp',
-      title: 'Vie',
-      description: 'Permet de gagner une vie supplémentaire.',
-      image: '',
-      initialState: false
-    },
-    {
-      key: 'swapPositions',
-      title: 'Échange',
-      description: 'Échange la position avec un autre joueur aléatoirement.',
-      image: '',
-      initialState: false
+      title: 'CREATE_GAME.ITEMS.BONUS.LIFE_UP.TITLE',
+      description: 'CREATE_GAME.ITEMS.BONUS.LIFE_UP.DESCRIPTION',
+      image: 'assets/game/items/life-up.jpg',
+      state: true
     }
   ];
 
-  // penalties: [
-  //   {
-  //     name: 'Inversion',
-  //     key: 'invert',
-  //     description: 'Les touches directionnelles sont inversées.',
-  //   },
-  //   {
-  //     name: 'Bomb-Down',
-  //     key: 'bombDown',
-  //     description: 'Diminue le nombres de bombes pouvant être posées simultanément.',
-  //   },
-  //   {
-  //     name: 'Flamme bleue',
-  //     key: 'blueFlame',
-  //     description: 'Diminue la portée des bombes.',
-  //   },
-  //   {
-  //     name: 'Freeze',
-  //     key: 'speedDown',
-  //     description: 'Diminue la vitesse du personnage.',
-  //   },
+  /** List of penalties. */
+  penaltyItems: SelectItem[] = [
+    {
+      key: 'bombDown',
+      title: 'CREATE_GAME.ITEMS.PENALTIES.BOMB_DOWN.TITLE',
+      description: 'CREATE_GAME.ITEMS.PENALTIES.BOMB_DOWN.DESCRIPTION',
+      image: 'assets/game/items/bomb-down.jpg',
+      state: true
+    },
+    {
+      key: 'blueFlame',
+      title: 'CREATE_GAME.ITEMS.PENALTIES.BLUE_FLAME.TITLE',
+      description: 'CREATE_GAME.ITEMS.PENALTIES.BLUE_FLAME.DESCRIPTION',
+      image: 'assets/game/items/blue-flame.jpg',
+      state: true
+    },
+    {
+      key: 'clog',
+      title: 'CREATE_GAME.ITEMS.PENALTIES.CLOG.TITLE',
+      description: 'CREATE_GAME.ITEMS.PENALTIES.CLOG.DESCRIPTION',
+      image: 'assets/game/items/clog.jpg',
+      state: true
+    },
+    {
+      key: 'skull',
+      title: 'CREATE_GAME.ITEMS.PENALTIES.SKULL.TITLE',
+      description: 'CREATE_GAME.ITEMS.PENALTIES.SKULL.DESCRIPTION',
+      image: 'assets/game/items/skull.jpg',
+      state: true
+    }
+  ];
 
   form: FormGroup = this.fb.group({
-    timeDuration: ['', [ Validators.required, Validators.min(5), Validators.max(20) ]],
     players: [2, [ Validators.required, Validators.min(2), Validators.max(4) ]],
-    timeLimit: [false, [ Validators.required ]],
-    bonus: ['', [ Validators.required ]],
-    malus: ['', [ Validators.required ]],
-    map: ['', [ Validators.required ]]
+    timeLimit: [true, [ Validators.required ]],
+    timeDuration: [5, [ Validators.required, Validators.min(3), Validators.max(20) ]],
+    bonus: [true, [ Validators.required ]],
+    malus: [true, [ Validators.required ]],
+    map: [0, [ Validators.required ]]
   });
 
-  constructor(private readonly fb: FormBuilder) {}
+  /** Says if the component is loading. */
+  loading = false;
+
+  constructor(private readonly fb: FormBuilder,
+              private readonly dialog: MatDialog,
+              private readonly webservice: CreateGameApiService,
+              private readonly jsonConverter: JsonConverterService) {}
+
+  ngOnInit() {
+    this.form.get('timeLimit').valueChanges.subscribe(value => {
+      const timeDuration = this.form.get('timeDuration');
+
+      value ? timeDuration.enable() : timeDuration.disable();
+    });
+  }
+
+  /** Called on form submition. */
+  submit() {
+    if (this.form.valid) {
+      this.loading = true;
+
+      const { value } = this.form;
+      const dto = new CreateGame();
+
+      dto.players = value.players;
+      dto.map = value.map;
+
+      // Set time limit if defined.
+      if (value.timeLimit) {
+        dto.duration = value.timeDuration;
+      }
+
+      // Set bonus if toggled.
+      if (value.bonus) {
+        dto.bonus = this.compressItems(this.bonusItems, Bonus);
+      }
+  
+      // Set penalties if toggled.
+      if (value.malus) {
+        dto.penalties = this.compressItems(this.penaltyItems, Penalties);
+      }
+
+      console.log(dto);
+    }
+  }
+
+  /** Toggle the time limit. */
+  toggleTimeLimit() {
+    const control = this.form.get('timeLimit');
+
+    control.setValue(!control.value);
+  }
+
+  /** Opens the bonus dialog. */
+  openBonus() {
+    this.openAlterationDialog(this.bonusItems, 'CREATE_GAME.SEARCH.BONUS').subscribe(value => {
+      if (typeof value !== 'undefined') {
+        this.bonusItems = value;
+      }
+    });
+  }
+
+  /** Opens the malus dialog. */
+  openMalus() {
+    this.openAlterationDialog(this.penaltyItems, 'CREATE_GAME.SEARCH.PENALTY').subscribe(value => {
+      if (typeof value !== 'undefined') {
+        this.penaltyItems = value;
+      }
+    });
+  }
+
+  /**
+   * Opens up the alteration dialog.
+   * @param {SelectItem[]} items - Items available.
+   * @returns {Observable<SelectItem[] | undefined>}
+   */
+  private openAlterationDialog(items: SelectItem[], label: string): Observable<SelectItem[] | undefined> {
+    let dialogRef = this.dialog.open(SelectListComponent, {
+      width: '480px',
+      data: {
+        searchLabel: label,
+        items
+      }
+    });
+
+    return dialogRef.afterClosed().pipe(
+      take(1)
+    );
+  }
+
+  /**
+   * Compresses the list of items.
+   * @template T - Returned type.
+   * @param {SelectItem[]} list
+   * @param {Class<T>} classRef - Reference to a class.
+   * @returns {T}
+   */
+  private compressItems<T>(list: SelectItem[], classRef: Class<T>): T {
+
+    return this.jsonConverter.deserialize(list
+      .reduce((previous, current) => ({
+        ... previous,
+        [current.key]: current.state
+      }), {}), classRef);
+  }
 }

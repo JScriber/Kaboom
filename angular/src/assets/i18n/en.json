@@ -70,5 +70,89 @@
       "TITLE": "Delete the account",
       "PASSWORD": "Password"
     }
+  },
+  "CREATE_GAME": {
+    "SEARCH": {
+      "BONUS": "Search a bonus",
+      "PENALTY": "Search a malus"
+    },
+    "ACTIONS": {
+      "SEND": "Submit",
+      "APPLY": "Apply",
+      "CANCEL": "Cancel"
+    },
+    "FORM": {
+      "NUMBER_PLAYERS": "Number of players",
+      "BONUS": "Bonus",
+      "PENALTY": "Penalty"
+    },
+    "FIELDS": {
+      "GREEN_FOREST": {
+        "TITLE": "Green Forest",
+        "DESCRIPTION": "The war takes place in the middle of a forest. Use your bombs to burn the trees that stops you from moving toward victory."
+      }
+    },
+    "ITEMS": {
+      "BONUS": {
+        "WALL_PASS": {
+          "TITLE": "Wall Pass",
+          "DESCRIPTION": "Allows to go through the wall."
+        },
+        "FIRE_SUIT": {
+          "TITLE": "Fire suit",
+          "DESCRIPTION": "Protects from explosions."
+        },
+        "BOMB_UP": {
+          "TITLE": "Bomb-Up",
+          "DESCRIPTION": "Increases the number of bombs that can be dropped simultaneously."
+        },
+        "SKATE": {
+          "TITLE": "Skate",
+          "DESCRIPTION": "Increases the speed."
+        },
+        "YELLOW_FLAME": {
+          "TITLE": "Yellow flame",
+          "DESCRIPTION": "The range of the bombs is increased."
+        },
+        "RED_FLAME": {
+          "TITLE": "Red flame",
+          "DESCRIPTION": "The range of the bombs has no limit."
+        },
+        "BOMB_DISARMER": {
+          "TITLE": "Bomb disarmer",
+          "DESCRIPTION": "Prevents the explosion of a bomb."
+        },
+        "POWER_GLOVE": {
+          "TITLE": "Power Glove",
+          "DESCRIPTION": "Shunts bombs and others."
+        },
+        "HEART": {
+          "TITLE": "Heart",
+          "DESCRIPTION": "Adds one heart."
+        },
+        "LIFE_UP": {
+          "TITLE": "Life-Up",
+          "DESCRIPTION": "Adds a life."
+        }
+      },
+      "PENALTIES": {
+        "BOMB_DOWN": {
+          "TITLE": "Bomb-Down",
+          "DESCRIPTION": "Decreases the number of bombs that can be simultaneously dropped."
+        },
+        "BLUE_FLAME": {
+          "TITLE": "Blue flame",
+          "DESCRIPTION": "Decreases the range of the bombs."
+        },
+        "CLOG": {
+          "TITLE": "Clog",
+          "DESCRIPTION": "Decreases the speed."
+        },
+        "SKULL": {
+          "TITLE": "Skull",
+          "DESCRIPTION": "Set of negative effects."
+        }
+      }
+    }
   }
 }

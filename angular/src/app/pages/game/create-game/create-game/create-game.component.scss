@@ -1,40 +1,119 @@
 .page-wrapper {
-  display: grid;
-  width: 100%;
-  grid-gap: 10px;
-  grid-template-columns: 1.5fr 1fr;
-}
-
-.left-card, .right-card {
-  position: relative;
-  width: 100%;
-}
-
-mat-slider {
-  width: 100%;
-}
-
-mat-panel-title {
   display: flex;
+  justify-content: center;
+
+  .create-game-card {
+    position: relative;
+    width: 450px;
+
+    mat-progress-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+  }
+}
+
+mat-form-field {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.time-selection {
+  display: flex;
+  flex-flow: row nowrap;
   align-items: center;
+  margin-bottom: 15px;
+  padding: 0 5px;
+
+  mat-slider {
+    display: flex;
+    flex-grow: 1;
+    margin: 0 5px;
+  }
 
   p {
-    margin-left: 15px;
+    opacity: .8;
+    font-size: 12px;
+    text-align: right;
+    width: 40px;
+
+    &.disabled {
+      text-decoration: line-through;
+    }
   }
 }
 
-::ng-deep {
-  .left-card > mat-accordion.mat-accordion {
-    width: 100% !important;
-  }
+.group-alterations {
+  background-color: rgba(0, 0, 0, 0.018);
+  border-radius: 10px;
+  padding: 8px;
+  margin-bottom: 15px;
 
-  .mat-expansion-panel-header > span.mat-content, mat-panel-title {
-    overflow: visible !important;
+  .alterations {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    padding-left: 5px;
+  
+    mat-slide-toggle p {
+      padding-left: 10px;
+    }
+
+    .mat-icon {
+      opacity: .75;
+    }
   }
 }
 
-@media screen and (max-width: 1300px) {
-  .page-wrapper {
-    grid-template-columns: 1fr;
+.map {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-flow: row nowrap;
+  width: 100%;
+  height: 110px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  overflow: hidden;
+
+  .left-side {
+    position: relative;
+    width: 110px;
+    min-width: 110px;
+
+    .preview {
+      height: 100%;
+      width: 100%;
+      border-radius: 8px;
+      transform: scale(.95);
+      overflow: hidden;
+      background: rgb(248, 229, 229);
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  .right-side {
+    display: flex;
+    flex-grow: 1;
+    flex-flow: column wrap;
+    padding-left: 5px;
+
+    .mat-h2 {
+      margin-top: 3px;
+      margin-bottom: 0;
+    }
+
+    .mat-small {
+      opacity: .8;
+      word-wrap: break-word;
+    }
   }
 }
