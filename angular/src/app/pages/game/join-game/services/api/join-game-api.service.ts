@@ -28,6 +28,6 @@ export class JoinGameApiService extends BaseApi implements JoinGame {
   /** @inheritdoc */
   access(id: number): Observable<string> {
 
-    return of(undefined);
+    return of('some-uuid');
   }
 }

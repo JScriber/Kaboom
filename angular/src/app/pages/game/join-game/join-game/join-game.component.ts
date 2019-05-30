@@ -4,6 +4,7 @@ import { switchMap, takeUntil, startWith } from 'rxjs/operators';
 
 import { Preview } from '../models/preview.model';
 import { JoinGameApiService } from '../services/api/join-game-api.service';
+import { Router } from '@angular/router';
 
 /** Interval when the data is refreshed (in milliseconds). */
 const REFRESH_INTERVAL = 2000;
@@ -25,14 +26,15 @@ export class JoinGameComponent implements OnDestroy {
     switchMap(() => this.webService.getPreviews())
   );
 
-  constructor(private readonly webService: JoinGameApiService) {}
+  constructor(private readonly router: Router,
+              private readonly webService: JoinGameApiService) {}
 
   /**
    * Called when the user clicks on a preview.
    * @param {number} id
    */
   access(id: number) {
-    console.log(id);
+    this.webService.access(id).subscribe(uuid => this.router.navigate(['/game/join', uuid]));
   }
 
   ngOnDestroy() {
