@@ -16,6 +16,8 @@ export class CreateGameApiService extends BaseApi implements CreateGameApi {
   /** @inheritdoc */
   create(payload: CreateGame): Observable<CreateGameResponse> {
 
+    console.log(payload);
+
     return of(undefined);
   }
 }

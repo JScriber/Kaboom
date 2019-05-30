@@ -128,6 +128,7 @@ export class CreateGameComponent implements OnInit {
     }
   ];
 
+  /** Form. */
   form: FormGroup = this.fb.group({
     players: [2, [ Validators.required, Validators.min(2), Validators.max(4) ]],
     timeLimit: [true, [ Validators.required ]],
@@ -179,7 +180,11 @@ export class CreateGameComponent implements OnInit {
         dto.penalties = this.compressItems(this.penaltyItems, Penalties);
       }
 
-      console.log(dto);
+      this.webservice.create(dto).subscribe(() => {
+        this.loading = false;
+      }, () => {
+        // TODO: Error handling.
+      });
     }
   }
 
