@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy, HostListener, OnInit, NgZone } from '@angular/core';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
@@ -10,9 +10,10 @@ import { SidenavService } from './layouts/services/sidenav.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   /** Determines which layout to display. */
   minimized$: Observable<boolean> = this.router.events
@@ -26,7 +27,8 @@ export class AppComponent {
   constructor(translate: TranslateService,
               private readonly router: Router,
               private readonly activatedRoute: ActivatedRoute,
-              private readonly sidenav: SidenavService) {
+              private readonly sidenav: SidenavService,
+              private readonly ngZone: NgZone) {
 
     translate.setDefaultLang('fr');
   }
@@ -34,5 +36,23 @@ export class AppComponent {
   /** State of the sidenav. */
   get sidenavState() {
     return this.sidenav.state;
+  }
+
+  /** Mode of the sidenav. */
+  get sidenavMode() {
+    return this.sidenav.mode;
+  }
+
+  ngOnInit() {
+    this.sidenav.bindWindowResize(window.innerWidth);
+
+    // Listen for window resizing.
+    this.ngZone.runOutsideAngular(() => window.addEventListener('resize',
+      () => this.sidenav.bindWindowResize(window.innerWidth)));
+  }
+
+  /** Closes the sidenav. */
+  closeDrawer() {
+    this.sidenav.close();
   }
 }

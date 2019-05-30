@@ -66,11 +66,14 @@ export class SignInComponent {
 
       this.webService.signIn(dto)
         .subscribe(payload => {
-          this.notification.success('NOTIFICATION.SIGN_IN');
+          this.notification.success('NOTIFICATION.SIGN_IN.SUCCESS');
           this.authentification.login(payload);
         }, err => {
-          // TODO: Error handling.
-          console.log(err);
+          if (err.error.message === 'Incorrect credentials.') {
+            this.notification.error('NOTIFICATION.SIGN_IN.INCORRECT_CREDENTIALS');
+          }
+
+          this.form.reset();
         });
     }
   }

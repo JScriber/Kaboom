@@ -17,6 +17,58 @@ app-root {
   flex-flow: column wrap;
 }
 
+/* Wrapper for a page. */
+.page-wrapper {
+  padding: 15px;
+}
+
+/* Scrollbar style. */
+$scrollbarColor: #d6d6d6;
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $scrollbarColor; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: darken($scrollbarColor, 5%); 
+}
+
+
+.main-button {
+  position: fixed !important;
+  bottom: 25px;
+  right: 25px;
+  height: fit-content;
+  width: fit-content;
+  z-index: 10;
+
+  button {
+    z-index: 200;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    background: radial-gradient(#fafafa, rgba(250, 250, 250, 0.52));
+    transform: scale(1.35);
+    z-index: -1;
+  }
+}
+
 
 /* Input outline style. */
 .mat-form-field-outline {

@@ -19,9 +19,9 @@ import { AccountModule } from './account/account.module';
     MatButtonModule,
     MatIconModule,
 
-    AccountModule,
     AuthentificationModule,
-    GameModule
+    GameModule,
+    AccountModule
   ],
   declarations: [
     NotFoundComponent

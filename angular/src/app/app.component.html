@@ -6,14 +6,18 @@
   <app-toolbar></app-toolbar>
   
   <mat-drawer-container class="example-container">
-    <mat-drawer mode="side" [opened]="sidenavState | async">
+    <mat-drawer
+      [mode]="sidenavMode | async"
+      [opened]="sidenavState | async"
+      (closedStart)="closeDrawer()"
+    >
       <app-sidenav></app-sidenav>
     </mat-drawer>
   
     <mat-drawer-content>
       <div class="page">
         <router-outlet></router-outlet>
-  
+
         <div class="spacer"></div>
 
         <app-footer></app-footer>

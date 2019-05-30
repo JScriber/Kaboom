@@ -11,6 +11,7 @@ import { FormValidationsService } from '../../../shared/form/services/form-valid
 import { TranslationService } from '../../../shared/translation/translation.service';
 import { UserSignApiService } from '../../../web-service/user-sign/api/user-sign-api.service';
 import { AuthentificationService } from '../../../web-service/authentification/authentification.service';
+import { NotificationService } from '../../../shared/notification/notification/notification.service';
 
 // Models.
 import { SignUp } from '../../../web-service/user-sign/models/sign-up.model';
@@ -80,7 +81,8 @@ export class SignUpComponent implements OnInit {
               private readonly validation: FormValidationsService,
               private readonly translate: TranslationService,
               private readonly webService: UserSignApiService,
-              private readonly authentification: AuthentificationService) {}
+              private readonly authentification: AuthentificationService,
+              private readonly notification: NotificationService) {}
 
   /**
    * Display error message of the control.
@@ -112,9 +114,14 @@ export class SignUpComponent implements OnInit {
 
           return this.webService.signIn(signInDto);
         })
-      ).subscribe(payload => this.authentification.login(payload), err => {
-        // TODO: Error handling.
-        console.log(err);
+      ).subscribe(payload => {
+        this.notification.success('NOTIFICATION.SIGN_UP.SUCCESS');
+
+        this.authentification.login(payload);
+      }, err => {
+        if (err.error.message === 'The credentials are already used.') {
+          this.notification.error('NOTIFICATION.SIGN_UP.CREDENTIALS_USED');
+        }
       });
     }
   }

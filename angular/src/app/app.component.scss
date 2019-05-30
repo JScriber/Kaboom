@@ -8,17 +8,19 @@ mat-drawer-container {
   flex-grow: 1;
   z-index: 1;
 
+  mat-drawer {
+    width: 250px;
+    z-index: 10; 
+  }
+
   mat-drawer-content {
     position: relative;
     width: 100%;
     max-width: 100%;
+    z-index: 1;
   }
 }
 
-mat-drawer {
-  width: 250px;
-  z-index: -1; 
-}
 
 app-sidenav, app-footer, app-toolbar {
   position: relative;
