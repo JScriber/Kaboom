@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { JoinGameComponent } from './join-game/join-game/join-game.component';
 import { CreateGameComponent } from './create-game/create-game/create-game.component';
 import { GameComponent } from '../../game/game/game.component';
+import { WaitGameComponent } from './wait-game/wait-game/wait-game.component';
 
 export const gameRoutes: Routes = [
   {
@@ -16,5 +17,9 @@ export const gameRoutes: Routes = [
   {
     path: 'create',
     component: CreateGameComponent
+  },
+  {
+    path: 'join/:uuid',
+    component: WaitGameComponent
   }
 ];

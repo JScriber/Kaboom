@@ -1,0 +1,57 @@
+<div class="wait-game">
+
+  <mat-card class="mat-elevation-z0">
+    <mat-card-title>Players</mat-card-title>
+
+    <mat-card-content class="players">
+      <div class="player">
+        <img mat-card-avatar src="assets/game/players-preview/1.png"/>
+        <p>You</p>
+      </div>
+      <div class="player">
+        <img mat-card-avatar src="assets/game/players-preview/2.png"/>
+        <p>Ready</p>
+      </div>
+      <div class="player">
+        <img mat-card-avatar src="assets/game/players-preview/3.png"/>
+        <p>Ready</p>
+      </div>
+      <div class="player waiting">
+        <img mat-card-avatar src="assets/game/players-preview/4.png"/>
+        <p>Waiting</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="sub-info">
+
+    <mat-card class="mat-elevation-z0">
+      <mat-card-title>Informations</mat-card-title>
+      
+      <mat-card-content class="informations">
+        <div class="left">
+          <img src="assets/images/previews/wood-level.jpg"/>
+        </div>
+
+        <div class="right">
+          <p><b>Bonus: </b>Activated</p>
+          <p><b>Penalties: </b>Activated</p>
+          <p><b>Time limit: </b>10 min</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="mat-elevation-z0">
+      <mat-card-title>Invite friends</mat-card-title>
+
+      <mat-card-content>
+        <mat-form-field appearance="outline">
+          <input matInput [formControl]="shareUrl" [readonly]="true"/>
+          <button mat-icon-button matSuffix (click)="copyUrl()">
+            <mat-icon class="material-icons-outlined">file_copy</mat-icon>
+          </button>
+        </mat-form-field>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
