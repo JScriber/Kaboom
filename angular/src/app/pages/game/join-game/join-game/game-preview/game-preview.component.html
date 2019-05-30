@@ -1,0 +1,18 @@
+<mat-card class="mat-elevation-z0 game-preview" matRipple (click)="handleClick()">
+  <div class="left">
+    <img src="assets/images/previews/wood-level.jpg"/>
+  </div>
+
+  <div class="right">
+    <div class="time-limit" *ngIf="data.timeLimit">
+      <p>{{ data.timeLimit }} min</p>
+    </div>
+
+    <span class="spacing"></span>
+
+    <div class="slots">
+      <img *ngFor="let slot of slots; let i = index;" [class.disable]="!slot" mat-card-avatar
+        [src]="'assets/game/players-preview/' + (i + 1) + '.png'"/>
+    </div>
+  </div>
+</mat-card>
