@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn, CreateDateColumn, Generated } from "typeorm";
 import { Map } from '@entity/map/map.entity';
 import { Participant } from '@entity/participant/participant.entity';
 
@@ -7,6 +7,11 @@ export class Contest {
   /** Auto-generated id. */
   @PrimaryGeneratedColumn()
   id: number;
+
+  /** Unique identifier. */
+  @Column()
+  @Generated('uuid')
+  uuid: string;
 
   /** Date at which the contest has been created. */
   @CreateDateColumn({ name: 'created_at' })
@@ -25,6 +30,10 @@ export class Contest {
     nullable: true
   })
   endDate: Date;
+
+  /** Game duration. */
+  @Column('smallint', { nullable: true })
+  duration: number | undefined;
 
   /** Says if the bonus have been activated. */
   @Column('boolean')
@@ -50,4 +59,8 @@ export class Contest {
   })
   @JoinColumn()
   participants: Participant[];
+
+  /** Limit of participants. */
+  @Column('smallint')
+  maxParticipants: number;
 }
