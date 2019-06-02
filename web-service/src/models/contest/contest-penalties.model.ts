@@ -1,27 +1,36 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsBoolean, IsOptional } from 'class-validator';
+import { IsBoolean } from 'class-validator';
 
 /**
  * Penalties available in the game.
  */
 export class Penalties {
-  /** Lowers the number of bombs. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly bombDown: boolean;
 
-  /** Decreases the speed of the player. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly speedDown: boolean;
+  /** Decreases the number of bombs. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Decreases the number of bombs.'
+  })
+  @IsBoolean() readonly bombDown: boolean = undefined;
 
-  /** Decreases the explosion area. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly blueFlame: boolean;
+  /** Decreases the range of the bombs. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Decreases the range of the bombs.'
+  })
+  @IsBoolean() readonly blueFlame: boolean = undefined;
 
-  /** Inverts the controls. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly invert: boolean;
+  /** Decreases the speed. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Decreases the speed.'
+  })
+  @IsBoolean() readonly clog: boolean = undefined;
+
+  /** Set of diseases. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Set of diseases.'
+  })
+  @IsBoolean() readonly skull: boolean = undefined;
 }
