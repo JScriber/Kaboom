@@ -8,13 +8,14 @@ import { environment } from '@environment';
 import Player from '../model/player';
 import Game from '../model/game';
 import Participant from './participant.model';
-import { WsBody, LogicHandler, GameConverter, Broadcasts } from './gateway.model';
+import { WsBody, LogicHandler, GameConverter } from './gateway.model';
 
-import { GatewaySocket } from './gateway';
 import { WsJwtGuard } from '../guards/ws-jwt.guard';
 import { GameService, Movement } from '../services/game/game.service';
 import { RedisService } from '../services/redis/redis.service';
 import { TokenService } from '../../services/token/token.service';
+import { Gateway } from 'src/utils/gateway';
+import { Broadcasts } from 'src/utils/gateway.model';
 
 /** Route where the game state can be received. */
 const GAME_STATE_ROUTE = 'state';
@@ -33,7 +34,7 @@ const findPlayer = ({ playerID }: Participant, game: Game): Player => {
 };
 
 @WebSocketGateway(environment.ports.ws, { path: '/game' })
-export class GameWebSocket extends GatewaySocket {
+export class GameWebSocket extends Gateway {
 
   /** Map of broadcasts. */
   private readonly broadcasts: Broadcasts = {};

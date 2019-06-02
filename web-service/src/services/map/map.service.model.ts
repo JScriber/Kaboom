@@ -1,4 +1,4 @@
-import { Map } from "@entity/map/map.entity";
+import { Map } from "@entity/map.entity";
 
 export interface IMapService {
 

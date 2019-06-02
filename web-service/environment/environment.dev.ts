@@ -4,6 +4,7 @@ export const environment = {
     ws: 8081
   },
   security: {
+    jwtSecretKey: 'OQTrltPlbj',
     roundEncryption: 10,
     tokenExpiration: '2 days'
   },
@@ -11,9 +12,7 @@ export const environment = {
     host: '127.0.0.1',
     port: 6379
   }
-}
-
-export const maxCreatedMaps = 20;
+};
 
 /** Password regex. */
 export const PASSWORD_REGEX: RegExp = /^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/;

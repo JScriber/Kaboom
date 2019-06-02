@@ -1,5 +1,3 @@
-import { Subscription } from 'rxjs';
-
 import Player from '../model/player';
 import Game from '../model/game';
 import Participant from './participant.model';
@@ -14,9 +12,4 @@ export type GameConverter = (game: Game) => Game;
 export interface WsBody<T = any> {
   participant: Participant,
   data: T
-}
-
-/** Map of running broadcasts. */
-export interface Broadcasts {
-  [key: number]: Subscription;
 }

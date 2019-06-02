@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { Map } from '@entity/map/map.entity';
+import { Map } from '@entity/map.entity';
 
 // Typing interface.
 import { IMapService } from '../map.service.model';

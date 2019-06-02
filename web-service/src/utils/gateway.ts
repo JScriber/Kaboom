@@ -2,7 +2,10 @@ import { WebSocketServer, OnGatewayConnection, OnGatewayDisconnect } from '@nest
 import { Server, Socket } from 'socket.io';
 import { Observable, Subscriber } from 'rxjs';
 
-export abstract class GatewaySocket implements OnGatewayConnection, OnGatewayDisconnect {
+/**
+ * Base gateway class.
+ */
+export abstract class Gateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   /** Server reference. */
   @WebSocketServer() protected readonly server: Server;
@@ -23,7 +26,7 @@ export abstract class GatewaySocket implements OnGatewayConnection, OnGatewayDis
   }
 
   /**
-   * Disconnects everyone from the room.
+   * Disconnects everyone in the room.
    * @param {string} room
    */
   protected disconnectAll(room: string): void {

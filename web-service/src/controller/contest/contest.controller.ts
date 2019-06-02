@@ -19,7 +19,7 @@ export class ContestController {
   @Get()
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async list(@Req() request, @Res() res: Response) {
+  async list() {
 
     return this.service.list();
   }
@@ -30,7 +30,7 @@ export class ContestController {
   @Post('create')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async create(@Req() request, @Res() res: Response, @Body(new ValidationPipe()) parameters: ContestForm) {
+  async create(@Req() request, @Body(new ValidationPipe()) parameters: ContestForm) {
 
     return this.service.create(request.user, parameters);
   }
@@ -41,7 +41,7 @@ export class ContestController {
   @Post('join')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async join(@Req() request, @Res() res: Response, @Body(new ValidationPipe()) { uuid }: ContestJoin) {
+  async join(@Req() request, @Body(new ValidationPipe()) { uuid }: ContestJoin) {
 
     return this.service.join(uuid, request.user);
   }

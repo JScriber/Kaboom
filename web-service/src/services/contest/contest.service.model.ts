@@ -1,5 +1,6 @@
-import { User } from '@entity/user/user.entity';
+import { User } from '@entity/user.entity';
 import { ContestForm, ContestIndex } from '@model/contest';
+import { Contest } from '@entity/contest.entity';
 
 export interface IContestService {
 
@@ -25,4 +26,18 @@ export interface IContestService {
    * @returns list of {@link ContestIndex}.
    */
   list(): Promise<ContestIndex[]>;
+
+  /**
+   * Says if the {@link Contest} is ready for launch.
+   * @param contest
+   * @returns TRUE or FALSE.
+   */
+  isReady(contest: Contest): boolean;
+
+
+  /**
+   * Starts the {@link Contest}.
+   * @param contest 
+   */
+  start(contest: Contest): void;
 }

@@ -1,6 +1,6 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { IsString, IsEmail, IsNotEmpty, Matches, MinLength, IsOptional, IsEnum } from 'class-validator';
-import { Language } from '@entity/user/user.entity';
+import { Language } from '@entity/user.entity';
 
 export class CreateUser {
 

@@ -1,11 +1,11 @@
 import { Injectable, ConflictException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as Bcrypt from 'bcrypt';
 
 import { environment } from '@environment';
 
-import { UserRepository } from '@repository/user/user.repository';
-import { User, Language } from '@entity/user/user.entity';
+import { User, Language } from '@entity/user.entity';
 import { TokenService } from '@service/token/token.service';
 import { UpdateUser, UpdatePassword, CreateUser, Credentials, Token } from '@model/user';
 
@@ -22,7 +22,7 @@ const DEFAULT_LANGUAGE = Language.English;
 export class GeneralUserService implements IUserService {
 
   constructor(
-    @InjectRepository(UserRepository) private readonly repository: UserRepository,
+    @InjectRepository(User) private readonly repository: Repository<User>,
     private readonly tokenService: TokenService) {}
 
   /** @inheritdoc */
