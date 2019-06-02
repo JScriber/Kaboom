@@ -1,4 +1,4 @@
-import { Contest } from '@entity/contest/contest.entity';
+import { Contest } from '@entity/contest.entity';
 
 /**
  * Minified representation of a {@link Contest}.

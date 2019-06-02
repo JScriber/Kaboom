@@ -13,10 +13,9 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@repository/*": ["./src/repositories/*"],
-      "@entity/*": ["./src/entities/*"],
+      "@repository/*": ["src/database/repository/*"],
+      "@entity/*": ["src/database/entity/*"],
       "@service/*": ["./src/services/*"],
-      "@dto/*": ["./src/dto/*"],
       "@model/*": ["./src/models/*"],
       "@environment": ["./environment/environment.dev.ts"]
     },

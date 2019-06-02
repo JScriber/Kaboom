@@ -1,5 +1,5 @@
 import { UpdateUser, UpdatePassword, Credentials, CreateUser, Token } from '@model/user';
-import { User } from '@entity/user/user.entity';
+import { User } from '@entity/user.entity';
 
 export interface IUserService {
 

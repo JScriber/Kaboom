@@ -2,12 +2,13 @@ import { Module, Provider } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { environment } from '@environment';
+
 import { TokenService } from './token/token.service';
 import { AuthService } from './auth/auth.service';
 import { HttpStrategy } from './auth/http-strategy/http.strategy';
 
-import { RepositoryModule } from '../repositories/repository.module';
-import { EntityModule } from '../entities/entity.module';
+import { DatabaseModule } from '../database/database.module';
 
 import { GeneralUserService } from './user/general-user/general-user.service';
 import { GeneralMapService } from './map/general-map/general-map.service';
@@ -38,12 +39,11 @@ const PROVIDERS: Provider[] = [
   imports: [
     JwtModule.registerAsync({
       useFactory: () => ({
-        secretOrPrivateKey: 'OQTrltPlbj'
+        secretOrPrivateKey: environment.security.jwtSecretKey
       })
     }),
     TypeOrmModule.forRoot(),
-    RepositoryModule,
-    EntityModule
+    DatabaseModule
   ],
   providers: [
     TokenService,

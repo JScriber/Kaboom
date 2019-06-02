@@ -1,4 +1,4 @@
-import { User, Language } from '@entity/user/user.entity';
+import { User, Language } from '@entity/user.entity';
 
 export class CreatedUser {
   readonly id: number;

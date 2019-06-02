@@ -8,13 +8,11 @@ import { IContestService } from '../contest.service.model';
 // Services.
 import { IMapService } from '@service/map/map.service.model';
 import { IParticipantService } from '@service/participant/participant.service.model';
-import { TokenService } from '@service/token/token.service';
 
 // Entities.
-import { User } from '@entity/user/user.entity';
-import { Contest } from '@entity/contest/contest.entity';
-import { Map } from '@entity/map/map.entity';
-import { Participant } from '@entity/participant/participant.entity';
+import { User } from '@entity/user.entity';
+import { Contest } from '@entity/contest.entity';
+import { Map } from '@entity/map.entity';
 
 // Models.
 import { ContestForm, ContestIndex } from '@model/contest';
@@ -28,8 +26,7 @@ export class GeneralContestService implements IContestService {
   constructor(
     @InjectRepository(Contest) private readonly repository: Repository<Contest>,
     @Inject('IParticipantService') private readonly participantService: IParticipantService,
-    @Inject('IMapService') private readonly mapService: IMapService,
-    private readonly tokenService: TokenService) {}
+    @Inject('IMapService') private readonly mapService: IMapService) {}
 
   /** @inheritdoc */
   async create(user: User, parameters: ContestForm): Promise<string> {
@@ -75,7 +72,7 @@ export class GeneralContestService implements IContestService {
     // Create the participant.
     const participant = await this.participantService.create(user, contest);
 
-    return this.generateToken(participant);
+    return this.participantService.getToken(participant);
   }
 
   /** @inheritdoc */
@@ -88,16 +85,19 @@ export class GeneralContestService implements IContestService {
     return openedContests.map(c => new ContestIndex(c));
   }
 
-  /**
-   * Generates a token for the access.
-   * @param {Participant} participant
-   * @returns {string}
-   */
-  private generateToken(participant: Participant): string {
+  /** @inheritdoc */
+  start(contest: Contest) {
+    if (this.isReady(contest)) {
+      // TODO: Build the contest in Redis.
 
-    // TODO: Use another token service which implements a common interface.
-    return this.tokenService.generateFrom({
-      uuid: participant.uuid
-    });
+      // Reset connections (recycle for game WS connection management).
+      contest.participants.forEach(p => this.participantService.disconnect(p));
+    }
+  }
+
+  /** @inheritdoc */
+  isReady(contest: Contest): boolean {
+    return contest.maxParticipants === contest.participants.length
+      && contest.participants.every(p => p.connected);
   }
 }

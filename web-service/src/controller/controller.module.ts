@@ -5,6 +5,9 @@ import { PassportModule } from '@nestjs/passport';
 import { UserController } from './user/user.controller';
 import { ContestController } from './contest/contest.controller';
 
+// Websockets.
+import { ContestGateway } from './contest-ws/contest.gateway';
+
 // Services.
 import { ServiceModule } from '../services/service.module';
 
@@ -19,6 +22,9 @@ import { ServiceModule } from '../services/service.module';
   controllers: [
     UserController,
     ContestController
+  ],
+  providers: [
+    ContestGateway
   ]
 })
 export class ControllerModule {}
