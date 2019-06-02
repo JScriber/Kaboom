@@ -1,72 +1,78 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsOptional, IsBoolean } from 'class-validator';
+import { IsBoolean } from 'class-validator';
 
 /**
  * Bonus available in the game.
  */
 export class Bonus {
-  /** The player can pass through walls. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+
+  /** Can go through the walls. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Can go through the walls.'
+  })
   @IsBoolean() readonly wallPass: boolean;
 
-  /** The player is teleported somewhere. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly teleportation: boolean;
-
-  /** The player no longer fears fire. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** Not impacted by fire. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Not impacted by fire.'
+  })
   @IsBoolean() readonly fireSuit: boolean;
 
-  /** Increases the number of bombs dropped simultaneously. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** More bombs. */
+  @ApiModelProperty({
+    required: true,
+    description: 'More bombs.'
+  })
   @IsBoolean() readonly bombUp: boolean;
 
-  /** Increases the speed of the player. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly speedUp: boolean;
+  /** Increases speed. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Increases speed.'
+  })
+  @IsBoolean() readonly skate: boolean;
 
-  /** Increases the explosion area. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** Wider range for bombs. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Wider range for bombs.'
+  })
   @IsBoolean() readonly yellowFlame: boolean;
 
-  /** No limit to explosion. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** Infinite range for bombs. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Infinite range for bombs.'
+  })
   @IsBoolean() readonly redFlame: boolean;
 
-  /** Can disarm bombs. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** Disarms bombs. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Disarms bombs.'
+  })
   @IsBoolean() readonly bombDisarmer: boolean;
 
-  /** Can push bombs. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** Pushes bombs and other players. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Pushes bombs and other players.'
+  })
   @IsBoolean() readonly powerGlove: boolean;
 
-  /** Can push other players. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly push: boolean;
-
-  /** Add one heart to the player. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** Adds one heart. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Adds one heart.'
+  })
   @IsBoolean() readonly heart: boolean;
 
-  /** Add one life to the player. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
+  /** Adds a life. */
+  @ApiModelProperty({
+    required: true,
+    description: 'Adds a life.'
+  })
   @IsBoolean() readonly lifeUp: boolean;
-
-  /** Swap positions with another player. */
-  @ApiModelProperty({ required: false })
-  @IsOptional()
-  @IsBoolean() readonly swapPositions: boolean;
 }
