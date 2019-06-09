@@ -6,6 +6,7 @@ import { Response } from 'express-serve-static-core';
 import { CurrentUser, UpdateUser, UpdatePassword, DeleteUser, CreatedUser, Credentials, CreateUser } from '@model/user';
 
 import { IUserService } from '@service/user/user.service.model';
+import { WaitingStorageService } from '../../storage/waiting-storage/waiting-storage.service';
 
 // Current user actions.
 const CURRENT_USER_ROUTE = '@me';
@@ -15,7 +16,13 @@ const CURRENT_USER_ROUTE = '@me';
 export class UserController {
 
   constructor(
-    @Inject('IUserService') private readonly service: IUserService) {}
+    @Inject('IUserService') private readonly service: IUserService,
+    private readonly storage: WaitingStorageService) {}
+
+  @Get('/test')
+  hello() {
+    this.storage.test();
+  }
 
   /**
    * Informations on the current {@link User}.

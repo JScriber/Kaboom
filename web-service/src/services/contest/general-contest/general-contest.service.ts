@@ -8,6 +8,7 @@ import { IContestService } from '../contest.service.model';
 // Services.
 import { IMapService } from '@service/map/map.service.model';
 import { IParticipantService } from '@service/participant/participant.service.model';
+import { IWaitingStorage } from '../../../storage/waiting-storage/waiting-storage.service';
 
 // Entities.
 import { User } from '@entity/user.entity';
@@ -26,7 +27,8 @@ export class GeneralContestService implements IContestService {
   constructor(
     @InjectRepository(Contest) private readonly repository: Repository<Contest>,
     @Inject('IParticipantService') private readonly participantService: IParticipantService,
-    @Inject('IMapService') private readonly mapService: IMapService) {}
+    @Inject('IMapService') private readonly mapService: IMapService,
+    @Inject('IWaitingStorage') private readonly waitingStorage: IWaitingStorage) {}
 
   /** @inheritdoc */
   async create(user: User, parameters: ContestForm): Promise<string> {

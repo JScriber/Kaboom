@@ -10,6 +10,7 @@ import { ContestGateway } from './contest-ws/contest.gateway';
 
 // Services.
 import { ServiceModule } from '../services/service.module';
+import { StorageModule } from '../storage/storage.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { ServiceModule } from '../services/service.module';
       defaultStrategy: 'bearer',
       property: 'user'
     }),
-    ServiceModule
+    ServiceModule,
+    StorageModule
   ],
   controllers: [
     UserController,

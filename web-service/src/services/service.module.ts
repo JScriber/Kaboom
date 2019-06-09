@@ -9,6 +9,7 @@ import { AuthService } from './auth/auth.service';
 import { HttpStrategy } from './auth/http-strategy/http.strategy';
 
 import { DatabaseModule } from '../database/database.module';
+import { StorageModule } from '../storage/storage.module';
 
 import { GeneralUserService } from './user/general-user/general-user.service';
 import { GeneralMapService } from './map/general-map/general-map.service';
@@ -43,7 +44,8 @@ const PROVIDERS: Provider[] = [
       })
     }),
     TypeOrmModule.forRoot(),
-    DatabaseModule
+    DatabaseModule,
+    StorageModule
   ],
   providers: [
     TokenService,
