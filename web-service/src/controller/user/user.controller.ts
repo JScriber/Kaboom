@@ -6,7 +6,7 @@ import { Response } from 'express-serve-static-core';
 import { CurrentUser, UpdateUser, UpdatePassword, DeleteUser, CreatedUser, Credentials, CreateUser } from '@model/user';
 
 import { IUserService } from '@service/user/user.service.model';
-import { WaitingStorageService } from '../../storage/waiting-storage/waiting-storage.service';
+import { IWaitingStorage } from '../../storage/waiting-storage/waiting-storage.service';
 
 // Current user actions.
 const CURRENT_USER_ROUTE = '@me';
@@ -17,7 +17,7 @@ export class UserController {
 
   constructor(
     @Inject('IUserService') private readonly service: IUserService,
-    private readonly storage: WaitingStorageService) {}
+    @Inject('IWaitingStorage') private readonly storage: IWaitingStorage) {}
 
   @Get('/test')
   hello() {
