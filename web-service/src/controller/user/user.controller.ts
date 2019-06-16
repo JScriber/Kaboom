@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Res, Body, ValidationPipe, UseGuards, Req, Put, Inject } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express-serve-static-core';
 
 import { CurrentUser, UpdateUser, UpdatePassword, DeleteUser, CreatedUser, Credentials, CreateUser } from '@model/user';
 
