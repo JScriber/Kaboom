@@ -28,10 +28,10 @@ export class ContestGateway extends Gateway {
    * Authentification at connection time.
    */
   async handleConnection(socket: Socket) {
-    console.log('CONNECTED', socket.client.id);
     const participant = await this.getParticipantFromSocket(socket);
-
+    
     if (participant) {
+      console.log('CONNECTED', socket.client.id);
       this.joinContest(socket, participant);
     } else {
       socket.disconnect();

@@ -21,7 +21,7 @@
   },
   "SIDENAV": {
     "JOIN_GAME": "Join game",
-    "CREATE_GAME": "Create game",
+    "CREATE_CONTEST": "Create game",
     "EDIT_MAP": "Edit maps",
     "STATS": "My stats",
     "INFORMATIONS": "Informations"
@@ -71,7 +71,7 @@
       "PASSWORD": "Password"
     }
   },
-  "CREATE_GAME": {
+  "CREATE_CONTEST": {
     "SEARCH": {
       "BONUS": "Search a bonus",
       "PENALTY": "Search a malus"

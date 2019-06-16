@@ -15,7 +15,11 @@ import { Contest } from '@entity/contest.entity';
 import { Map } from '@entity/map.entity';
 
 // Models.
-import { ContestForm, ContestIndex } from '@model/contest';
+import { ContestForm, ContestIndex, ContestAccess } from '@model/contest';
+import { ContestJoin } from '../../../models/contest/contest-join.model';
+
+// Repository.
+import { ContestRepository } from '../../../database/repository/contest.repository';
 
 /**
  * Implementation of the {@link IContestService} interface.
@@ -24,12 +28,13 @@ import { ContestForm, ContestIndex } from '@model/contest';
 export class GeneralContestService implements IContestService {
 
   constructor(
-    @InjectRepository(Contest) private readonly repository: Repository<Contest>,
+    @InjectRepository(ContestRepository)
+    private readonly repository: ContestRepository,
     @Inject('IParticipantService') private readonly participantService: IParticipantService,
     @Inject('IMapService') private readonly mapService: IMapService) {}
 
   /** @inheritdoc */
-  async create(user: User, parameters: ContestForm): Promise<string> {
+  async create(user: User, parameters: ContestForm): Promise<ContestJoin> {
     
     const map: Map = await this.mapService.findOne(parameters.map);
 
@@ -53,15 +58,16 @@ export class GeneralContestService implements IContestService {
     // Persist.
     const { uuid } = await this.repository.save(contest);
 
-    return this.join(uuid, user);
+    return new ContestJoin(uuid);
   }
 
   /** @inheritdoc */
-  async join(uuid: string, user: User): Promise<string> {
+  async join(uuid: string, user: User): Promise<ContestAccess> {
 
     // Find the contest.
     const contest = await this.repository.findOne({
-      where: { uuid }
+      where: { uuid },
+      loadRelationIds: true
     });
 
     // Check if the contest is still accessible.
@@ -71,16 +77,18 @@ export class GeneralContestService implements IContestService {
 
     // Create the participant.
     const participant = await this.participantService.create(user, contest);
+    const token = this.participantService.getToken(participant);
 
-    return this.participantService.getToken(participant);
+    const startRoom = `game/${contest.uuid}`;
+    const waitRoom = `waiting/${contest.uuid}`;
+
+    return new ContestAccess(token, startRoom, waitRoom);
   }
 
   /** @inheritdoc */
   async list(): Promise<ContestIndex[]> {
 
-    const openedContests: Contest[] = await this.repository.find({
-      where: { endDate: undefined }
-    });
+    const openedContests = await this.repository.findAvailable();
 
     return openedContests.map(c => new ContestIndex(c));
   }

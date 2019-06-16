@@ -1,0 +1,6 @@
+<div class="contest-previews">
+
+  <div class="contest-preview" *ngFor="let preview of previews$ | async">
+    <app-contest-preview [data]="preview" (join)="join($event)"></app-contest-preview>
+  </div>
+</div>

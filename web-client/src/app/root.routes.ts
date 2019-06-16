@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { NotFoundComponent } from './pages/not-found/not-found.component';
-import { gameRoutes } from './pages/game/game.routes';
+import { contestRoutes } from './pages/contest/contest.routes';
 
 import { SignInComponent } from './pages/authentification/sign-in/sign-in.component';
 import { SignUpComponent } from './pages/authentification/sign-up/sign-up.component';
@@ -16,7 +16,7 @@ export const rootRoutes: Routes = [
   },
   {
     path: 'game',
-    children: gameRoutes,
+    children: contestRoutes,
     canActivate: [ AuthGuardService ]
   },
   {

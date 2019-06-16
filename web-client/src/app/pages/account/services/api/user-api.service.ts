@@ -20,7 +20,7 @@ export class UserApiService extends BaseApi implements UserApi {
 
   /** @inheritdoc */
   save(user: User): Observable<void> {
-    return this.putRequest('/', this.jsonConverter.serialize(user));
+    return this.putRequest('/', user);
   }
 
   /** @inheritdoc */

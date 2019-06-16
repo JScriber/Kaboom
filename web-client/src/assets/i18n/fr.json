@@ -23,7 +23,7 @@
   },
   "SIDENAV": {
     "JOIN_GAME": "Rejoindre partie",
-    "CREATE_GAME": "Créer partie",
+    "CREATE_CONTEST": "Créer partie",
     "EDIT_MAP": "Éditer cartes",
     "STATS": "Mes statistiques",
     "INFORMATIONS": "Informations"
@@ -73,7 +73,7 @@
       "PASSWORD": "Mot de passe"
     }
   },
-  "CREATE_GAME": {
+  "CREATE_CONTEST": {
     "SEARCH": {
       "BONUS": "Rechercher un bonus",
       "PENALTY": "Rechercher un malus"
