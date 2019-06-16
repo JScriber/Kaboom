@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
-import { ContestDAO } from '../contest-dao/redis-contest-dao';
-
-import { Entity, IdentifyProperty, Property, RelationProperty, createRedisConnection, Connection,  } from 'orm-redis';
+import { Entity, IdentifyProperty, Property, RelationProperty, createRedisConnection } from 'orm-redis';
 import { environment } from '@environment';
-import { RedisConnectionService } from '../redis-connection/redis-connection.service';
 
 @Entity()
 class Participant {
@@ -43,8 +40,6 @@ export interface IWaitingStorage {
 
 @Injectable()
 export class WaitingStorageService implements IWaitingStorage {
-
-  constructor(private readonly connection: RedisConnectionService) {}
 
   async test() {
 

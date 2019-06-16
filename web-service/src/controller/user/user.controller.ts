@@ -1,12 +1,10 @@
 import { Controller, Get, Post, Res, Body, ValidationPipe, UseGuards, Req, Put, Inject } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express-serve-static-core';
 
 import { CurrentUser, UpdateUser, UpdatePassword, DeleteUser, CreatedUser, Credentials, CreateUser } from '@model/user';
 
 import { IUserService } from '@service/user/user.service.model';
-import { IWaitingStorage } from '../../storage/waiting-storage/waiting-storage.service';
 
 // Current user actions.
 const CURRENT_USER_ROUTE = '@me';
@@ -16,13 +14,7 @@ const CURRENT_USER_ROUTE = '@me';
 export class UserController {
 
   constructor(
-    @Inject('IUserService') private readonly service: IUserService,
-    @Inject('IWaitingStorage') private readonly storage: IWaitingStorage) {}
-
-  @Get('/test')
-  hello() {
-    this.storage.test();
-  }
+    @Inject('IUserService') private readonly service: IUserService) {}
 
   /**
    * Informations on the current {@link User}.

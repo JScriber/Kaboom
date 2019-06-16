@@ -30,7 +30,6 @@
     "class-transformer": "^0.2.0",
     "class-validator": "^0.9.1",
     "ioredis": "^4.3.0",
-    "morphism": "^1.12.0",
     "orm-redis": "^0.1.10",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
