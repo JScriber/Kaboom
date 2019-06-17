@@ -35,7 +35,8 @@ export class Participant extends BaseEntity {
 
   /** A participant is a participant for only one contest. */
   @ManyToOne(type => Contest, contest => contest.participants, {
-    nullable: true
+    nullable: true,
+    onDelete: 'CASCADE'
   })
   @JoinColumn({ name: CONTRACT.CONTEST })
   contest: Contest;

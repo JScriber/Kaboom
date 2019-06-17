@@ -21,6 +21,12 @@ import { ContestJoin } from '../../../models/contest/contest-join.model';
 // Repository.
 import { ContestRepository } from '../../../database/repository/contest.repository';
 
+// Exceptions.
+import { MapNotFoundException } from '../../../exceptions/map-not-found.exception';
+import { ContestNotFoundException } from '../../../exceptions/contest-not-found.exception';
+import { Bonus } from '../../../database/entity/alterations/bonus.entity';
+import { Penalties } from '../../../database/entity/alterations/penalties.entity';
+
 /**
  * Implementation of the {@link IContestService} interface.
  */
@@ -30,30 +36,45 @@ export class GeneralContestService implements IContestService {
   constructor(
     @InjectRepository(ContestRepository)
     private readonly repository: ContestRepository,
+
+    @InjectRepository(Bonus)
+    private readonly bonusRepository: Repository<Bonus>,
+    @InjectRepository(Penalties)
+    private readonly penaltiesRepository: Repository<Penalties>,
+
     @Inject('IParticipantService') private readonly participantService: IParticipantService,
     @Inject('IMapService') private readonly mapService: IMapService) {}
 
   /** @inheritdoc */
   async create(user: User, parameters: ContestForm): Promise<ContestJoin> {
     
+    // TODO: Keep user to check if the map is owned by him.
     const map: Map = await this.mapService.findOne(parameters.map);
 
-    if (map === undefined) throw new NotFoundException();
+    if (map === undefined) {
+      throw new MapNotFoundException(`The map with the ID ${parameters.map} doesn't exist.`);
+    }
 
     const contest: Contest = new Contest();
 
     // Set the map.
     contest.map = map;
+
+    // Set the time limit.
+    contest.duration = parameters.duration;
     
     // Set the participants.
     contest.participants = [];
     contest.maxParticipants = parameters.players;
 
     // Set the bonus and penalties.
-    // TODO: Map all.
+    contest.bonus = await this.bonusRepository.save(
+      Object.assign(new Bonus(), parameters.bonus)
+    );
 
-    contest.bonusActived = true;
-    contest.penaltiesActivated = true;
+    contest.penalties = await this.penaltiesRepository.save(
+      Object.assign(new Penalties(), parameters.penalties)
+    );
 
     // Persist.
     const { uuid } = await this.repository.save(contest);
@@ -65,24 +86,27 @@ export class GeneralContestService implements IContestService {
   async join(uuid: string, user: User): Promise<ContestAccess> {
 
     // Find the contest.
-    const contest = await this.repository.findOne({
-      where: { uuid },
-      loadRelationIds: true
-    });
+    const contest = await this.getOne(uuid);
 
-    // Check if the contest is still accessible.
-    if (contest.participants.length >= contest.maxParticipants) {
-      // TODO: Throw custom exception.
+    // Check if the contest exists and is valid.
+    if (!contest || (contest.participants.length >= contest.maxParticipants)) {
+      throw new ContestNotFoundException('The contest doesn\'t exist or is not accessible.');
     }
 
     // Create the participant.
-    const participant = await this.participantService.create(user, contest);
+    const participant = await this.participantService.participate(user, contest);
     const token = this.participantService.getToken(participant);
 
     const startRoom = `game/${contest.uuid}`;
-    const waitRoom = `waiting/${contest.uuid}`;
+    const waitRoom  = `waiting/${contest.uuid}`;
 
     return new ContestAccess(token, startRoom, waitRoom);
+  }
+
+  /** @inheritdoc */
+  getOne(uuid: string): Promise<Contest> {
+
+    return this.repository.findByUUID(uuid);
   }
 
   /** @inheritdoc */
@@ -99,7 +123,7 @@ export class GeneralContestService implements IContestService {
       // TODO: Build the contest in Redis.
 
       // Reset connections (recycle for game WS connection management).
-      contest.participants.forEach(p => this.participantService.disconnect(p));
+      // contest.participants.forEach(p => this.participantService.disconnect(p));
     }
   }
 

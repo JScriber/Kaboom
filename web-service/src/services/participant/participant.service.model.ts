@@ -7,12 +7,13 @@ import { Contest } from '@entity/contest.entity';
 export interface IParticipantService {
 
   /**
-   * Creates a participation in the given {@link Contest}
+   * Creates a participation in the given {@link Contest}.
+   * If a {@link User} already participates to the {@link Contest} he'll be recycled, 
    * @param user - who participates.
    * @param contest
    * @returns a new {@link Participant}
    */
-  create(user: User, contest: Contest): Promise<Participant>;
+  participate(user: User, contest: Contest): Promise<Participant>;
 
   /**
    * Sets the {@link Participant} as connected.

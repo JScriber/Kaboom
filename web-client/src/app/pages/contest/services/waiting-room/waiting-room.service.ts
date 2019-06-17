@@ -6,8 +6,9 @@ import { Socket } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
 
 // Models.
-import { WaitContest } from '../../models/wait-contest/wait-contest.model';
 import { StartContest } from '../../models/wait-contest/start-contest.model';
+import { ContestWait } from '../../models/wait-contest/contest-wait.model';
+import { ContestAccessRooms } from '../../models/contest-access-rooms.model';
 
 // Services.
 import { JsonConverterService, Class } from '../../../../web-service/json-converter/json-converter.service';
@@ -25,42 +26,34 @@ interface Rooms {
 export class WaitingRoomSocket extends Socket {
 
   /** Notifies when a new user logs in. */
-  wait$: Observable<WaitContest>;
+  wait$: Observable<ContestWait>;
 
   /** Notifies when the game starts. */
   start$: Observable<StartContest>;
 
+  disconnect$ = this.fromEvent<void>('disconnect');
+
   /** Handles subscriptions. */
   private subscriptionHandler$ = new Subject();
 
-  constructor(private readonly converter: JsonConverterService) {
+  constructor(token: string, rooms: ContestAccessRooms, private readonly converter: JsonConverterService) {
     super({
       url: environment.wsUrl,
       options: {
-        path: '/contest'
+        path: '/contest',
+        query: { token }
       }
     });
-  }
 
-  /**
-   * Establishes a connection to the rooms.
-   * @param {string} token
-   * @param {Rooms} rooms
-   */
-  init(token: string, { wait, start }: Rooms) {
+    this.wait$ = this.listenRoom(rooms.wait, ContestWait);
 
-    console.log('Init');
-
-    // Set handshake.
-    this.ioSocket.query = { token };
-
-    this.wait$ = this.listenRoom(wait, WaitContest);
-
-    this.start$ = this.listenRoom(start, StartContest);
+    // this.start$ = this.listenRoom(start, StartContest);
   }
 
   /** Disconnects from all rooms. */
   disconnect() {
+    super.disconnect();
+
     this.subscriptionHandler$.next();
   }
 

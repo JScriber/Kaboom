@@ -156,5 +156,27 @@
         }
       }
     }
+  },
+  "LIST_CONTEST": {
+    "NO_CONTEST": "Aucune partie disponible.",
+    "CREATE": "Créer une partie"
+  },
+  "WAIT_CONTEST": {
+    "PLAYERS": {
+      "TITLE": "Joueurs",
+      "STATE": {
+        "READY": "Prêt",
+        "WAITING": "En attente"
+      }
+    },
+    "INFORMATIONS": {
+      "TITLE": "Informations",
+      "BONUS": "Bonus",
+      "PENALTIES": "Malus",
+      "DURATION": "Durée",
+      "ENABLED": "Activé",
+      "DISABLED": "Désactivé"
+    },
+    "INVITE_FRIENDS": "Inviter des amis"
   }
 }

@@ -1,12 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { Participant } from '@entity/participant.entity';
 import { User } from '@entity/user.entity';
 import { Contest } from '@entity/contest.entity';
 
 import { TokenService } from '../../token/token.service';
+
+// Repository.
+import { ParticipantRepository } from '../../../database/repository/participant.repository';
+import { ContestRepository } from '../../../database/repository/contest.repository';
 
 // Typing interface.
 import { IParticipantService } from '../participant.service.model';
@@ -25,21 +28,26 @@ interface TokenPayload {
 export class GeneralParticipantService implements IParticipantService {
 
   constructor(
-    @InjectRepository(Participant) private readonly repository: Repository<Participant>,
+    @InjectRepository(ParticipantRepository) private readonly repository: ParticipantRepository,
+    @InjectRepository(ContestRepository) private readonly contestRepository: ContestRepository,
     private readonly tokenService: TokenService) {}
 
   /** @inheritdoc */
-  create(user: User, contest: Contest): Promise<Participant> {
+  async participate(user: User, contest: Contest): Promise<Participant> {
 
-    // TODO: Check if user isn't already participating.
+    let participant: Participant = contest.participants.find(p => p.user.id === user.id);
 
-    const participant = new Participant();
+    if (!participant) {
+      participant = new Participant();
 
-    participant.connected = false;
-    participant.creator = contest.participants.length === 0;
+      participant.connected = false;
+      participant.creator = contest.participants.length === 0;
+  
+      participant.user = user;
+      participant.contest = contest;
 
-    participant.user = user;
-    participant.contest = contest;
+      participant = await this.repository.save(participant);
+    }
 
     return this.repository.save(participant);
   }
@@ -52,10 +60,15 @@ export class GeneralParticipantService implements IParticipantService {
   }
 
   /** @inheritdoc */
-  disconnect(participant: Participant) {
-    participant.connected = false;
+  async disconnect(participant: Participant) {
+    const { creator } = participant;
+    const contest = participant.contest;
 
-    this.repository.save(participant);
+    await this.repository.delete(participant);
+
+    if (creator || contest.participants.length <= 1) {
+      await this.contestRepository.delete(contest);
+    }
   }
 
   /** @inheritdoc */
@@ -69,6 +82,6 @@ export class GeneralParticipantService implements IParticipantService {
 
     const { uuid }: TokenPayload = this.tokenService.extractFrom(token);
 
-    return this.repository.findOne({ where: { uuid }});
+    return this.repository.findByUUID(uuid);
   }
 }

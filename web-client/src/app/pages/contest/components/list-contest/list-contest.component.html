@@ -1,6 +1,19 @@
-<div class="contest-previews">
+<ng-container *ngIf="previews$ | async; let previews">
+  <ng-container *ngIf="previews.length > 0; else noPreviews">
+    <div class="contest-previews">
+      <div class="contest-preview" *ngFor="let preview of previews$ | async">
+        <app-contest-preview [data]="preview" (join)="join($event)"></app-contest-preview>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
 
-  <div class="contest-preview" *ngFor="let preview of previews$ | async">
-    <app-contest-preview [data]="preview" (join)="join($event)"></app-contest-preview>
+<ng-template #noPreviews>
+  <div class="empty-list">
+    <p class="mat-title" translate>LIST_CONTEST.NO_CONTEST</p>
+
+    <button mat-flat-button color="accent" routerLink="/game/create">
+      {{ 'LIST_CONTEST.CREATE' | translate }}
+    </button>
   </div>
-</div>
+</ng-template>

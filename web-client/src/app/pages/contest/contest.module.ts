@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -7,9 +8,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressBarModule, MatCardModule, MatButtonModule, MatDividerModule, MatRippleModule,
   MatSliderModule, MatSlideToggleModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatCheckboxModule,
   MatDialogModule, MatIconModule, MatListModule } from '@angular/material';
-
-// Websocket.
-import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 
 // Main pages.
 import { CreateContestComponent } from './components/create-contest/create-contest.component';
@@ -23,10 +21,10 @@ import { ContestPreviewComponent } from './components/list-contest/contest-previ
 // Services.
 import { ContestApiService } from './services/contest-api/api/contest-api.service';
 import { MockContestApiService } from './services/contest-api/mock/mock-contest-api.service';
-import { WaitingRoomSocket } from './services/waiting-room/waiting-room.service';
 import { mockService } from 'src/utils';
 
 import { WebServiceModule } from '../../web-service/web-service.module';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 // Real game module.
 import { PhaserGameModule } from '../../game/game.module';
@@ -34,11 +32,10 @@ import { PhaserGameModule } from '../../game/game.module';
 @NgModule({
   imports: [
     CommonModule,
+    RouterModule,
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-
-    // SocketIoModule,
 
     MatProgressBarModule,
     MatCardModule,
@@ -57,7 +54,8 @@ import { PhaserGameModule } from '../../game/game.module';
 
     PhaserGameModule,
 
-    WebServiceModule
+    WebServiceModule,
+    SharedModule
   ],
   declarations: [
     CreateContestComponent,
@@ -71,8 +69,7 @@ import { PhaserGameModule } from '../../game/game.module';
     SelectListComponent
   ],
   providers: [
-    mockService(ContestApiService, MockContestApiService),
-    WaitingRoomSocket
+    mockService(ContestApiService, MockContestApiService)
   ]
 })
 export class ContestModule {}

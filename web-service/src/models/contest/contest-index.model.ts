@@ -1,4 +1,5 @@
 import { Contest } from '@entity/contest.entity';
+import { ContestSlot } from './contest-wait.model';
 
 /**
  * Minified representation of a {@link Contest}.
@@ -14,17 +15,17 @@ export class ContestIndex {
   /** Optionnal time limit. */
   duration: number | undefined;
 
-  /** Empty slots. */
-  emptySlots: number;
-
-  /** Total number of slots. */
-  totalSlots: number;
+  /** Slots. */
+  slots: ContestSlot;
 
   constructor(contest: Contest) {
     this.uuid = contest.uuid;
     this.field = contest.map.id;
     this.duration = contest.duration;
-    this.totalSlots = contest.maxParticipants;
-    this.emptySlots = contest.maxParticipants - contest.participants.length;
+    
+    this.slots = {
+      taken: contest.participants.length,
+      total: contest.maxParticipants
+    };
   }
 }

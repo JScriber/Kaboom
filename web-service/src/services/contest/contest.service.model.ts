@@ -22,6 +22,13 @@ export interface IContestService {
   join(uuid: string, user: User): Promise<ContestAccess>;
 
   /**
+   * Finds a {@link Contest} by its UUID.
+   * @param uuid
+   * @returns the {@link Contest} with its associations.
+   */
+  getOne(uuid: string): Promise<Contest>;
+
+  /**
    * Gets all the opened contest.
    * @returns list of {@link ContestIndex}.
    */

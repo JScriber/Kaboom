@@ -1,7 +1,6 @@
-.wait-game {
+.wait-contest {
   max-width: 750px;
   margin: 15px auto 0;
-
 }
 
 .players {
@@ -25,6 +24,8 @@
       image-rendering: auto;
       image-rendering: crisp-edges;
       image-rendering: pixelated;
+
+      margin: auto;
     }
 
     p {
@@ -72,6 +73,7 @@
 
   .right {
     padding-left: 15px;
+    list-style-type: none;
 
     p {
       margin-bottom: 3px;

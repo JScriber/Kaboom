@@ -14,6 +14,9 @@ import { IContestService } from '@service/contest/contest.service.model';
 import { Participant } from '@entity/participant.entity';
 import { Contest } from '@entity/contest.entity';
 
+// DTO.
+import { ContestWait } from '@model/contest';
+
 @WebSocketGateway(environment.ports.ws, { path: '/contest' })
 export class ContestGateway extends Gateway {
 
@@ -41,12 +44,21 @@ export class ContestGateway extends Gateway {
   /**
    * Check disconnection of players.
    */
-  handleDisconnect(socket: Socket) {
-    console.log('DISCONNECTED', socket.client.id);
-    const participant = this.getParticipantFromSocket(socket);
-
+  async handleDisconnect(socket: Socket) {
+    const participant = await this.getParticipantFromSocket(socket);
+    
     if (participant) {
-      // TODO: Implement.
+      const { uuid } = participant.contest;
+
+      await this.participantService.disconnect(participant);
+
+      const contest = await this.contestService.getOne(uuid);
+
+      if (contest) {
+        this.sendContestState(contest);
+      } else {
+        this.disconnectAll(this.getWaitingRoom({ uuid }));
+      }
     }
   }
 
@@ -65,10 +77,7 @@ export class ContestGateway extends Gateway {
     socket.join(waitingRoom);
 
     // Notice everyone.
-    this.emit(waitingRoom, {
-      message: 'New player'
-      // TODO: State of the game.
-    });
+    this.sendContestState(contest);
 
     // Check if the game is ready.
     if (this.contestService.isReady(contest)) {
@@ -76,6 +85,16 @@ export class ContestGateway extends Gateway {
 
       this.emit(gamingRoom, {});
     }
+  }
+
+  /**
+   * Sends the state of the given {@link Contest} to everyone in the room.
+   * @param {Contest} contest
+   */
+  private sendContestState(contest: Contest) {
+    const waitingRoom = this.getWaitingRoom(contest);
+
+    this.emit(waitingRoom, new ContestWait(contest));
   }
 
   /**
@@ -92,8 +111,8 @@ export class ContestGateway extends Gateway {
    * @param contest
    * @returns the room identifier.
    */
-  private getWaitingRoom(contest: Contest): string {
-    return 'waiting/' + contest.uuid;
+  private getWaitingRoom({ uuid }): string {
+    return 'waiting/' + uuid;
   }
 
   /**

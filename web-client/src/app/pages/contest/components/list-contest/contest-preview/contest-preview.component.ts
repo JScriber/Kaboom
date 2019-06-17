@@ -24,10 +24,10 @@ export class ContestPreviewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.slots = [];
+    this.slots = Array(this.data.slots.total).fill(false);
 
-    for (let i = 0; i < this.data.totalSlots; i ++) {
-      this.slots.push(i + 1 <= this.data.emptySlots);
+    for (let i = 0; i < this.data.slots.taken; i ++) {
+      this.slots[i] = true;
     }
   }
 }

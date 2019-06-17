@@ -175,11 +175,15 @@ export class CreateContestComponent implements OnInit {
       // Set bonus if toggled.
       if (value.bonus) {
         dto.bonus = this.compressItems(this.bonusItems, Bonus);
+      } else {
+        dto.bonus = this.toggleOff(this.bonusItems, Bonus);
       }
   
       // Set penalties if toggled.
       if (value.malus) {
         dto.penalties = this.compressItems(this.penaltyItems, Penalties);
+      } else {
+        dto.penalties = this.toggleOff(this.penaltyItems, Penalties);
       }
 
       this.webservice.create(dto).subscribe(information => {
@@ -251,5 +255,23 @@ export class CreateContestComponent implements OnInit {
         ... previous,
         [current.key]: current.state
       }), {}), classRef);
+  }
+
+  /**
+   * Compresses the list of items. Set false to all.
+   * @template T - Returned type.
+   * @param {SelectItem[]} list
+   * @param {Class<T>} classRef - Reference to a class.
+   * @returns {T}
+   */
+  private toggleOff<T>(list: SelectItem[], classRef: Class<T>): T {
+
+    return this.jsonConverter.deserialize(
+      list.reduce((previous, current) => ({
+        ... previous,
+        [current.key]: false
+      }), {}),
+      classRef
+    );
   }
 }

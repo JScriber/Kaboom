@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as Bcrypt from 'bcrypt';
@@ -8,6 +8,11 @@ import { environment } from '@environment';
 import { User, Language } from '@entity/user.entity';
 import { TokenService } from '@service/token/token.service';
 import { UpdateUser, UpdatePassword, CreateUser, Credentials, Token } from '@model/user';
+
+// Exceptions.
+import { CredentialsUsedException } from '../../../exceptions/credentials-used.exception';
+import { BadPasswordException } from '../../../exceptions/bad-password.exception';
+import { LoginException } from '../../../exceptions/login.exception';
 
 // Typing interface.
 import { IUserService } from '../user.service.model';
@@ -38,8 +43,7 @@ export class GeneralUserService implements IUserService {
     } catch (error) {
       // Credentials already used.
       if (error.code === '23505') {
-        // TODO: Throw custom error.
-        throw new ConflictException('The credentials are already used.');
+        throw new CredentialsUsedException();
       } else {
         // Unknown error.
         throw new InternalServerErrorException('Cannot update the current user.');
@@ -56,8 +60,7 @@ export class GeneralUserService implements IUserService {
 
       return this.repository.save(user);
     } else {
-      // TODO: Throw custom exception.
-      throw new BadRequestException('Incorrect password.');
+      throw new BadPasswordException();
     }
   }
 
@@ -68,8 +71,7 @@ export class GeneralUserService implements IUserService {
 
       return (await this.repository.delete(user.id)).affected === 1;
     } else {
-      // TODO: Throw custom exception.
-      throw new BadRequestException('Incorrect password');
+      throw new BadPasswordException();
     }
   }
 
@@ -83,8 +85,7 @@ export class GeneralUserService implements IUserService {
 
       return this.generateToken(user);
     } else {
-      // TODO: Throw custom exception.
-      throw new BadRequestException('User does not exist.');
+      throw new LoginException();
     } 
   }
 
@@ -112,11 +113,9 @@ export class GeneralUserService implements IUserService {
     } catch (error) {
       // Credentials already used.
       if (error.code === '23505') {
-        // TODO: Throw custom exception.
-        throw new ConflictException('The credentials are already used.');
+        throw new CredentialsUsedException();
       } else {
         // Unknown error.
-        // TODO: Throw custom exception.
         throw new InternalServerErrorException();
       }
     }

@@ -14,6 +14,29 @@ import PARTICIPANT_CONTRACT from '../contract/participant.contract';
 export class ContestRepository extends Repository<Contest> {
 
   /**
+   * Finds a {@link Contest} by its UUID.
+   * @param uuid
+   * @returns {Promise<Contest[]>}
+   */
+  findByUUID(uuid: string): Promise<Contest> {
+
+    return this.createQueryBuilder('contest')
+
+      .innerJoinAndSelect('contest.map', 'map')
+
+      .leftJoinAndSelect('contest.bonus', 'bonus')
+      .leftJoinAndSelect('contest.penalties', 'penalties')
+
+      .leftJoinAndSelect('contest.participants', 'participants')
+      .leftJoinAndSelect('participants.user', 'user')
+
+      .where('contest.uuid = :uuid', { uuid })
+
+      .getOne();
+  }
+
+
+  /**
    * Finds all the available contests.
    * @returns {Promise<Contest[]>}
    */

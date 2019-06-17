@@ -1,4 +1,5 @@
 import { JsonObject, JsonProperty } from 'json2typescript';
+import { ContestAccessRooms } from './contest-access-rooms.model';
 
 @JsonObject('ContestAccess')
 export class ContestAccess {
@@ -7,11 +8,7 @@ export class ContestAccess {
   @JsonProperty('token', String)
   token: string = undefined;
 
-  /** Room to listen for start. */
-  @JsonProperty('startRoom', String)
-  startRoom: string = undefined;
-
-  /** Room to listen for change. */
-  @JsonProperty('waitRoom', String)
-  waitRoom: string = undefined;
+  /** Rooms. */
+  @JsonProperty('rooms', ContestAccessRooms)
+  rooms: ContestAccessRooms = undefined;
 }
