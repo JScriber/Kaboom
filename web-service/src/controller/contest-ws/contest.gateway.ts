@@ -50,7 +50,7 @@ export class ContestGateway extends Gateway {
     if (participant) {
       const { uuid } = participant.contest;
 
-      await this.participantService.disconnect(participant);
+      await this.contestService.leave(participant);
 
       const contest = await this.contestService.getOne(uuid);
 

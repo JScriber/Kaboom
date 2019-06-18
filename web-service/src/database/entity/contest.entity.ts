@@ -35,6 +35,7 @@ export class Contest extends BaseEntity {
 
   /** Activated bonus for the contest. */
   @OneToOne(type => Bonus, {
+    cascade: true,
     nullable: false,
     onDelete: 'CASCADE'
   })
@@ -43,6 +44,7 @@ export class Contest extends BaseEntity {
 
   /** Activated penalties for the contest. */
   @OneToOne(type => Penalties, {
+    cascade: true,
     nullable: false,
     onDelete: 'CASCADE'
   })

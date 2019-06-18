@@ -1,6 +1,9 @@
 import { User } from '@entity/user.entity';
 import { ContestForm, ContestIndex, ContestAccess, ContestJoin } from '@model/contest';
+
+// Entities.
 import { Contest } from '@entity/contest.entity';
+import { Participant } from '@entity/participant.entity';
 
 export interface IContestService {
 
@@ -20,6 +23,12 @@ export interface IContestService {
    * @returns access to contest.
    */
   join(uuid: string, user: User): Promise<ContestAccess>;
+
+  /**
+   * The {@link Participant} leaves his {@link Contest}.
+   * @param participant
+   */
+  leave(participant: Participant): Promise<void>;
 
   /**
    * Finds a {@link Contest} by its UUID.

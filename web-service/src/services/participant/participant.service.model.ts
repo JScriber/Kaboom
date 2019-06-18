@@ -40,4 +40,10 @@ export interface IParticipantService {
    * @returns a {@link Participant}
    */
   getFromToken(token: string): Promise<Participant>;
+
+  /**
+   * Deletes the given {@link Participant}.
+   * @param participant
+   */
+  delete(participant: Participant): Promise<void>;
 }

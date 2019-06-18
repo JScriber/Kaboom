@@ -13,6 +13,7 @@ import { IParticipantService } from '@service/participant/participant.service.mo
 import { User } from '@entity/user.entity';
 import { Contest } from '@entity/contest.entity';
 import { Map } from '@entity/map.entity';
+import { Participant } from '@entity/participant.entity';
 
 // Models.
 import { ContestForm, ContestIndex, ContestAccess } from '@model/contest';
@@ -104,6 +105,20 @@ export class GeneralContestService implements IContestService {
   }
 
   /** @inheritdoc */
+  async leave(participant: Participant): Promise<void> {
+    const { creator } = participant;
+    const contest = participant.contest;
+
+    // Deletes the participant.
+    await this.participantService.delete(participant);
+
+    // Check if the contest must be deleted.
+    if (creator || contest.participants.length <= 1) {
+      await this.delete(contest);
+    }
+  }
+
+  /** @inheritdoc */
   getOne(uuid: string): Promise<Contest> {
 
     return this.repository.findByUUID(uuid);
@@ -131,5 +146,20 @@ export class GeneralContestService implements IContestService {
   isReady(contest: Contest): boolean {
     return contest.maxParticipants === contest.participants.length
       && contest.participants.every(p => p.connected);
+  }
+
+  /** @inheritdoc */
+  private async delete(contest: Contest): Promise<void> {
+
+    const { bonus, penalties } = contest;
+
+    await this.repository.delete(contest);
+
+    /*
+     * Delete the One-to-One relations as delete cascade isn't supported by TypeORM.
+     * {@see https://github.com/typeorm/typeorm/issues/1913#issuecomment-380419861}
+     */
+    await this.bonusRepository.delete(bonus);
+    await this.penaltiesRepository.delete(penalties);
   }
 }

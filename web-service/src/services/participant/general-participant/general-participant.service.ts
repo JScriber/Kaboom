@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Participant } from '@entity/participant.entity';
@@ -30,6 +30,7 @@ export class GeneralParticipantService implements IParticipantService {
   constructor(
     @InjectRepository(ParticipantRepository) private readonly repository: ParticipantRepository,
     @InjectRepository(ContestRepository) private readonly contestRepository: ContestRepository,
+
     private readonly tokenService: TokenService) {}
 
   /** @inheritdoc */
@@ -60,18 +61,6 @@ export class GeneralParticipantService implements IParticipantService {
   }
 
   /** @inheritdoc */
-  async disconnect(participant: Participant) {
-    const { creator } = participant;
-    const contest = participant.contest;
-
-    await this.repository.delete(participant);
-
-    if (creator || contest.participants.length <= 1) {
-      await this.contestRepository.delete(contest);
-    }
-  }
-
-  /** @inheritdoc */
   getToken({ uuid }: Participant): string {
 
     return this.tokenService.generateFrom<TokenPayload>({ uuid });
@@ -83,5 +72,10 @@ export class GeneralParticipantService implements IParticipantService {
     const { uuid }: TokenPayload = this.tokenService.extractFrom(token);
 
     return this.repository.findByUUID(uuid);
+  }
+
+  /** @inheritdoc */
+  async delete(participant: Participant): Promise<void> {
+    await this.repository.delete(participant);
   }
 }

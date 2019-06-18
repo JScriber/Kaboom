@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from 'typeorm';
+import { Repository, EntityRepository, DeleteResult } from 'typeorm';
 
 // Entities.
 import { Contest } from '@entity/contest.entity';
