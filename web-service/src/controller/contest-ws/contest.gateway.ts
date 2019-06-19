@@ -1,10 +1,8 @@
 import { Inject } from '@nestjs/common';
-import { WebSocketGateway, OnGatewayInit, OnGatewayConnection } from '@nestjs/websockets';
+import { WebSocketGateway } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 
 import { Gateway } from '../../utils/gateway';
-
-import { environment } from '@environment';
 
 // Services.
 import { IParticipantService } from '@service/participant/participant.service.model';
@@ -21,7 +19,7 @@ import { ContestWait } from '@model/contest';
 
 export const START_GAME_ROOM = 'start';
 
-@WebSocketGateway(environment.ports.ws, { path: '/contest' })
+@WebSocketGateway({ namespace: 'wait' })
 export class ContestGateway extends Gateway  {
 
   constructor(

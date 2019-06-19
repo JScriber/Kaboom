@@ -1,6 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { MainScene } from '../services/scenes/main.scene';
+import { Router } from '@angular/router';
+
+import { StartContest } from '../../pages/contest/models/wait-contest/start-contest.model';
+
+// Services.
+import { GameRoomSocket } from '../services/communication/game-room.socket';
+import { JsonConverterService } from '../../web-service/json-converter/json-converter.service';
 
 @Component({
   selector: 'app-game',
@@ -30,21 +37,50 @@ export class GameComponent implements OnInit, OnDestroy {
     }
   };
 
+  private connection: GameRoomSocket;
+
   /** Game instance. */
   private game: Phaser.Game;
 
-  constructor(private readonly mainScene: MainScene) {}
+  constructor(private readonly router: Router,
+              converter: JsonConverterService,
 
-  ngOnInit() {
-    this.game = new Phaser.Game(this.configuration);
+              private readonly mainScene: MainScene) {
 
-    this.game.scene.add(MainScene.KEY, this.mainScene, true);
+    const navigation = this.router.getCurrentNavigation();
+
+    if (navigation && navigation.extras && navigation.extras.state) {
+      const { token } = navigation.extras.state as StartContest;
+
+      this.connection = new GameRoomSocket(token, converter);
+    }
   }
 
-  ngOnDestroy() {    
-    this.mainScene.sys.scenePlugin.remove(MainScene.KEY);
-    this.game.destroy(true, false);
+  ngOnInit() {
 
-    console.clear();
+    if (this.connection) {
+      // TODO: Remove.
+      this.connection.push();
+
+      this.game = new Phaser.Game(this.configuration);
+  
+      this.game.scene.add(MainScene.KEY, this.mainScene, true);
+    } else {
+      this.redirect();
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.connection) {
+      this.mainScene.sys.scenePlugin.remove(MainScene.KEY);
+      this.game.destroy(true, false);
+
+      console.clear();
+    }
+  }
+
+  /** Redirects the user. */
+  private redirect() {
+    this.router.navigate(['/']);
   }
 }

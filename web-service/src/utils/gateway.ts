@@ -40,14 +40,13 @@ export abstract class Gateway implements OnGatewayConnection, OnGatewayDisconnec
    * @returns {Observable<Socket[]>}
    */
   protected socketsInRoom(room: string): Observable<Socket[]> {
-    const { connected } = this.server.sockets;
 
     return Observable.create((sub: Subscriber<Socket[]>) => {
       this.server.in(room).clients((err , clients: string[]) => {
         if (err) sub.error();
 
         // Get the sockets with the client ids.
-        const sockets = clients.map(client => connected[client]);
+        const sockets = clients.map(client => this.server.sockets[client]);
 
         sub.next(sockets);
         sub.complete();

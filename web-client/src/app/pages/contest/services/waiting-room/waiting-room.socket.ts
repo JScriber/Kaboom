@@ -1,4 +1,3 @@
-import { Injectable } from '@angular/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
 import { Socket } from 'ngx-socket-io';
@@ -22,7 +21,6 @@ interface Rooms {
 /**
  * Notifies of actions in the waiting room.
  */
-@Injectable()
 export class WaitingRoomSocket extends Socket {
 
   /** Notifies when a new user logs in. */
@@ -38,12 +36,13 @@ export class WaitingRoomSocket extends Socket {
 
   constructor(token: string, rooms: ContestAccessRooms, private readonly converter: JsonConverterService) {
     super({
-      url: environment.wsUrl,
+      url: environment.apiUrl,
       options: {
-        path: '/contest',
         query: { token }
       }
     });
+
+    this.ioSocket.nsp = '/wait';
 
     this.wait$ = this.listenRoom(rooms.wait, ContestWait);
 
