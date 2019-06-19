@@ -7,6 +7,7 @@ import { ContestController } from './contest/contest.controller';
 
 // Websockets.
 import { ContestGateway } from './contest-ws/contest.gateway';
+import { GameGateway } from './game-ws/game.gateway';
 
 // Services.
 import { ServiceModule } from '../services/service.module';
@@ -24,7 +25,8 @@ import { ServiceModule } from '../services/service.module';
     ContestController
   ],
   providers: [
-    ContestGateway
+    ContestGateway,
+    GameGateway
   ]
 })
 export class ControllerModule {}

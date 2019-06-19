@@ -4,7 +4,13 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 // Angular material components.
-import { MatToolbarModule, MatIconModule, MatListModule, MatDividerModule, MatRippleModule, MatMenuModule, MatButtonModule } from '@angular/material'; 
+import { MatButtonModule } from '@angular/material/button';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar'; 
 
 // Layout components.
 import { SidenavComponent } from './sidenav/sidenav.component';

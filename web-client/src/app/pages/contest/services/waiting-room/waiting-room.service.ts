@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 
 // Models.
 import { ContestWait } from '../../models/wait-contest/contest-wait.model';
+import { StartContest } from '../../models/wait-contest/start-contest.model';
 import { ContestAccessRooms } from '../../models/contest-access-rooms.model';
 
 // Services.
@@ -28,7 +29,7 @@ export class WaitingRoomSocket extends Socket {
   wait$: Observable<ContestWait>;
 
   /** Notifies when the game starts. */
-  start$: Observable<any>;
+  start$: Observable<StartContest>;
 
   disconnect$ = this.fromEvent<void>('disconnect');
 
@@ -46,7 +47,7 @@ export class WaitingRoomSocket extends Socket {
 
     this.wait$ = this.listenRoom(rooms.wait, ContestWait);
 
-    this.start$ = this.fromEvent(rooms.start);
+    this.start$ = this.listenRoom(rooms.start, StartContest);
   }
 
   /** Disconnects from all rooms. */

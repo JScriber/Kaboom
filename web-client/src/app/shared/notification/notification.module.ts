@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatSnackBarModule } from '@angular/material';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // Components.
 import { SuccessNotificationComponent } from './success-notification/success-notification.component';

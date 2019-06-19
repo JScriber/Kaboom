@@ -9,6 +9,8 @@ import { environment } from '@environment';
 // Services.
 import { IParticipantService } from '@service/participant/participant.service.model';
 import { IContestService } from '@service/contest/contest.service.model';
+import { MigrateContestService } from '@service/game/migrate-contest/migrate-contest.service';
+import { TokenRunningContestService } from '@service/game/token-running-contest/token-running-contest.service';
 
 // Entities.
 import { Participant } from '@entity/participant.entity';
@@ -24,7 +26,9 @@ export class ContestGateway extends Gateway  {
 
   constructor(
     @Inject('IContestService') private readonly contestService: IContestService,
-    @Inject('IParticipantService') private readonly participantService: IParticipantService) {
+    @Inject('IParticipantService') private readonly participantService: IParticipantService,
+    private readonly migrateService: MigrateContestService,
+    private readonly tokenService: TokenRunningContestService) {
 
     super();
   }
@@ -59,7 +63,7 @@ export class ContestGateway extends Gateway  {
       if (contest) {
         this.sendContestState(contest);
       } else {
-        this.disconnectAll(this.getWaitingRoom({ uuid }));
+        this.disconnectAll(this.getWaitingRoom(uuid));
       }
     }
   }
@@ -72,7 +76,7 @@ export class ContestGateway extends Gateway  {
   private async joinContest(socket: Socket, participant: Participant) {
 
     const { uuid } = participant.contest;
-    const waitingRoom = this.getWaitingRoom({ uuid });
+    const waitingRoom = this.getWaitingRoom(uuid);
 
     // Enter the room.
     await this.participantService.connect(participant);
@@ -94,15 +98,26 @@ export class ContestGateway extends Gateway  {
    * Starts the contest.
    * @param contest
    */
-  private startContest(contest: Contest) {
+  private async startContest(contest: Contest) {
 
-    const waitingRoom = this.getWaitingRoom(contest);
+    const waitingRoom = this.getWaitingRoom(contest.uuid);
 
-    // TODO: Migrate contest to cache.
+    // Migrate contest to cache.
+    const runningContest = await this.migrateService.migrate(contest);
+    const players = Array.from(runningContest.players);
 
-    this.socketsInRoom(waitingRoom).subscribe(sockets => sockets.forEach(socket => {
-      // TODO: Generate a new token based on the REDIS informations.
-      socket.emit(START_GAME_ROOM);
+    this.socketsInRoom(waitingRoom).subscribe(sockets => sockets.forEach(async (socket) => {
+
+      const participant = await this.getParticipantFromSocket(socket);
+      const player = players.find(p => p.participantId === participant.id);
+
+      // Generate a new token based on the REDIS informations.
+      const token = this.tokenService.createToken(runningContest, player);
+
+      socket.emit(START_GAME_ROOM, { token });
+
+      // Each player is disconnected. To play they must connect with the new token.
+      // The contest is not deleted here as the creator is disconnected.
       socket.disconnect();
     }));
   }
@@ -112,17 +127,17 @@ export class ContestGateway extends Gateway  {
    * @param {Contest} contest
    */
   private sendContestState(contest: Contest) {
-    const waitingRoom = this.getWaitingRoom(contest);
+    const waitingRoom = this.getWaitingRoom(contest.uuid);
 
     this.emit(waitingRoom, new ContestWait(contest));
   }
 
   /**
    * Finds the waiting room for the contest.
-   * @param contest
+   * @param uuid
    * @returns the room identifier.
    */
-  private getWaitingRoom({ uuid }): string {
+  private getWaitingRoom(uuid): string {
     return 'waiting/' + uuid;
   }
 
