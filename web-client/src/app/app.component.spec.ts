@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { WebServiceModule } from './web-service/web-service.module';
 import { LayoutsModule } from './layouts/layouts.module';
 import { PagesModule } from './pages/pages.module';
-import { MatSidenavModule } from '@angular/material';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';

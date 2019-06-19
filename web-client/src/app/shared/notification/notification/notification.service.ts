@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ComponentType } from '@angular/cdk/portal';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 // Components.
 import { SuccessNotificationComponent } from '../success-notification/success-notification.component';

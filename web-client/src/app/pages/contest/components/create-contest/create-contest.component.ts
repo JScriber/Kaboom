@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { SelectItem, SelectListComponent } from './select-list/select-list.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ContestForm } from '../../models/create-contest/contest-form.model';

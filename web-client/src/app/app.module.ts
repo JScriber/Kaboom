@@ -9,7 +9,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { rootRoutes } from './root.routes';
 
-import { MatSidenavModule } from '@angular/material'; 
+import { MatSidenavModule } from '@angular/material/sidenav'; 
 
 // Local modules.
 import { PagesModule } from './pages/pages.module';
