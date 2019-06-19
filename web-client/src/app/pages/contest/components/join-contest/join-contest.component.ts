@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, NEVER } from 'rxjs';
 import { take, switchMap, catchError } from 'rxjs/operators';
 import { ClipboardService } from 'ngx-clipboard';
@@ -8,7 +8,7 @@ import { ClipboardService } from 'ngx-clipboard';
 // Services.
 import { ContestApiService } from '../../services/contest-api/api/contest-api.service';
 import { JsonConverterService } from '../../../../web-service/json-converter/json-converter.service';
-import { WaitingRoomSocket } from '../../services/waiting-room/waiting-room.service';
+import { WaitingRoomSocket } from '../../services/waiting-room/waiting-room.socket';
 
 // Models.
 import { ContestJoin } from '../../models/join-contest/contest-join.model';
@@ -91,11 +91,8 @@ export class JoinContestComponent implements OnInit, OnDestroy {
       this.waitingRoomSocket.start$.subscribe(token => {
         this.play = true;
 
-        // const navigationExtras: NavigationExtras = {
-        //   state
-        // };
-
-        // this.router.navigate(['/game'], { state: token });
+        // Enter the game.
+        this.router.navigate(['/game'], { state: token });
       });
 
       this.waitingRoomSocket.disconnect$.subscribe(() => this.redirect());
@@ -131,7 +128,7 @@ export class JoinContestComponent implements OnInit, OnDestroy {
    */
   private redirect() {
     if (!this.destroyed && !this.play) {
-      this.router.navigate(['/game/join']);
+      this.router.navigate(['/']);
     }
   }
 }

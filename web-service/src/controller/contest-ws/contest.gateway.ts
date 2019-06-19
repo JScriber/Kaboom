@@ -21,7 +21,7 @@ import { ContestWait } from '@model/contest';
 
 export const START_GAME_ROOM = 'start';
 
-@WebSocketGateway(environment.ports.ws, { path: '/contest' })
+@WebSocketGateway({ namespace: 'wait' })
 export class ContestGateway extends Gateway  {
 
   constructor(
