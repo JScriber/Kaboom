@@ -8,12 +8,18 @@ import { TokenService } from './token/token.service';
 import { AuthService } from './auth/auth.service';
 import { HttpStrategy } from './auth/http-strategy/http.strategy';
 
+// Entities and repositories access.
 import { DatabaseModule } from '../database/database.module';
+import { RedisModule } from '../redis/redis.module';
 
 import { GeneralUserService } from './user/general-user/general-user.service';
 import { GeneralMapService } from './map/general-map/general-map.service';
 import { GeneralContestService } from './contest/general-contest/general-contest.service';
 import { GeneralParticipantService } from './participant/general-participant/general-participant.service';
+
+// TODO: Extract.
+import { MigrateContestService } from './game/migrate-contest/migrate-contest.service';
+import { TokenRunningContestService } from './game/token-running-contest/token-running-contest.service';
 
 /** Business logic services. */
 const PROVIDERS: Provider[] = [
@@ -32,7 +38,10 @@ const PROVIDERS: Provider[] = [
   {
     provide: 'IParticipantService',
     useClass: GeneralParticipantService
-  }
+  },
+  // TODO: Extract into array in game and import it.
+  MigrateContestService,
+  TokenRunningContestService
 ];
 
 @Module({
@@ -43,7 +52,9 @@ const PROVIDERS: Provider[] = [
       })
     }),
     TypeOrmModule.forRoot(),
-    DatabaseModule
+
+    DatabaseModule,
+    RedisModule
   ],
   providers: [
     TokenService,

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { Observable, NEVER } from 'rxjs';
 import { take, switchMap, catchError } from 'rxjs/operators';
 import { ClipboardService } from 'ngx-clipboard';
@@ -28,6 +28,9 @@ export class JoinContestComponent implements OnInit, OnDestroy {
 
   /** Link to access the game. */
   shareUrl = new FormControl();
+
+  /** Says if has reached the play mode. */
+  play = false;
 
   /** Says if the component has been destroyed. */
   destroyed = false;
@@ -85,7 +88,15 @@ export class JoinContestComponent implements OnInit, OnDestroy {
 
       this.waitingRoomSocket = new WaitingRoomSocket(token, rooms, this.converter);
 
-      this.waitingRoomSocket.start$.subscribe(() => console.log('Game starts'));
+      this.waitingRoomSocket.start$.subscribe(token => {
+        this.play = true;
+
+        // const navigationExtras: NavigationExtras = {
+        //   state
+        // };
+
+        // this.router.navigate(['/game'], { state: token });
+      });
 
       this.waitingRoomSocket.disconnect$.subscribe(() => this.redirect());
 
@@ -119,7 +130,7 @@ export class JoinContestComponent implements OnInit, OnDestroy {
    * Redirects to the selection page.
    */
   private redirect() {
-    if (!this.destroyed) {
+    if (!this.destroyed && !this.play) {
       this.router.navigate(['/game/join']);
     }
   }
