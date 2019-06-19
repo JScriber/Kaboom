@@ -27,6 +27,7 @@ import { MapNotFoundException } from '../../../exceptions/map-not-found.exceptio
 import { ContestNotFoundException } from '../../../exceptions/contest-not-found.exception';
 import { Bonus } from '../../../database/entity/alterations/bonus.entity';
 import { Penalties } from '../../../database/entity/alterations/penalties.entity';
+import { START_GAME_ROOM } from 'src/controller/contest-ws/contest.gateway';
 
 /**
  * Implementation of the {@link IContestService} interface.
@@ -98,10 +99,7 @@ export class GeneralContestService implements IContestService {
     const participant = await this.participantService.participate(user, contest);
     const token = this.participantService.getToken(participant);
 
-    const startRoom = `game/${contest.uuid}`;
-    const waitRoom  = `waiting/${contest.uuid}`;
-
-    return new ContestAccess(token, startRoom, waitRoom);
+    return new ContestAccess(token, START_GAME_ROOM, `waiting/${contest.uuid}`);
   }
 
   /** @inheritdoc */

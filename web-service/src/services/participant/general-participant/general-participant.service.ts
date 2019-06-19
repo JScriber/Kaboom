@@ -36,6 +36,7 @@ export class GeneralParticipantService implements IParticipantService {
   /** @inheritdoc */
   async participate(user: User, contest: Contest): Promise<Participant> {
 
+    // Check if the user isn't already participating.
     let participant: Participant = contest.participants.find(p => p.user.id === user.id);
 
     if (!participant) {
@@ -54,10 +55,10 @@ export class GeneralParticipantService implements IParticipantService {
   }
 
   /** @inheritdoc */
-  connect(participant: Participant) {
+  async connect(participant: Participant): Promise<void> {
     participant.connected = true;
 
-    this.repository.save(participant);
+    await this.repository.save(participant);
   }
 
   /** @inheritdoc */

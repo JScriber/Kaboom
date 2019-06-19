@@ -27,7 +27,7 @@ export class ContestRepository extends Repository<Contest> {
       .leftJoinAndSelect('contest.bonus', 'bonus')
       .leftJoinAndSelect('contest.penalties', 'penalties')
 
-      .leftJoinAndSelect('contest.participants', 'participants')
+      .leftJoinAndSelect('contest.participants', 'participants', 'participants.connected = TRUE')
       .leftJoinAndSelect('participants.user', 'user')
 
       .where('contest.uuid = :uuid', { uuid })
@@ -35,9 +35,9 @@ export class ContestRepository extends Repository<Contest> {
       .getOne();
   }
 
-
   /**
    * Finds all the available contests.
+   * The connected {@link Participant participants} are attached.
    * @returns {Promise<Contest[]>}
    */
   findAvailable(): Promise<Contest[]> {
@@ -46,7 +46,7 @@ export class ContestRepository extends Repository<Contest> {
 
       // Attach map and participants.
       .innerJoinAndSelect('contest.map', 'map')
-      .innerJoinAndSelect('contest.participants', 'participants')
+      .leftJoinAndSelect('contest.participants', 'participants', 'participants.connected = TRUE')
 
       // Must have slots left.
       .where(qb => {

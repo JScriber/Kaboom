@@ -1,4 +1,4 @@
-import { Module, Provider, forwardRef } from '@nestjs/common';
+import { Module, Provider } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -27,7 +27,7 @@ const PROVIDERS: Provider[] = [
   },
   {
     provide: 'IContestService',
-    useClass: forwardRef(() => GeneralContestService)
+    useClass: GeneralContestService
   },
   {
     provide: 'IParticipantService',

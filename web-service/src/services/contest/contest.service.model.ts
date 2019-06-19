@@ -50,7 +50,6 @@ export interface IContestService {
    */
   isReady(contest: Contest): boolean;
 
-
   /**
    * Starts the {@link Contest}.
    * @param contest 

@@ -6,7 +6,6 @@ import { Socket } from 'ngx-socket-io';
 import { environment } from 'src/environments/environment';
 
 // Models.
-import { StartContest } from '../../models/wait-contest/start-contest.model';
 import { ContestWait } from '../../models/wait-contest/contest-wait.model';
 import { ContestAccessRooms } from '../../models/contest-access-rooms.model';
 
@@ -29,7 +28,7 @@ export class WaitingRoomSocket extends Socket {
   wait$: Observable<ContestWait>;
 
   /** Notifies when the game starts. */
-  start$: Observable<StartContest>;
+  start$: Observable<any>;
 
   disconnect$ = this.fromEvent<void>('disconnect');
 
@@ -47,7 +46,7 @@ export class WaitingRoomSocket extends Socket {
 
     this.wait$ = this.listenRoom(rooms.wait, ContestWait);
 
-    // this.start$ = this.listenRoom(start, StartContest);
+    this.start$ = this.fromEvent(rooms.start);
   }
 
   /** Disconnects from all rooms. */
@@ -65,6 +64,7 @@ export class WaitingRoomSocket extends Socket {
    * @returns {Observable<T>}
    */
   private listenRoom<T>(room: string, classRef: Class<T>): Observable<T> {
+
     return this.fromEvent<T>(room).pipe(
       map(d => this.converter.deserialize(d, classRef)),
       takeUntil(this.subscriptionHandler$)

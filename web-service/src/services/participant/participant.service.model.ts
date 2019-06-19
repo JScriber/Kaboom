@@ -19,13 +19,7 @@ export interface IParticipantService {
    * Sets the {@link Participant} as connected.
    * @param participant
    */
-  connect(participant: Participant): void;
-
-  /**
-   * Sets the {@link Participant} as disconnected.
-   * @param participant
-   */
-  disconnect(participant: Participant): void;
+  connect(participant: Participant): Promise<void>;
 
   /**
    * Generates a token for the {@link Participant}

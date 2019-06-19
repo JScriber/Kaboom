@@ -85,6 +85,8 @@ export class JoinContestComponent implements OnInit, OnDestroy {
 
       this.waitingRoomSocket = new WaitingRoomSocket(token, rooms, this.converter);
 
+      this.waitingRoomSocket.start$.subscribe(() => console.log('Game starts'));
+
       this.waitingRoomSocket.disconnect$.subscribe(() => this.redirect());
 
       this.loading = false;

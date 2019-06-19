@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { WebSocketGateway } from '@nestjs/websockets';
+import { WebSocketGateway, OnGatewayInit, OnGatewayConnection } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 
 import { Gateway } from '../../utils/gateway';
@@ -17,8 +17,10 @@ import { Contest } from '@entity/contest.entity';
 // DTO.
 import { ContestWait } from '@model/contest';
 
+export const START_GAME_ROOM = 'start';
+
 @WebSocketGateway(environment.ports.ws, { path: '/contest' })
-export class ContestGateway extends Gateway {
+export class ContestGateway extends Gateway  {
 
   constructor(
     @Inject('IContestService') private readonly contestService: IContestService,
@@ -32,10 +34,10 @@ export class ContestGateway extends Gateway {
    */
   async handleConnection(socket: Socket) {
     const participant = await this.getParticipantFromSocket(socket);
-    
+
     if (participant) {
       console.log('CONNECTED', socket.client.id);
-      this.joinContest(socket, participant);
+      await this.joinContest(socket, participant);
     } else {
       socket.disconnect();
     }
@@ -67,24 +69,42 @@ export class ContestGateway extends Gateway {
    * @param socket
    * @param participant
    */
-  private joinContest(socket: Socket, participant: Participant) {
+  private async joinContest(socket: Socket, participant: Participant) {
 
-    const contest = participant.contest;
-    const waitingRoom = this.getWaitingRoom(contest);
+    const { uuid } = participant.contest;
+    const waitingRoom = this.getWaitingRoom({ uuid });
 
     // Enter the room.
-    this.participantService.connect(participant);
+    await this.participantService.connect(participant);
     socket.join(waitingRoom);
+
+    // Find the contest.
+    const contest = await this.contestService.getOne(uuid);
 
     // Notice everyone.
     this.sendContestState(contest);
 
     // Check if the game is ready.
     if (this.contestService.isReady(contest)) {
-      const gamingRoom = this.getGameRoom(contest);
-
-      this.emit(gamingRoom, {});
+      this.startContest(contest);
     }
+  }
+
+  /**
+   * Starts the contest.
+   * @param contest
+   */
+  private startContest(contest: Contest) {
+
+    const waitingRoom = this.getWaitingRoom(contest);
+
+    // TODO: Migrate contest to cache.
+
+    this.socketsInRoom(waitingRoom).subscribe(sockets => sockets.forEach(socket => {
+      // TODO: Generate a new token based on the REDIS informations.
+      socket.emit(START_GAME_ROOM);
+      socket.disconnect();
+    }));
   }
 
   /**
@@ -95,15 +115,6 @@ export class ContestGateway extends Gateway {
     const waitingRoom = this.getWaitingRoom(contest);
 
     this.emit(waitingRoom, new ContestWait(contest));
-  }
-
-  /**
-   * Finds the gaming room for the contest.
-   * @param contest
-   * @returns the room identifier.
-   */
-  private getGameRoom(contest: Contest): string {
-    return 'game/' + contest.uuid;
   }
 
   /**
