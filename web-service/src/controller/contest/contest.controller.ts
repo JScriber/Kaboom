@@ -1,7 +1,6 @@
-import { Controller, Post, Res, Body, ValidationPipe, UseGuards, Req, Inject, Get } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, UseGuards, Req, Inject, Get } from '@nestjs/common';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { Response } from 'express-serve-static-core';
 
 import { IContestService } from '@service/contest/contest.service.model';
 import { ContestForm, ContestJoin } from '@model/contest';
@@ -30,9 +29,9 @@ export class ContestController {
   @Post('create')
   @UseGuards(AuthGuard('bearer'))
   @ApiBearerAuth()
-  async create(@Req() request, @Body(new ValidationPipe()) parameters: ContestForm) {
+  async create(@Req() request, @Body(new ValidationPipe()) form: ContestForm) {
 
-    return this.service.create(request.user, parameters);
+    return this.service.create(request.user, form);
   }
 
   /**

@@ -33,7 +33,7 @@ const findPlayer = ({ playerID }: Participant, game: Game): Player => {
   return game.players.find(p => p.id === playerID);
 };
 
-@WebSocketGateway(environment.ports.ws, { path: '/game' })
+// @WebSocketGateway(environment.ports.ws, { namespace: '/game' })
 export class GameWebSocket extends Gateway {
 
   /** Map of broadcasts. */
@@ -47,7 +47,7 @@ export class GameWebSocket extends Gateway {
 
   /** Force authentification at connection time. */
   handleConnection(socket: Socket): void {
-    console.log('CONNECTED', socket.client.id);
+    console.log('CONNECTED to game', socket.client.id);
     const participant = this.getParticipantFromSocket(socket);
 
     // console.log('TOKEN', this.authentification.generateFrom({

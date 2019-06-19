@@ -14,7 +14,7 @@ import { RedisService } from './services/redis/redis.service';
   providers: [
     GameService,
     RedisService,
-    GameWebSocket,
+    // GameWebSocket,
     WsJwtGuard
   ]
 })

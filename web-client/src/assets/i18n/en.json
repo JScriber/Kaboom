@@ -21,7 +21,7 @@
   },
   "SIDENAV": {
     "JOIN_GAME": "Join game",
-    "CREATE_GAME": "Create game",
+    "CREATE_CONTEST": "Create game",
     "EDIT_MAP": "Edit maps",
     "STATS": "My stats",
     "INFORMATIONS": "Informations"
@@ -71,7 +71,7 @@
       "PASSWORD": "Password"
     }
   },
-  "CREATE_GAME": {
+  "CREATE_CONTEST": {
     "SEARCH": {
       "BONUS": "Search a bonus",
       "PENALTY": "Search a malus"
@@ -154,5 +154,27 @@
         }
       }
     }
+  },
+  "LIST_CONTEST": {
+    "NO_CONTEST": "No contest available",
+    "CREATE": "Create a contest"
+  },
+  "WAIT_CONTEST": {
+    "PLAYERS": {
+      "TITLE": "Players",
+      "STATE": {
+        "READY": "Ready",
+        "WAITING": "Waiting"
+      }
+    },
+    "INFORMATIONS": {
+      "TITLE": "Informations",
+      "BONUS": "Bonus",
+      "PENALTIES": "Penalties",
+      "DURATION": "Duration",
+      "ENABLED": "Enabled",
+      "DISABLED": "Disabled"
+    },
+    "INVITE_FRIENDS": "Invite friends"
   }
 }

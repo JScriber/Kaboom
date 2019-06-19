@@ -8,7 +8,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
 
 // Modules.
 import { AuthentificationModule } from './authentification/authentification.module';
-import { GameModule } from './game/game.module';
+import { ContestModule } from './contest/contest.module';
 import { AccountModule } from './account/account.module';
 
 @NgModule({
@@ -20,8 +20,9 @@ import { AccountModule } from './account/account.module';
     MatIconModule,
 
     AuthentificationModule,
-    GameModule,
-    AccountModule
+
+    AccountModule,
+    ContestModule
   ],
   declarations: [
     NotFoundComponent

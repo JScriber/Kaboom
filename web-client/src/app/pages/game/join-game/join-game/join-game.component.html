@@ -1,6 +1,0 @@
-<div class="game-previews">
-
-  <div class="game-preview" *ngFor="let preview of previews$ | async">
-    <app-game-preview [data]="preview" (access)="access($event)"></app-game-preview>
-  </div>
-</div>

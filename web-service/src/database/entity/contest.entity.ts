@@ -1,7 +1,11 @@
-import { Entity, Column, ManyToOne, OneToMany, JoinColumn, Generated } from 'typeorm';
+import { Entity, Column, ManyToOne, OneToMany, JoinColumn, Generated, OneToOne } from 'typeorm';
 
-import { Map } from '@entity/map.entity';
+// Associated entities.
 import { Participant } from '@entity/participant.entity';
+import { Map } from '@entity/map.entity';
+import { Bonus } from '@entity/alterations/bonus.entity';
+import { Penalties } from '@entity/alterations/penalties.entity';
+
 import { BaseEntity } from '@entity/base.entity';
 
 import CONTRACT from './../contract/contest.contract';
@@ -29,13 +33,23 @@ export class Contest extends BaseEntity {
   @Column('smallint', { name: CONTRACT.DURATION, nullable: true })
   duration: number | undefined;
 
-  /** Says if the bonus have been activated. */
-  @Column('boolean', { name: CONTRACT.HAS_BONUS })
-  bonusActived: boolean;
+  /** Activated bonus for the contest. */
+  @OneToOne(type => Bonus, {
+    cascade: true,
+    nullable: false,
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn()
+  bonus: Bonus;
 
-  /** Says if the penalties are activated. */
-  @Column('boolean', { name: CONTRACT.HAS_PENALTIES })
-  penaltiesActivated: boolean;
+  /** Activated penalties for the contest. */
+  @OneToOne(type => Penalties, {
+    cascade: true,
+    nullable: false,
+    onDelete: 'CASCADE'
+  })
+  @JoinColumn()
+  penalties: Penalties;
 
   /**
    * A contest must have an associated map.
@@ -49,7 +63,8 @@ export class Contest extends BaseEntity {
 
   /** A contest has many participants. */
   @OneToMany(type => Participant, participant => participant.contest, {
-    nullable: true
+    nullable: true,
+    onDelete: 'CASCADE'
   })
   @JoinColumn()
   participants: Participant[];

@@ -1,0 +1,86 @@
+<div *ngIf="!loading; else loader" class="wait-contest">
+
+  <ng-container *ngIf="wait$ | async; let contest">
+    <mat-card class="mat-elevation-z0">
+      <mat-card-title>
+        {{ 'WAIT_CONTEST.PLAYERS.TITLE' | translate }}
+      </mat-card-title>
+  
+      <mat-card-content class="players">
+        <div class="player" *ngFor="let slot of getSlots(contest); let i = index" [class.waiting]="!slot">
+          <img mat-card-avatar [src]="'assets/game/players-preview/' + (i + 1) + '.png'"/>
+          <p *ngIf="slot; else waiting" translate>WAIT_CONTEST.PLAYERS.STATE.READY</p>
+
+          <ng-template #waiting>
+            <p translate>WAIT_CONTEST.PLAYERS.STATE.WAITING</p>
+          </ng-template>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  
+    <div class="sub-info">
+  
+      <mat-card class="mat-elevation-z0">
+        <mat-card-title>
+          {{ 'WAIT_CONTEST.INFORMATIONS.TITLE' | translate }}
+        </mat-card-title>
+
+        <mat-card-content class="informations">
+          <div class="left">
+            <img src="assets/images/previews/wood-level.jpg"/>
+          </div>
+  
+          <ul class="right">
+            <li>
+              <b translate>WAIT_CONTEST.INFORMATIONS.BONUS</b>
+              <ng-container
+                *ngTemplateOutlet="state;context: { $implicit: contest.bonusActivated }"
+              ></ng-container>
+            </li>
+
+            <li>
+              <b translate>WAIT_CONTEST.INFORMATIONS.PENALTIES</b>
+              <ng-container
+                *ngTemplateOutlet="state;context: { $implicit: contest.penaltiesActivated }"
+              ></ng-container>
+            </li>
+
+            <li *ngIf="contest.duration">
+              <b translate>WAIT_CONTEST.INFORMATIONS.DURATION</b>
+              <p>{{ contest.duration }} min</p>
+            </li>
+            </ul>
+        </mat-card-content>
+      </mat-card>
+  
+      <mat-card class="mat-elevation-z0">
+        <mat-card-title>
+          {{ 'WAIT_CONTEST.INVITE_FRIENDS' | translate }}
+        </mat-card-title>
+  
+        <mat-card-content>
+          <mat-form-field appearance="outline">
+            <input matInput [formControl]="shareUrl" [readonly]="true"/>
+            <button mat-icon-button matSuffix (click)="copyUrl()">
+              <mat-icon class="material-icons-outlined">file_copy</mat-icon>
+            </button>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #state let-enabled>
+  <p *ngIf="enabled; else disabled" translate>
+    WAIT_CONTEST.INFORMATIONS.ENABLED
+  </p>
+</ng-template>
+
+<ng-template #disabled>
+  <p translate>WAIT_CONTEST.INFORMATIONS.DISABLED</p>
+</ng-template>
+
+<ng-template #loader>
+  <app-spinner></app-spinner>
+</ng-template>
