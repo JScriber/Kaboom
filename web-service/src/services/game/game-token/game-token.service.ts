@@ -8,6 +8,12 @@ import { Player } from '../../../redis/entities/player.entity';
 import { TokenService } from '../../token/token.service';
 import { RunningContestRepository } from '../../../redis/services/repositories/running-contest-repository/running-contest.repository';
 
+/**
+ * A data access has current {@link RunningContest} state.
+ * And the current {@link Player} who executes the action.
+ */
+export type DataAccess = [RunningContest, Player];
+
 /** Payload of the running contest token. */
 export interface RunningContestToken {
   runningContestId: number;
@@ -18,7 +24,7 @@ export interface RunningContestToken {
  * Service to create and read the token of a {@link RunningContest}.
  */
 @Injectable()
-export class TokenRunningContestService {
+export class GameTokenService {
 
   constructor(private readonly tokenService: TokenService,
               private readonly repository: RunningContestRepository) {}
@@ -40,9 +46,8 @@ export class TokenRunningContestService {
   /**
    * Extracts informations on the player with the token.
    * @param {string} token
-   * @throws Exception.
    */
-  async extractFromToken(token: string): Promise<[RunningContest, Player]> {
+  async extractFromToken(token: string): Promise<DataAccess | undefined> {
     let contest: RunningContest, player: Player;
 
     const { playerId, runningContestId }: RunningContestToken = this.tokenService.extractFrom(token);
@@ -53,7 +58,7 @@ export class TokenRunningContestService {
       player = Array.from(contest.players).find(p => p.id === playerId);
     }
 
-    if (!contest || !player) throw new Error('Invalid token.');
+    if (!contest || !player) return undefined;
 
     return [contest, player];
   }

@@ -46,6 +46,14 @@ export class MigrateContestService {
   private async convertParticipantsToPlayers(participants: Participant[]): Promise<Set<Player>> {
     const players = new Set<Player>();
 
+    // Initial players positions.
+    const positions = [
+      [25, 35],
+      [170, 35]
+    ];
+
+    let i = 0;
+
     participants.forEach(async (participant) => {
 
       const player = new Player();
@@ -57,8 +65,10 @@ export class MigrateContestService {
       player.lives = 3;
       player.speed = 10;
 
-      player.positionX = 10;
-      player.positionY = 10;
+      const [ x, y ] = positions[i ++];
+
+      player.positionX = x;
+      player.positionY = y;
 
       players.add(
         await this.playerRepository.save(player)

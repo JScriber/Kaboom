@@ -17,9 +17,7 @@ import { GeneralMapService } from './map/general-map/general-map.service';
 import { GeneralContestService } from './contest/general-contest/general-contest.service';
 import { GeneralParticipantService } from './participant/general-participant/general-participant.service';
 
-// TODO: Extract.
-import { MigrateContestService } from './game/migrate-contest/migrate-contest.service';
-import { TokenRunningContestService } from './game/token-running-contest/token-running-contest.service';
+import { GAME_SERVICES } from './game';
 
 /** Business logic services. */
 const PROVIDERS: Provider[] = [
@@ -39,9 +37,7 @@ const PROVIDERS: Provider[] = [
     provide: 'IParticipantService',
     useClass: GeneralParticipantService
   },
-  // TODO: Extract into array in game and import it.
-  MigrateContestService,
-  TokenRunningContestService
+  ... GAME_SERVICES
 ];
 
 @Module({

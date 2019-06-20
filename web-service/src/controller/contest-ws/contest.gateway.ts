@@ -8,7 +8,7 @@ import { Gateway } from '../../utils/gateway';
 import { IParticipantService } from '@service/participant/participant.service.model';
 import { IContestService } from '@service/contest/contest.service.model';
 import { MigrateContestService } from '@service/game/migrate-contest/migrate-contest.service';
-import { TokenRunningContestService } from '@service/game/token-running-contest/token-running-contest.service';
+import { GameTokenService } from '@service/game/game-token/game-token.service';
 
 // Entities.
 import { Participant } from '@entity/participant.entity';
@@ -26,7 +26,7 @@ export class ContestGateway extends Gateway  {
     @Inject('IContestService') private readonly contestService: IContestService,
     @Inject('IParticipantService') private readonly participantService: IParticipantService,
     private readonly migrateService: MigrateContestService,
-    private readonly tokenService: TokenRunningContestService) {
+    private readonly tokenService: GameTokenService) {
 
     super();
   }
