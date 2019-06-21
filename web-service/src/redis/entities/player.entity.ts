@@ -1,5 +1,13 @@
 import { Entity, IdentifyProperty, Property } from 'orm-redis';
 
+export enum Skin {
+  Player1,
+  Player2,
+  Player3,
+  Player4
+}
+
+
 /**
  * Playing {@link Participant} of a {@link Contest}.
  */
@@ -25,6 +33,10 @@ export class Player {
   /** Y position of the player on the battlefield. */
   @Property(Number)
   positionY: number;
+
+  /** Skin of the player. */
+  @Property(Number)
+  skin: Number;
 
   /**
    * Lives left to the player.

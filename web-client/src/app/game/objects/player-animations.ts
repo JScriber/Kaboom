@@ -40,18 +40,28 @@ export default class PlayerAnimations {
    * @param animation 
    */
   play(animation: Walk | Idle) {
-    this.sprite.anims.play(animation, true);
+    this.sprite.anims.play(this.buildKey(animation), true);
   }
 
   /**
    * Creates a new animation.
-   * @param key 
+   * @param animation 
    * @param frames 
    */
-  private add(key: string, frames: number[]) {
+  private add(animation: Walk | Idle, frames: number[]) {
     this.scene.anims.create({
-      key, frameRate: 5,
+      key: this.buildKey(animation),
+      frameRate: 5,
       frames: this.scene.anims.generateFrameNumbers(this.spriteKey, { frames }),
     });
+  }
+
+  /**
+   * Builds a unique key for each animation for each sprite.
+   * @param animation
+   * @returns {string}
+   */
+  private buildKey(animation: Walk | Idle): string {
+    return `${this.spriteKey}:${animation}`;
   }
 }

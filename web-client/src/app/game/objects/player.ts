@@ -1,4 +1,7 @@
 import PlayerAnimations, { Walk, Idle } from './player-animations';
+import { Skin } from '../services/communication/models/player.model';
+
+import { SpriteSkin } from '../services/scenes/main.scene.model';
 
 export enum Direction {
   Left,
@@ -37,6 +40,9 @@ export interface PlayerContructor {
 
   /** Initial player position. */
   initialPosition: Position;
+
+  /** Skin of the player. */
+  skin: Skin;
 }
 
 export default abstract class Player {
@@ -44,9 +50,7 @@ export default abstract class Player {
   /** Player ID. */
   id: number;
 
-  protected scene: Phaser.Scene;
-
-  protected sprite: Phaser.Physics.Matter.Sprite;
+  sprite: Phaser.Physics.Matter.Sprite;
 
   /** Speed of the character. */
   protected velocity = 2;
@@ -57,14 +61,32 @@ export default abstract class Player {
   /** Animations handler. */
   protected animations: PlayerAnimations;
 
-  constructor(scene: Phaser.Scene, parameters: PlayerContructor) {
+  constructor(protected readonly scene: Phaser.Scene, parameters: PlayerContructor) {
 
     this.id = parameters.id;
 
-    this.scene = scene;
+    // Create the physics-based sprite that we will move around and animate.
+    let skin: string;
 
-    // Create the physics-based sprite that we will move around and animate
-    this.sprite = scene.matter.add.sprite(0, 0, 'player1', 7);
+    switch (parameters.skin) {
+      case Skin.Player1:
+        skin = SpriteSkin.Player1;
+        break;
+
+      case Skin.Player2:
+        skin = SpriteSkin.Player2;
+        break;
+
+      case Skin.Player3:
+        skin = SpriteSkin.Player3;
+        break;
+
+      case Skin.Player4:
+        skin = SpriteSkin.Player4;
+        break;
+    }
+
+    this.sprite = scene.matter.add.sprite(0, 0, skin, 7); 
 
     const Bodies = (Phaser.Physics.Matter as any).Matter.Bodies;
 
@@ -79,7 +101,7 @@ export default abstract class Player {
     this.sprite.setDisplayOrigin(8, 16);
 
     // Initialize animation handler.
-    this.animations = new PlayerAnimations(this.sprite, scene, 'player1');
+    this.animations = new PlayerAnimations(this.sprite, scene, skin);
   }
 
   /**

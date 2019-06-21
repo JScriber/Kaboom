@@ -1,3 +1,10 @@
+export enum Skin {
+  Player1,
+  Player2,
+  Player3,
+  Player4
+}
+
 export interface Player {
 
   /** Unique identifier. */
@@ -14,6 +21,9 @@ export interface Player {
 
   /** Y position of the player on the battlefield. */
   positionY: number;
+
+  /** Skin of the player. */
+  skin: Skin;
 
   /**
    * Lives left to the player.

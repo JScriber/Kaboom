@@ -32,11 +32,19 @@ export class GameGateway extends Gateway  {
 
     if (data) {
       socket.join(this.feedContestRoom(data[0]));
-
-      await this.shareState(data[0]);
     } else {
       socket.disconnect();
     }
+  }
+
+  /**
+   * Asks for game propagation.
+   */
+  @SubscribeMessage('ready')
+  async isReady(socket: Socket) {
+    const data: DataAccess = await this.getContestFromSocket(socket);
+
+    await this.shareState(data[0]);
   }
 
   /**

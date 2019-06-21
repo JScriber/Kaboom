@@ -2,6 +2,7 @@ import MultiKey from '../utils/multikey';
 import Player, { Position } from './player';
 
 import { Vector } from './player';
+import { Skin } from '../services/communication/models/player.model';
 
 interface LocalPlayerContructor {
 
@@ -10,6 +11,9 @@ interface LocalPlayerContructor {
 
   /** Initial player position. */
   initialPosition: Position;
+
+  /** Skin of the player. */
+  skin: Skin;
 
   /** Function to call when a movement occurs. */
   movementOutput?: (position: Position) => void;

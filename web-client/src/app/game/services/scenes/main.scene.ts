@@ -9,6 +9,9 @@ import { mapParser } from '../parser/map-parser';
 import { RemotePlayer } from '../../objects/remote-player';
 import { LocalPlayer } from '../../objects/local-player';
 
+import { SpriteSkin } from './main.scene.model';
+import { Skin } from '../communication/models/player.model';
+
 @Injectable()
 export class MainScene extends Phaser.Scene {
 
@@ -35,11 +38,17 @@ export class MainScene extends Phaser.Scene {
 	preload() {
 		this.load.image('map-tileset', 'assets/game/levels/wood-level/tileset.jpg');
 		this.load.tilemapTiledJSON('map', 'assets/game/levels/wood-level/representation.json');
-		
-		this.load.spritesheet('player1', 'assets/game/players/1.png', {
+
+		// Load the players.
+		const frameConfig: Phaser.Loader.FileTypes.ImageFrameConfig = {
 			frameHeight: 25,
 			frameWidth: 16
-		});
+		};
+
+		this.load.spritesheet(SpriteSkin.Player1, 'assets/game/players/1.png', frameConfig);
+		this.load.spritesheet(SpriteSkin.Player2, 'assets/game/players/2.png', frameConfig);
+		this.load.spritesheet(SpriteSkin.Player3, 'assets/game/players/3.png', frameConfig);
+		this.load.spritesheet(SpriteSkin.Player4, 'assets/game/players/4.png', frameConfig);
   }
 
   create() {
@@ -90,11 +99,14 @@ export class MainScene extends Phaser.Scene {
 						y: p.positionY
 					};
 
+					const skin = p.skin;
+
 					let phaserPlayer: Player;
 
 					if (p.id === player.id) {
 						phaserPlayer = new LocalPlayer(this, {
 							id: p.id,
+							skin,
 
 							initialPosition: position,
 
@@ -104,7 +116,8 @@ export class MainScene extends Phaser.Scene {
 
 						phaserPlayer = new RemotePlayer(this, {
 							id: p.id,
-							initialPosition: position
+							initialPosition: position,
+							skin
 						});
 					}
 
@@ -114,6 +127,8 @@ export class MainScene extends Phaser.Scene {
 
 			this.initialized = true;
 		});
+
+		this.connection.ready();
 	}
 
 	update() {

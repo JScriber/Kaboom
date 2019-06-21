@@ -42,6 +42,11 @@ export class GameRoomSocket extends Socket {
     this.initFeed(token);
   }
 
+  /** The client says he's ready. */
+  ready() {
+    this.emit('ready');
+  }
+
   /** Makes the player move. */
   move(x: number, y: number) {
     this.emit('move', { x, y });
