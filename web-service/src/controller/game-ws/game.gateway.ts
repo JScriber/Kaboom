@@ -1,5 +1,7 @@
+import { Inject } from '@nestjs/common';
 import { WebSocketGateway, SubscribeMessage } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { tap } from 'rxjs/operators';
 
 import { Gateway } from '../../utils/gateway';
 import { RunningContest } from 'src/redis/entities/running-contest.entity';
@@ -7,12 +9,10 @@ import { RunningContest } from 'src/redis/entities/running-contest.entity';
 // Services.
 import { GameTokenService, DataAccess } from '@service/game/game-token/game-token.service';
 import { GameExecutorService } from '@service/game/game-executor/game-executor.service';
-import { of } from 'rxjs';
-import { switchMap, tap } from 'rxjs/operators';
-import { Inject } from '@nestjs/common';
 
-import { IGameLogicService } from '../../services/game/game-logic/game-logic.service.model';
-import { Vector } from '../../services/game/game-logic/models/vector.model';
+import { IGameLogicService } from '@service/game/game-logic/game-logic.service.model';
+import { Position } from '@service/game/game-logic/models/position.model';
+import { Direction } from '@service/game/game-logic/models/direction.model';
 
 @WebSocketGateway({ namespace: 'play' })
 export class GameGateway extends Gateway  {
@@ -51,10 +51,22 @@ export class GameGateway extends Gateway  {
    * Movement on the battlefield.
    */
   @SubscribeMessage('move')
-  move(socket: Socket, data: Vector) {
+  move(socket: Socket, data: Position) {
     const token = this.getToken(socket);
 
     this.executor.execute(this.logic.move, data, token).pipe(
+      tap(contest => this.shareState(contest))
+    ).toPromise();
+  }
+
+  /**
+   * Put a bomb on the battlefield.
+   */
+  @SubscribeMessage('bomb')
+  bomb(socket: Socket, direction: Direction) {
+    const token = this.getToken(socket);
+
+    this.executor.execute(this.logic.bomb, direction, token).pipe(
       tap(contest => this.shareState(contest))
     ).toPromise();
   }

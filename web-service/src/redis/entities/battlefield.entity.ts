@@ -18,6 +18,14 @@ export class Battlefield {
   @Property(Number)
   height: number;
 
+  /** Width of the canvas. */
+  @Property(Number)
+  canvasWidth: number;
+
+  /** Height of the canvas. */
+  @Property(Number)
+  canvasHeight: number;
+
   /** 
    * Matrix representation of the game.
    * Example: "001002205060788001".

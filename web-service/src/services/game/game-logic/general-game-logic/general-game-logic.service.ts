@@ -8,7 +8,9 @@ import { Player } from '../../../../redis/entities/player.entity';
 import { RunningContest } from '../../../../redis/entities/running-contest.entity';
 
 // Models.
-import { Vector } from '../models/vector.model';
+import { Position } from '../models/position.model';
+import { Direction } from '../models/direction.model';
+import { GameBattlefieldService } from '../../game-battlefield/game-battlefield.service';
 
 /**
  * Implementation of the {@link IGameLogicService} interface.
@@ -16,13 +18,25 @@ import { Vector } from '../models/vector.model';
 @Injectable()
 export class GeneralGameLogicService implements IGameLogicService {
 
+  constructor(private readonly battlefield: GameBattlefieldService) {}
+
   /** @inheritdoc */
-  move = (player: Player, contest: RunningContest, direction: Vector): RunningContest => {
+  move = (player: Player, contest: RunningContest, position: Position): RunningContest => {
 
     const current = this.currentPlayer(player, contest);
 
-    current.positionX = direction.x;
-    current.positionY = direction.y;
+    current.positionX = position.x;
+    current.positionY = position.y;
+
+    // TODO: Add more controls and security rules.
+
+    return contest;
+  };
+
+  /** @inheritdoc */
+  bomb = (player: Player, contest: RunningContest, direction: Direction): RunningContest => {
+
+    console.log('Player ' + player.id + ' put a bomb: ', this.battlefield.findPosition(player, contest.battlefield));
 
     return contest;
   };

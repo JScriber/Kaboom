@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import Player from '../../objects/player';
 
 import { MapBuilder } from '../builder/map-builder';
 import { GameRoomSocket } from '../communication/game-room.socket';
@@ -8,9 +7,13 @@ import { mapParser } from '../parser/map-parser';
 // Types of player.
 import { RemotePlayer } from '../../objects/remote-player';
 import { LocalPlayer } from '../../objects/local-player';
+import Player from '../../objects/player';
 
 import { SpriteSkin } from './main.scene.model';
-import { Skin } from '../communication/models/player.model';
+
+// Communication models.
+import { RunningContest } from '../communication/models/running-contest.model';
+import { Player as CommunicationPlayer } from '../communication/models/player.model';
 
 @Injectable()
 export class MainScene extends Phaser.Scene {
@@ -61,6 +64,8 @@ export class MainScene extends Phaser.Scene {
 		this.obstacles = map.createDynamicLayer('obstacles', tileset, 0, 0);
 		const shadows = map.createDynamicLayer('shadows', tileset, 0, 0);
 
+		console.log(map.widthInPixels, map.width, map.widthInPixels / map.width);
+
 		this.builder = new MapBuilder(map, this.obstacles, shadows);
 
 		// Wait data.
@@ -76,54 +81,7 @@ export class MainScene extends Phaser.Scene {
 			this.matter.world.convertTilemapLayer(this.field);
 
 			// Set player initial position.
-			if (this.initialized) {
-
-				contest.players.forEach(outputPlayer => {
-
-					const player = this.players.find(p => p.id === outputPlayer.id);
-
-					if (player && player instanceof RemotePlayer) {
-
-						player.setServerPosition({
-							x: outputPlayer.positionX,
-							y: outputPlayer.positionY
-						});
-					}
-				});
-
-			} else {
-				this.players = contest.players.map(p => {
-
-					const position = {
-						x: p.positionX,
-						y: p.positionY
-					};
-
-					const skin = p.skin;
-
-					let phaserPlayer: Player;
-
-					if (p.id === player.id) {
-						phaserPlayer = new LocalPlayer(this, {
-							id: p.id,
-							skin,
-
-							initialPosition: position,
-
-							movementOutput: ({ x, y }) => this.connection.move(x, y)
-						});
-					} else {
-
-						phaserPlayer = new RemotePlayer(this, {
-							id: p.id,
-							initialPosition: position,
-							skin
-						});
-					}
-
-					return phaserPlayer;
-				});
-			}
+			this.initialized ? this.updatePositions(contest) : this.initialize(contest, player);
 
 			this.initialized = true;
 		});
@@ -141,5 +99,63 @@ export class MainScene extends Phaser.Scene {
 	 */
 	setConnection(connection: GameRoomSocket) {
 		this.connection = connection;
+	}
+
+	/**
+	 * Updates the position of the players based on the one on the server.
+	 * @param {RunningContest} contest
+	 */
+	private updatePositions(contest: RunningContest) {
+		contest.players.forEach(outputPlayer => {
+
+			const player = this.players.find(p => p.id === outputPlayer.id);
+
+			if (player && player instanceof RemotePlayer) {
+
+				player.setServerPosition({
+					x: outputPlayer.positionX,
+					y: outputPlayer.positionY
+				});
+			}
+		});
+	}
+
+	/**
+	 * Initializes the state of the game.
+	 * @param contest
+	 * @param player
+	 */
+	private initialize(contest: RunningContest, player: CommunicationPlayer) {
+		this.players = contest.players.map(p => {
+
+			const position = {
+				x: p.positionX,
+				y: p.positionY
+			};
+
+			const skin = p.skin;
+
+			let phaserPlayer: Player;
+
+			if (p.id === player.id) {
+				phaserPlayer = new LocalPlayer(this, {
+					id: p.id,
+					skin,
+
+					initialPosition: position,
+
+					connection: this.connection
+				});
+			} else {
+
+				phaserPlayer = new RemotePlayer(this, {
+					id: p.id,
+					initialPosition: position,
+					skin
+				});
+			}
+
+			return phaserPlayer;
+		});
 	}
 }

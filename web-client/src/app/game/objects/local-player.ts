@@ -4,6 +4,9 @@ import Player, { Position } from './player';
 import { Vector } from './player';
 import { Skin } from '../services/communication/models/player.model';
 
+// Services.
+import { GameRoomSocket } from '../services/communication/game-room.socket';
+
 interface LocalPlayerContructor {
 
   /** Unique identifier. */
@@ -15,8 +18,8 @@ interface LocalPlayerContructor {
   /** Skin of the player. */
   skin: Skin;
 
-  /** Function to call when a movement occurs. */
-  movementOutput?: (position: Position) => void;
+  /** Connection to the server. */
+  connection: GameRoomSocket;
 }
 
 /** Player that can be controlled from the keyboard. */
@@ -30,13 +33,13 @@ export class LocalPlayer extends Player {
     down: MultiKey
   };
 
-  /** Notifier for movement. */
-  private movementOutput: (position: Position) => void;
+  /** Connection to the server. */
+  private connection: GameRoomSocket;
 
   constructor(scene: Phaser.Scene, parameters: LocalPlayerContructor) {
     super(scene, { ... parameters });
 
-    this.movementOutput = parameters.movementOutput;
+    this.connection = parameters.connection;
 
     const { LEFT, UP, RIGHT, DOWN, Z, Q, S, D } = Phaser.Input.Keyboard.KeyCodes;
 
@@ -46,11 +49,14 @@ export class LocalPlayer extends Player {
       up: new MultiKey(scene, [UP, Z]),
       down: new MultiKey(scene, [DOWN, S])
     };
+
+		// Attach bomb event to key A.
+		this.scene.input.keyboard.addKey('A').on('up', () => this.putBomb());
   }
 
   /** @inheritdoc */
   protected movementHook(position: Position) {
-    this.movementOutput(position);
+    this.connection.move(position);
   }
 
   /** @inheritdoc */
@@ -72,5 +78,10 @@ export class LocalPlayer extends Player {
     }
 
     return vector;
+  }
+
+  /** The players puts a bomb. */
+  private putBomb() {
+    this.connection.bomb(this.lastDirection);
   }
 }

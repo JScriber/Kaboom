@@ -98,6 +98,9 @@ export class MigrateContestService {
     battlefield.height = map.width;
     battlefield.width = map.height;
 
+    battlefield.canvasHeight = 208;
+    battlefield.canvasWidth = 208;
+
     battlefield.matrixRepresentation = map.content;
 
     return this.battlefieldRepository.save(battlefield);
