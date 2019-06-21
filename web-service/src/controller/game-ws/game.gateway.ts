@@ -3,15 +3,23 @@ import { Socket } from 'socket.io';
 
 import { Gateway } from '../../utils/gateway';
 import { RunningContest } from 'src/redis/entities/running-contest.entity';
-import { Player } from '../../redis/entities/player.entity';
 
 // Services.
-import { TokenRunningContestService } from '../../services/game/token-running-contest/token-running-contest.service';
+import { GameTokenService, DataAccess } from '@service/game/game-token/game-token.service';
+import { GameExecutorService } from '@service/game/game-executor/game-executor.service';
+import { of } from 'rxjs';
+import { switchMap, tap } from 'rxjs/operators';
+import { Inject } from '@nestjs/common';
+
+import { IGameLogicService } from '../../services/game/game-logic/game-logic.service.model';
+import { Vector } from '../../services/game/game-logic/models/vector.model';
 
 @WebSocketGateway({ namespace: 'play' })
 export class GameGateway extends Gateway  {
 
-  constructor(private readonly tokenService: TokenRunningContestService) {
+  constructor(private readonly tokenService: GameTokenService,
+              private readonly executor: GameExecutorService,
+              @Inject('IGameLogicService') private readonly logic: IGameLogicService) {
     super();
   }
 
@@ -20,51 +28,102 @@ export class GameGateway extends Gateway  {
    */
   async handleConnection(socket: Socket) {
 
-    const data = await this.getContestFromSocket(socket);
+    const data: DataAccess = await this.getContestFromSocket(socket);
 
     if (data) {
-      this.joinContestRoom(socket, data[0]);
+      socket.join(this.feedContestRoom(data[0]));
     } else {
       socket.disconnect();
     }
   }
 
-  @SubscribeMessage('push')
-  onPush(client, data) {
-    console.log('Puuush', data);
-    return {
-      event: 'pop',
-      data,
-    };
+  /**
+   * Asks for game propagation.
+   */
+  @SubscribeMessage('ready')
+  async isReady(socket: Socket) {
+    const data: DataAccess = await this.getContestFromSocket(socket);
+
+    await this.shareState(data[0]);
   }
+
+  /**
+   * Movement on the battlefield.
+   */
+  @SubscribeMessage('move')
+  move(socket: Socket, data: Vector) {
+    const token = this.getToken(socket);
+
+    this.executor.execute(this.logic.move, data, token).pipe(
+      tap(contest => this.shareState(contest))
+    ).toPromise();
+  }
+
+  private async shareState(contest: RunningContest) {
+    const room = this.feedContestRoom(contest);
+
+    this.socketsInRoom(room).subscribe(sockets => sockets.forEach(async (s) => {
+
+      const [ contest, player ]: DataAccess = await this.getContestFromSocket(s);
+
+      s.emit(room, {
+        player,
+        contest: this.convert(contest)
+      });
+    }))
+  }
+
+  private getToken(socket: Socket): string | undefined {
+    return socket.handshake.query.token;
+  }
+
+
 
   /**
    * Check disconnection of players.
    */
   async handleDisconnect(socket: Socket) {
-    
+    // TODO: Implement.
   }
 
-  private joinContestRoom(socket: Socket, contest: RunningContest) {
-    console.log('A player has join the contest ' + contest.id);
-
-    socket.join(`feed/${contest.id}`);
+  /** 
+   * Room where are sent the informations of the given contest.
+   * @param {RunningContest} contest
+   * @returns {string} - Room.
+   */
+  private feedContestRoom(contest: RunningContest) {
+    return `feed/${contest.id}`;
   }
 
   /**
    * Gets the {@link RunningContest} from the socket.
    * @param {Socket} socket
    */
-  private async getContestFromSocket(socket: Socket): Promise<[RunningContest, Player]> {
+  private async getContestFromSocket(socket: Socket): Promise<DataAccess> {
     const { token } = socket.handshake.query;
-    let contest: [RunningContest, Player];
+    let dataAccess: DataAccess;
 
     if (token) {
       try {
-        contest = await this.tokenService.extractFromToken(token);
+        dataAccess = await this.tokenService.extractFromToken(token);
       } catch (e) {}
     }
 
-    return contest;
+    return dataAccess;
+  }
+
+  /**
+   * Converts the given entity to a suitable format for DTO.
+   * @template T - Entity type.
+   * @param entity
+   */
+  private convert<T>(entity: T): any {
+    Object.keys(entity).forEach(k => {
+      if (entity[k] instanceof Set) {
+        entity[k] = Array.from(entity[k]);
+      }
+    });
+
+    return entity;
   }
 }

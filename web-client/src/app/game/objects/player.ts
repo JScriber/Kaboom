@@ -1,43 +1,98 @@
-import MultiKey from '../utils/multikey';
 import PlayerAnimations, { Walk, Idle } from './player-animations';
+import { Skin } from '../services/communication/models/player.model';
 
-enum Direction {
+import { SpriteSkin } from '../services/scenes/main.scene.model';
+
+export enum Direction {
   Left,
   Right,
   Up,
   Down
 }
 
-export default class Player {
+/** Position of the player. */
+export interface Position {
 
-  private scene: Phaser.Scene;
+  /** Horizontal position. */
+  x: number;
 
-  private sprite: Phaser.Physics.Matter.Sprite;
+  /** Vertical position. */
+  y: number;
+}
 
-  private velocity = 2;
+/** Directional vector for movements. */
+export interface Vector {
 
-  private inputs: {
-    left: MultiKey,
-    right: MultiKey,
-    up: MultiKey,
-    down: MultiKey
-  };
+  /** Movement on the horizontal axis. */
+  x: number;
 
-  private lastDirection = Direction.Down;
+  /** Movement on the vertical axis. */
+  y: number;
+}
+
+/**
+ * Constructor parameters for the {@link Player} object.
+ */
+export interface PlayerContructor {
+
+  /** Unique identifier. */
+  id: number;
+
+  /** Initial player position. */
+  initialPosition: Position;
+
+  /** Skin of the player. */
+  skin: Skin;
+}
+
+export default abstract class Player {
+
+  /** Player ID. */
+  id: number;
+
+  sprite: Phaser.Physics.Matter.Sprite;
+
+  /** Speed of the character. */
+  protected velocity = 2;
+
+  /** Last direction (used for animation only). */
+  protected lastDirection = Direction.Down;
 
   /** Animations handler. */
-  private animations: PlayerAnimations;
+  protected animations: PlayerAnimations;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
+  constructor(protected readonly scene: Phaser.Scene, parameters: PlayerContructor) {
 
-    this.scene = scene;
+    this.id = parameters.id;
 
-    // Create the physics-based sprite that we will move around and animate
-    this.sprite = scene.matter.add.sprite(0, 0, 'player1', 7);
+    // Create the physics-based sprite that we will move around and animate.
+    let skin: string;
+
+    switch (parameters.skin) {
+      case Skin.Player1:
+        skin = SpriteSkin.Player1;
+        break;
+
+      case Skin.Player2:
+        skin = SpriteSkin.Player2;
+        break;
+
+      case Skin.Player3:
+        skin = SpriteSkin.Player3;
+        break;
+
+      case Skin.Player4:
+        skin = SpriteSkin.Player4;
+        break;
+    }
+
+    this.sprite = scene.matter.add.sprite(0, 0, skin, 7); 
 
     const Bodies = (Phaser.Physics.Matter as any).Matter.Bodies;
 
     const mainBody = Bodies.rectangle(0, 5, 12, 8, { chamfer: { radius: 5 } });
+
+    const { x, y } = parameters.initialPosition;
 
     this.sprite.setExistingBody(mainBody);
     this.sprite.setFixedRotation();
@@ -45,64 +100,95 @@ export default class Player {
 
     this.sprite.setDisplayOrigin(8, 16);
 
-    const { LEFT, UP, RIGHT, DOWN, Z, Q, S, D } = Phaser.Input.Keyboard.KeyCodes;
-
-    this.inputs = {
-      left: new MultiKey(scene, [LEFT, Q]),
-      right: new MultiKey(scene, [RIGHT, D]),
-      up: new MultiKey(scene, [UP, Z]),
-      down: new MultiKey(scene, [DOWN, S])
-    };
-
     // Initialize animation handler.
-    this.animations = new PlayerAnimations(this.sprite, scene, 'player1');
+    this.animations = new PlayerAnimations(this.sprite, scene, skin);
+  }
+
+  /**
+   * Returns the position of the player.
+   * @returns {Position}
+   */
+  get position(): Position {
+    return {
+      x: this.sprite.x,
+      y: this.sprite.y
+    };
   }
 
   update() {
-    const isLeftKeyDown = this.inputs.left.isDown();
-    const isRightKeyDown = this.inputs.right.isDown();
-    const isUpKeyDown = this.inputs.up.isDown();
-    const isDownKeyDown = this.inputs.down.isDown();
+    const [ velocityX, velocityY ] = this.determineVelocity();
 
-    const hasMove = isLeftKeyDown || isRightKeyDown || isUpKeyDown || isDownKeyDown;
+    this.sprite.setVelocity(velocityX, velocityY);
+  }
+
+  /**
+   * Determines the forces the exert on the player.
+   * @returns {Vector}
+   */
+  protected abstract findDirection(): Vector;
+
+  /** Hook called whenever the position changes. */
+  protected movementHook(position: Position): void {}
+
+  /** Determines the velocity to apply. */
+  private determineVelocity(): [number, number] {
+
+    // Forces applied to the player.
+    const direction: Vector = this.findDirection();
+
+    // The player must move if the direction indicates a value different of 0.
+    const mustMove = direction.x !== 0 || direction.y !== 0;
 
     let velocityX = 0;
     let velocityY = 0;
 
-    if (isRightKeyDown) {
-      velocityX = this.velocity;
-      velocityY = 0;
+    if (mustMove) {
 
-      this.animations.play(Walk.Right);
-      this.lastDirection = Direction.Right;
-    }
+      if (direction.y === 0) {
+  
+        // Goes right.
+        if (direction.x < 0) {
+          velocityX = this.velocity;
+          velocityY = 0;
+    
+          this.animations.play(Walk.Right);
+          this.lastDirection = Direction.Right;
+        }
+  
+        // Goes left.
+        if (direction.x > 0) {
+          velocityX = -1 * this.velocity;
+          velocityY = 0;
+    
+          this.animations.play(Walk.Left);
+          this.lastDirection = Direction.Left;
+        }
+      } else {
+  
+        // Goes down.
+        if (direction.y < 0) {
+          velocityX = 0
+          velocityY = this.velocity;
+    
+          this.animations.play(Walk.Down);
+          this.lastDirection = Direction.Down;
+        }
+  
+        // Goes up.
+        if (direction.y > 0) {
+          velocityX = 0
+          velocityY = -1 * this.velocity;
+    
+          this.animations.play(Walk.Up);
+          this.lastDirection = Direction.Up;
+        }
+      }
 
-    if (isLeftKeyDown) {
-      velocityX = -1 * this.velocity;
-      velocityY = 0;
-
-      this.animations.play(Walk.Left);
-      this.lastDirection = Direction.Left;
-    }
-
-    if (isUpKeyDown) {
-      velocityX = 0
-      velocityY = -1 * this.velocity;
-
-      this.animations.play(Walk.Up);
-      this.lastDirection = Direction.Up;
-    }
-
-    if (isDownKeyDown) {
-      velocityX = 0
-      velocityY = this.velocity;
-
-      this.animations.play(Walk.Down);
-      this.lastDirection = Direction.Down;
-    }
-
-    if (!hasMove) {
+      this.movementHook(this.position);
+    } else {
+      // Determine the animation to play when not moving.
       switch(this.lastDirection) {
+
         case Direction.Up:
           this.animations.play(Idle.Up);
           break;
@@ -121,6 +207,6 @@ export default class Player {
       }
     }
 
-    this.sprite.setVelocity(velocityX, velocityY);
-  }
+    return [velocityX, velocityY];
+  }  
 }

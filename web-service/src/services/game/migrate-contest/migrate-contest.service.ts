@@ -8,7 +8,7 @@ import { BattlefieldRepository } from '../../../redis/services/repositories/batt
 
 // Redis entities.
 import { RunningContest } from 'src/redis/entities/running-contest.entity';
-import { Player } from 'src/redis/entities/player.entity';
+import { Player, Skin } from 'src/redis/entities/player.entity';
 import { Battlefield } from '../../../redis/entities/battlefield.entity';
 
 // Database entities.
@@ -46,6 +46,19 @@ export class MigrateContestService {
   private async convertParticipantsToPlayers(participants: Participant[]): Promise<Set<Player>> {
     const players = new Set<Player>();
 
+    // Initial players positions.
+    const positions = [
+      [25, 35],
+      [170, 35]
+    ];
+
+    const skins = [
+      Skin.Player1, Skin.Player2,
+      Skin.Player3, Skin.Player4
+    ];
+
+    let i = 0;
+
     participants.forEach(async (participant) => {
 
       const player = new Player();
@@ -57,8 +70,14 @@ export class MigrateContestService {
       player.lives = 3;
       player.speed = 10;
 
-      player.positionX = 10;
-      player.positionY = 10;
+      const [ x, y ] = positions[i];
+
+      player.positionX = x;
+      player.positionY = y;
+
+      player.skin = skins[i];
+
+      i ++;
 
       players.add(
         await this.playerRepository.save(player)

@@ -2,6 +2,15 @@ import { Injectable } from '@angular/core';
 import Player from '../../objects/player';
 
 import { MapBuilder } from '../builder/map-builder';
+import { GameRoomSocket } from '../communication/game-room.socket';
+import { mapParser } from '../parser/map-parser';
+
+// Types of player.
+import { RemotePlayer } from '../../objects/remote-player';
+import { LocalPlayer } from '../../objects/local-player';
+
+import { SpriteSkin } from './main.scene.model';
+import { Skin } from '../communication/models/player.model';
 
 @Injectable()
 export class MainScene extends Phaser.Scene {
@@ -9,7 +18,18 @@ export class MainScene extends Phaser.Scene {
 	/** Scene key. */
 	public static readonly KEY = 'MainScene';
 
-  private player: Player;
+	private players: Player[] = [];
+	
+	private connection: GameRoomSocket;
+	
+	private builder: MapBuilder;
+
+	private field: Phaser.Tilemaps.DynamicTilemapLayer;
+
+	private obstacles: Phaser.Tilemaps.DynamicTilemapLayer;
+
+	/** Says if the component has received data once. */
+	private initialized = false;
 
   constructor() {
     super({ key: MainScene.KEY });
@@ -18,11 +38,17 @@ export class MainScene extends Phaser.Scene {
 	preload() {
 		this.load.image('map-tileset', 'assets/game/levels/wood-level/tileset.jpg');
 		this.load.tilemapTiledJSON('map', 'assets/game/levels/wood-level/representation.json');
-		
-		this.load.spritesheet('player1', 'assets/game/players/1.png', {
+
+		// Load the players.
+		const frameConfig: Phaser.Loader.FileTypes.ImageFrameConfig = {
 			frameHeight: 25,
 			frameWidth: 16
-		});
+		};
+
+		this.load.spritesheet(SpriteSkin.Player1, 'assets/game/players/1.png', frameConfig);
+		this.load.spritesheet(SpriteSkin.Player2, 'assets/game/players/2.png', frameConfig);
+		this.load.spritesheet(SpriteSkin.Player3, 'assets/game/players/3.png', frameConfig);
+		this.load.spritesheet(SpriteSkin.Player4, 'assets/game/players/4.png', frameConfig);
   }
 
   create() {
@@ -31,37 +57,89 @@ export class MainScene extends Phaser.Scene {
 		const tileset = map.addTilesetImage('wood-level', 'map-tileset');
 
 		// Layers.
-		const field = map.createDynamicLayer('field', tileset, 0, 0);
-		const obstacles = map.createDynamicLayer('obstacles', tileset, 0, 0);
+		this.field = map.createDynamicLayer('field', tileset, 0, 0);
+		this.obstacles = map.createDynamicLayer('obstacles', tileset, 0, 0);
 		const shadows = map.createDynamicLayer('shadows', tileset, 0, 0);
 
-		const builder = new MapBuilder(map, obstacles, shadows);
+		this.builder = new MapBuilder(map, this.obstacles, shadows);
 
-		builder.drawData([
-			[0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
-			[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 8, 0, 8, 0, 0, 0],
-			[0, 0, 0, 0, 8, 0, 0, 8, 0, 0, 0],
-			[0, 0, 2, 7, 8, 8, 0, 8, 8, 8, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0],
-			[0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 1],
-		]);
+		// Wait data.
+		this.connection.feed$.subscribe(({ player, contest }) => {
 
-		// Setup collisions.
-		field.setCollisionByProperty({ collides: true });
-		obstacles.setCollisionByProperty({ collides: true });
+			this.builder.drawData(mapParser(contest.battlefield));
 
-		this.matter.world.convertTilemapLayer(obstacles);
-		this.matter.world.convertTilemapLayer(field);
+			// Setup collisions.
+			this.field.setCollisionByProperty({ collides: true });
+			this.obstacles.setCollisionByProperty({ collides: true });
 
-		this.player = new Player(this, 100, 30);
+			this.matter.world.convertTilemapLayer(this.obstacles);
+			this.matter.world.convertTilemapLayer(this.field);
+
+			// Set player initial position.
+			if (this.initialized) {
+
+				contest.players.forEach(outputPlayer => {
+
+					const player = this.players.find(p => p.id === outputPlayer.id);
+
+					if (player && player instanceof RemotePlayer) {
+
+						player.setServerPosition({
+							x: outputPlayer.positionX,
+							y: outputPlayer.positionY
+						});
+					}
+				});
+
+			} else {
+				this.players = contest.players.map(p => {
+
+					const position = {
+						x: p.positionX,
+						y: p.positionY
+					};
+
+					const skin = p.skin;
+
+					let phaserPlayer: Player;
+
+					if (p.id === player.id) {
+						phaserPlayer = new LocalPlayer(this, {
+							id: p.id,
+							skin,
+
+							initialPosition: position,
+
+							movementOutput: ({ x, y }) => this.connection.move(x, y)
+						});
+					} else {
+
+						phaserPlayer = new RemotePlayer(this, {
+							id: p.id,
+							initialPosition: position,
+							skin
+						});
+					}
+
+					return phaserPlayer;
+				});
+			}
+
+			this.initialized = true;
+		});
+
+		this.connection.ready();
 	}
 
 	update() {
-		this.player.update();
+		this.players.forEach(p => p.update());
+	}
+
+	/**
+	 * Sets the connection.
+	 * @param connection 
+	 */
+	setConnection(connection: GameRoomSocket) {
+		this.connection = connection;
 	}
 }

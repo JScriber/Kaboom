@@ -8,6 +8,7 @@ import { StartContest } from '../../pages/contest/models/wait-contest/start-cont
 // Services.
 import { GameRoomSocket } from '../services/communication/game-room.socket';
 import { JsonConverterService } from '../../web-service/json-converter/json-converter.service';
+import { mapParser } from '../services/parser/map-parser';
 
 @Component({
   selector: 'app-game',
@@ -43,8 +44,6 @@ export class GameComponent implements OnInit, OnDestroy {
   private game: Phaser.Game;
 
   constructor(private readonly router: Router,
-              converter: JsonConverterService,
-
               private readonly mainScene: MainScene) {
 
     const navigation = this.router.getCurrentNavigation();
@@ -52,18 +51,18 @@ export class GameComponent implements OnInit, OnDestroy {
     if (navigation && navigation.extras && navigation.extras.state) {
       const { token } = navigation.extras.state as StartContest;
 
-      this.connection = new GameRoomSocket(token, converter);
+      this.connection = new GameRoomSocket(token);
     }
   }
 
   ngOnInit() {
 
     if (this.connection) {
-      // TODO: Remove.
-      this.connection.push();
-
       this.game = new Phaser.Game(this.configuration);
-  
+
+      // Share the connection.
+      this.mainScene.setConnection(this.connection);
+
       this.game.scene.add(MainScene.KEY, this.mainScene, true);
     } else {
       this.redirect();
@@ -72,6 +71,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.connection) {
+      this.connection.disconnect();
+
       this.mainScene.sys.scenePlugin.remove(MainScene.KEY);
       this.game.destroy(true, false);
 

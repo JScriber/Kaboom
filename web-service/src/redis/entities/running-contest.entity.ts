@@ -15,7 +15,7 @@ export class RunningContest {
   id: number;
 
   /** Players of the contest. */
-  @RelationProperty(type => [Player, Set], { cascadeInsert: true })
+  @RelationProperty(type => [Player, Set], { cascadeInsert: true, cascadeUpdate: true })
   players: Set<Player> = new Set();
 
   /** Battlefield. */

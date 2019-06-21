@@ -1,10 +1,22 @@
 import { Socket } from 'ngx-socket-io';
-import { Subject, Observable } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
-import { JsonConverterService, Class } from '../../../web-service/json-converter/json-converter.service';
+import * as decode from 'jwt-decode';
 
 import { environment } from 'src/environments/environment';
+import { RunningContest } from './models/running-contest.model';
+import { Player } from './models/player.model';
+
+/** Payload of the running contest token. */
+export interface RunningContestToken {
+  runningContestId: number;
+  playerId: number;
+}
+
+export interface GameState {
+  player: Player;
+  contest: RunningContest;
+}
 
 /**
  * Executable action in the game room.
@@ -14,10 +26,10 @@ export class GameRoomSocket extends Socket {
   /** Says when the socket is disconnected. */
   disconnect$ = this.fromEvent<void>('disconnect');
 
-  /** Handles subscriptions. */
-  private subscriptionHandler$ = new Subject();
+  /** Game state informations. */
+  feed$: Observable<GameState>;
 
-  constructor(token: string, private readonly converter: JsonConverterService) {
+  constructor(token: string) {
     super({
       url: environment.apiUrl,
       options: {
@@ -26,31 +38,27 @@ export class GameRoomSocket extends Socket {
     });
 
     this.ioSocket.nsp = '/play';
+
+    this.initFeed(token);
   }
 
-  push() {
-    this.emit('push', { message: 'hello' });
+  /** The client says he's ready. */
+  ready() {
+    this.emit('ready');
   }
 
-  /** Disconnects from all rooms. */
-  disconnect() {
-    super.disconnect();
-
-    this.subscriptionHandler$.next();
+  /** Makes the player move. */
+  move(x: number, y: number) {
+    this.emit('move', { x, y });
   }
 
   /**
-   * Creates a listener to a room.
-   * @template T - Room feed.
-   * @param {string} room
-   * @param {Class<T>} classRef
-   * @returns {Observable<T>}
+   * Initializes the game feed.
+   * @param {string} token
    */
-  private listenRoom<T>(room: string, classRef: Class<T>): Observable<T> {
+  private initFeed(token: string) {
+    const contest: number = decode<RunningContestToken>(token).runningContestId;
 
-    return this.fromEvent<T>(room).pipe(
-      map(d => this.converter.deserialize(d, classRef)),
-      takeUntil(this.subscriptionHandler$)
-    );
+    this.feed$ = this.fromEvent(`feed/${contest}`);
   }
 }
