@@ -4,8 +4,10 @@ import Player from '../../objects/player';
 import { MapBuilder } from '../builder/map-builder';
 import { GameRoomSocket } from '../communication/game-room.socket';
 import { mapParser } from '../parser/map-parser';
-import { BotPlayer } from '../../objects/bot-player';
-import { SteerablePlayer } from '../../objects/steerable-player';
+
+// Types of player.
+import { RemotePlayer } from '../../objects/remote-player';
+import { LocalPlayer } from '../../objects/local-player';
 
 @Injectable()
 export class MainScene extends Phaser.Scene {
@@ -71,14 +73,12 @@ export class MainScene extends Phaser.Scene {
 
 					const player = this.players.find(p => p.id === outputPlayer.id);
 
-					if (player && player instanceof BotPlayer) {
-						const position = player.position;
+					if (player && player instanceof RemotePlayer) {
 
-						if (position.x !== outputPlayer.positionX || position.y !== outputPlayer.positionY) {
-
-							console.log('Player ' + player.id + ' has moved.', position.y, outputPlayer.positionY);
-							// TODO: Change.
-						}
+						player.setServerPosition({
+							x: outputPlayer.positionX,
+							y: outputPlayer.positionY
+						});
 					}
 				});
 
@@ -90,8 +90,10 @@ export class MainScene extends Phaser.Scene {
 						y: p.positionY
 					};
 
+					let phaserPlayer: Player;
+
 					if (p.id === player.id) {
-						return new SteerablePlayer(this, {
+						phaserPlayer = new LocalPlayer(this, {
 							id: p.id,
 
 							initialPosition: position,
@@ -100,11 +102,13 @@ export class MainScene extends Phaser.Scene {
 						});
 					} else {
 
-						return new BotPlayer(this, {
+						phaserPlayer = new RemotePlayer(this, {
 							id: p.id,
 							initialPosition: position
-						})
-					}	
+						});
+					}
+
+					return phaserPlayer;
 				});
 			}
 

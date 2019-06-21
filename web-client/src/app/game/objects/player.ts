@@ -1,4 +1,3 @@
-import MultiKey from '../utils/multikey';
 import PlayerAnimations, { Walk, Idle } from './player-animations';
 
 export enum Direction {
@@ -15,6 +14,16 @@ export interface Position {
   x: number;
 
   /** Vertical position. */
+  y: number;
+}
+
+/** Directional vector for movements. */
+export interface Vector {
+
+  /** Movement on the horizontal axis. */
+  x: number;
+
+  /** Movement on the vertical axis. */
   y: number;
 }
 
@@ -39,8 +48,10 @@ export default abstract class Player {
 
   protected sprite: Phaser.Physics.Matter.Sprite;
 
+  /** Speed of the character. */
   protected velocity = 2;
 
+  /** Last direction (used for animation only). */
   protected lastDirection = Direction.Down;
 
   /** Animations handler. */
@@ -88,6 +99,92 @@ export default abstract class Player {
     this.sprite.setVelocity(velocityX, velocityY);
   }
 
+  /**
+   * Determines the forces the exert on the player.
+   * @returns {Vector}
+   */
+  protected abstract findDirection(): Vector;
+
+  /** Hook called whenever the position changes. */
+  protected movementHook(position: Position): void {}
+
   /** Determines the velocity to apply. */
-  protected abstract determineVelocity(): [number, number];  
+  private determineVelocity(): [number, number] {
+
+    // Forces applied to the player.
+    const direction: Vector = this.findDirection();
+
+    // The player must move if the direction indicates a value different of 0.
+    const mustMove = direction.x !== 0 || direction.y !== 0;
+
+    let velocityX = 0;
+    let velocityY = 0;
+
+    if (mustMove) {
+
+      if (direction.y === 0) {
+  
+        // Goes right.
+        if (direction.x < 0) {
+          velocityX = this.velocity;
+          velocityY = 0;
+    
+          this.animations.play(Walk.Right);
+          this.lastDirection = Direction.Right;
+        }
+  
+        // Goes left.
+        if (direction.x > 0) {
+          velocityX = -1 * this.velocity;
+          velocityY = 0;
+    
+          this.animations.play(Walk.Left);
+          this.lastDirection = Direction.Left;
+        }
+      } else {
+  
+        // Goes down.
+        if (direction.y < 0) {
+          velocityX = 0
+          velocityY = this.velocity;
+    
+          this.animations.play(Walk.Down);
+          this.lastDirection = Direction.Down;
+        }
+  
+        // Goes up.
+        if (direction.y > 0) {
+          velocityX = 0
+          velocityY = -1 * this.velocity;
+    
+          this.animations.play(Walk.Up);
+          this.lastDirection = Direction.Up;
+        }
+      }
+
+      this.movementHook(this.position);
+    } else {
+      // Determine the animation to play when not moving.
+      switch(this.lastDirection) {
+
+        case Direction.Up:
+          this.animations.play(Idle.Up);
+          break;
+
+        case Direction.Down:
+          this.animations.play(Idle.Down);
+          break;
+
+        case Direction.Left:
+          this.animations.play(Idle.Left);
+          break;
+
+        case Direction.Right:
+          this.animations.play(Idle.Right);
+          break;
+      }
+    }
+
+    return [velocityX, velocityY];
+  }  
 }
