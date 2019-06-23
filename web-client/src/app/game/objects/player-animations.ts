@@ -12,6 +12,8 @@ export enum Idle {
   Down = 'IDLE_DOWN'
 };
 
+type Animation = Walk | Idle | 'disconnect';
+
 export default class PlayerAnimations {
 
   constructor(private readonly sprite: Phaser.Physics.Matter.Sprite,
@@ -33,13 +35,16 @@ export default class PlayerAnimations {
     // Down animations.
     this.add(Walk.Down, [6, 8]);
     this.add(Idle.Down, [7]);
+
+    // Disconnect animation.
+    this.add('disconnect', [12, 13, 14, 15, 16, 17]);
   }
 
   /**
    * Plays the given animation
    * @param animation 
    */
-  play(animation: Walk | Idle) {
+  play(animation: Animation) {
     this.sprite.anims.play(this.buildKey(animation), true);
   }
 
@@ -48,7 +53,7 @@ export default class PlayerAnimations {
    * @param animation 
    * @param frames 
    */
-  private add(animation: Walk | Idle, frames: number[]) {
+  private add(animation: Animation, frames: number[]) {
     this.scene.anims.create({
       key: this.buildKey(animation),
       frameRate: 5,
@@ -61,7 +66,7 @@ export default class PlayerAnimations {
    * @param animation
    * @returns {string}
    */
-  private buildKey(animation: Walk | Idle): string {
+  private buildKey(animation: Animation): string {
     return `${this.spriteKey}:${animation}`;
   }
 }

@@ -43,6 +43,9 @@ export class GameComponent implements OnInit, OnDestroy {
   /** Game instance. */
   private game: Phaser.Game;
 
+  /** Says if the component has been destroyed. */
+  private destroyed = false;
+
   constructor(private readonly router: Router,
               private readonly mainScene: MainScene) {
 
@@ -64,12 +67,16 @@ export class GameComponent implements OnInit, OnDestroy {
       this.mainScene.setConnection(this.connection);
 
       this.game.scene.add(MainScene.KEY, this.mainScene, true);
+
+      this.connection.disconnect$.subscribe(() => this.redirect());
     } else {
       this.redirect();
     }
   }
 
   ngOnDestroy() {
+    this.destroyed = true;
+
     if (this.connection) {
       this.connection.disconnect();
 
@@ -82,6 +89,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   /** Redirects the user. */
   private redirect() {
-    this.router.navigate(['/']);
+    if (!this.destroyed) this.router.navigate(['/']);
   }
 }

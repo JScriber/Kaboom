@@ -1,5 +1,6 @@
 // Models.
-import { Vector } from './models/vector.model';
+import { Position } from './models/position.model';
+import { Direction } from './models/direction.model';
 
 import { LogicHandler } from '../game-executor/game-executor.service';
 
@@ -9,6 +10,8 @@ import { LogicHandler } from '../game-executor/game-executor.service';
 export interface IGameLogicService {
 
   /** Movement of a {@link Player}. */
-  move: LogicHandler<Vector>;
+  move: LogicHandler<Position>;
 
+  /** The {@link Player} puts a bomb. */
+  bomb: LogicHandler<Direction>;
 }

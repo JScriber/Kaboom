@@ -13,6 +13,10 @@ interface Properties<T> {
   breakObstacle1: T;
   breakObstacleShadowed: T;
   breakObstacleShadow: T;
+
+  // Bombs.
+  smallBomb: T;
+  smallBombImminent: T;
 }
 
 /** Indexes. */
@@ -29,7 +33,10 @@ export const PropertyMatching: Properties<string> = {
   breakObstacle2       : 'break-obstacle-2',
   breakObstacle1       : 'break-obstacle-1',
   breakObstacleShadowed: 'break-obstacle-7-shadowed',
-  breakObstacleShadow  : 'break-obstacle-shadow'
+  breakObstacleShadow  : 'break-obstacle-shadow',
+
+  smallBomb : 'small-bomb',
+  smallBombImminent: 'small-bomb-imminent'
 };
 
 export interface Coordinates {

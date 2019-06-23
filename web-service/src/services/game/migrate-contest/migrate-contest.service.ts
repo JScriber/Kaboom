@@ -63,12 +63,14 @@ export class MigrateContestService {
 
       const player = new Player();
 
-      player.confirmed = false;
+      player.connected = false;
       player.participantId = participant.id;
 
       player.hearts = 3;
       player.lives = 3;
-      player.speed = 10;
+
+      player.speed = 2;
+      player.maxBombs = 3;
 
       const [ x, y ] = positions[i];
 
@@ -97,6 +99,9 @@ export class MigrateContestService {
 
     battlefield.height = map.width;
     battlefield.width = map.height;
+
+    battlefield.canvasHeight = 208;
+    battlefield.canvasWidth = 208;
 
     battlefield.matrixRepresentation = map.content;
 

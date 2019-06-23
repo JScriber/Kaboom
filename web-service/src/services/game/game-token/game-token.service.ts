@@ -7,6 +7,7 @@ import { Player } from '../../../redis/entities/player.entity';
 // Services.
 import { TokenService } from '../../token/token.service';
 import { RunningContestRepository } from '../../../redis/services/repositories/running-contest-repository/running-contest.repository';
+import { PlayerRepository } from '../../../redis/services/repositories/player-repository/player.repository';
 
 /**
  * A data access has current {@link RunningContest} state.
@@ -27,7 +28,8 @@ export interface RunningContestToken {
 export class GameTokenService {
 
   constructor(private readonly tokenService: TokenService,
-              private readonly repository: RunningContestRepository) {}
+              private readonly repository: RunningContestRepository,
+              private readonly playerRepository: PlayerRepository) {}
 
   /**
    * Generates a token to access the running contest.
@@ -41,6 +43,22 @@ export class GameTokenService {
       runningContestId: id,
       playerId: player.id
     });
+  }
+
+  /**
+   * Extracts the {@link Player} informations from the token.
+   * @param {string} token
+   * @returns the player.
+   */
+  async extractPlayerFromToken(token: string): Promise<Player | undefined> {
+    const { playerId }: RunningContestToken = this.tokenService.extractFrom(token);
+    let player: Player | undefined;
+
+    if (playerId !== undefined) {
+      player = await this.playerRepository.getOne(playerId);
+    }
+
+    return player;
   }
 
   /**

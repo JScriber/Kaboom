@@ -6,6 +6,7 @@ import * as decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 import { RunningContest } from './models/running-contest.model';
 import { Player } from './models/player.model';
+import { Position, Direction } from '../../objects/player';
 
 /** Payload of the running contest token. */
 export interface RunningContestToken {
@@ -29,6 +30,15 @@ export class GameRoomSocket extends Socket {
   /** Game state informations. */
   feed$: Observable<GameState>;
 
+  /** The client says he's ready. */
+  ready = () => this.emit('ready');
+
+  /** Makes the player move. */
+  move = (position: Position) => this.emit('move', position);
+
+  /** The player puts a bomb. */
+  bomb = (direction: Direction) => this.emit('bomb', direction);
+
   constructor(token: string) {
     super({
       url: environment.apiUrl,
@@ -40,16 +50,6 @@ export class GameRoomSocket extends Socket {
     this.ioSocket.nsp = '/play';
 
     this.initFeed(token);
-  }
-
-  /** The client says he's ready. */
-  ready() {
-    this.emit('ready');
-  }
-
-  /** Makes the player move. */
-  move(x: number, y: number) {
-    this.emit('move', { x, y });
   }
 
   /**

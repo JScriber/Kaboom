@@ -95,6 +95,16 @@
          "name":"fixed-obstacle-shadow",
          "type":"int",
          "value":22
+        }, 
+        {
+         "name":"small-bomb",
+         "type":"int",
+         "value":96
+        }, 
+        {
+         "name":"small-bomb-imminent",
+         "type":"int",
+         "value":54
         }],
  "renderorder":"right-down",
  "tiledversion":"1.2.3",

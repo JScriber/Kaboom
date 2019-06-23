@@ -44,13 +44,27 @@ export class LayerHandler {
     // Check if the item can be collided.
     if ((['fixedObstacle', 'breakObstacle7', 'breakObstacle6',
          'breakObstacle5', 'breakObstacle4', 'breakObstacle3',
-         'breakObstacle2', 'breakObstacleShadowed'
+         'breakObstacle2', 'breakObstacleShadowed', 'smallBomb'
         ] as (keyof IndexMatching)[]).includes(property)) {
       tile.properties = { collides: true };
     }
   
     // Put the tile on the layer.
     tilemap.putTileAt(tile, x, y);
+  }
+
+  /**
+   * Removes a tile from the layer.
+   * @param {Layer} layer
+   * @param {Coordinates} coordinates
+   */
+  removeTile(layer: Layer, { x, y }: Coordinates) {
+
+    // Layer on which the tile will be removed.
+    const tilemap = this.selectLayer(layer);
+
+    // Remove the tile from the layer.
+    tilemap.removeTileAt(x, y);
   }
 
   /** Clears out all the layers. */

@@ -90,7 +90,7 @@ export default abstract class Player {
 
     const Bodies = (Phaser.Physics.Matter as any).Matter.Bodies;
 
-    const mainBody = Bodies.rectangle(0, 5, 12, 8, { chamfer: { radius: 5 } });
+    const mainBody = Bodies.rectangle(0, 5, 12, 15, { chamfer: { radius: 5 } });
 
     const { x, y } = parameters.initialPosition;
 
@@ -208,5 +208,5 @@ export default abstract class Player {
     }
 
     return [velocityX, velocityY];
-  }  
+  }
 }

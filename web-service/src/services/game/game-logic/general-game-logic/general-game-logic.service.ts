@@ -8,7 +8,11 @@ import { Player } from '../../../../redis/entities/player.entity';
 import { RunningContest } from '../../../../redis/entities/running-contest.entity';
 
 // Models.
-import { Vector } from '../models/vector.model';
+import { Position } from '../models/position.model';
+import { Direction } from '../models/direction.model';
+
+// Components.
+import { GameBombComponent } from '../components/game-bomb-component/game-bomb-component.service';
 
 /**
  * Implementation of the {@link IGameLogicService} interface.
@@ -16,25 +20,20 @@ import { Vector } from '../models/vector.model';
 @Injectable()
 export class GeneralGameLogicService implements IGameLogicService {
 
+  constructor(private readonly bombLogic: GameBombComponent) {}
+
   /** @inheritdoc */
-  move = (player: Player, contest: RunningContest, direction: Vector): RunningContest => {
+  move = (player: Player, contest: RunningContest, position: Position): RunningContest => {
 
-    const current = this.currentPlayer(player, contest);
+    player.positionX = position.x;
+    player.positionY = position.y;
 
-    current.positionX = direction.x;
-    current.positionY = direction.y;
+    // TODO: Add more controls and security rules.
 
     return contest;
   };
 
-  /**
-   * Gets the current player. The given player cannot be used directly
-   * as its reference may be different of the one in the player set.
-   * @param {Player} player 
-   * @param {RunningContest} contest
-   * @returns {Player}
-   */
-  private currentPlayer({ id }: Player, contest: RunningContest) {
-    return Array.from(contest.players).find(p => p.id === id);
-  }
+  /** @inheritdoc */
+  bomb = async (player: Player, contest: RunningContest, direction: Direction): Promise<RunningContest> => this
+    .bombLogic.execute(player, contest, direction);
 }

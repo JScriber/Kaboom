@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import Player from '../../objects/player';
 
 import { MapBuilder } from '../builder/map-builder';
 import { GameRoomSocket } from '../communication/game-room.socket';
@@ -8,9 +7,13 @@ import { mapParser } from '../parser/map-parser';
 // Types of player.
 import { RemotePlayer } from '../../objects/remote-player';
 import { LocalPlayer } from '../../objects/local-player';
+import Player from '../../objects/player';
 
 import { SpriteSkin } from './main.scene.model';
-import { Skin } from '../communication/models/player.model';
+
+// Communication models.
+import { RunningContest } from '../communication/models/running-contest.model';
+import { Player as CommunicationPlayer } from '../communication/models/player.model';
 
 @Injectable()
 export class MainScene extends Phaser.Scene {
@@ -66,7 +69,13 @@ export class MainScene extends Phaser.Scene {
 		// Wait data.
 		this.connection.feed$.subscribe(({ player, contest }) => {
 
-			this.builder.drawData(mapParser(contest.battlefield));
+			const { battlefield } = contest;
+
+			// Draw the battlefield layout.
+			this.builder.drawData(mapParser(battlefield));
+
+			// Draw the bombs.
+			this.builder.drawBombs(battlefield.bombs);
 
 			// Setup collisions.
 			this.field.setCollisionByProperty({ collides: true });
@@ -75,55 +84,8 @@ export class MainScene extends Phaser.Scene {
 			this.matter.world.convertTilemapLayer(this.obstacles);
 			this.matter.world.convertTilemapLayer(this.field);
 
-			// Set player initial position.
-			if (this.initialized) {
-
-				contest.players.forEach(outputPlayer => {
-
-					const player = this.players.find(p => p.id === outputPlayer.id);
-
-					if (player && player instanceof RemotePlayer) {
-
-						player.setServerPosition({
-							x: outputPlayer.positionX,
-							y: outputPlayer.positionY
-						});
-					}
-				});
-
-			} else {
-				this.players = contest.players.map(p => {
-
-					const position = {
-						x: p.positionX,
-						y: p.positionY
-					};
-
-					const skin = p.skin;
-
-					let phaserPlayer: Player;
-
-					if (p.id === player.id) {
-						phaserPlayer = new LocalPlayer(this, {
-							id: p.id,
-							skin,
-
-							initialPosition: position,
-
-							movementOutput: ({ x, y }) => this.connection.move(x, y)
-						});
-					} else {
-
-						phaserPlayer = new RemotePlayer(this, {
-							id: p.id,
-							initialPosition: position,
-							skin
-						});
-					}
-
-					return phaserPlayer;
-				});
-			}
+			// Update the players.
+			this.updatePlayers(contest, player);
 
 			this.initialized = true;
 		});
@@ -141,5 +103,75 @@ export class MainScene extends Phaser.Scene {
 	 */
 	setConnection(connection: GameRoomSocket) {
 		this.connection = connection;
+	}
+
+	/**
+	 * Initializes the state of the game.
+	 * @param contest
+	 * @param player
+	 */
+	private updatePlayers(contest: RunningContest, current: CommunicationPlayer) {
+
+		// Check removal.
+		contest.players.filter(p => !p.connected).forEach(({ id }) => {
+			const player = this.players.find(p => p.id === id);
+
+			if (player && player instanceof RemotePlayer) {
+				player.disconnect();
+			}
+		});
+
+		// Create or update.
+		this.players = contest.players.filter(p => p.connected)
+			.map(outputPlayer => {
+
+				let player = this.players.find(p => p.id === outputPlayer.id);
+
+				if (player) {
+					if (player instanceof RemotePlayer) {
+
+						player.setServerPosition({
+							x: outputPlayer.positionX,
+							y: outputPlayer.positionY
+						});
+					}
+				} else {
+					player = this.createPlayer(outputPlayer, outputPlayer.id === current.id);
+				}
+
+				return player;
+			});
+	}
+
+	/**
+	 * Creates a new player.
+	 * @param {Player} outputPlayer
+	 * @param {boolean} localPlayer
+	 * @returns a new player.
+	 */
+	private createPlayer(outputPlayer: CommunicationPlayer, localPlayer: boolean) {
+		const position = {
+			x: outputPlayer.positionX,
+			y: outputPlayer.positionY
+		};
+
+		const skin = outputPlayer.skin;
+
+		return (localPlayer) ? (
+			new LocalPlayer(this, {
+				id: outputPlayer.id,
+				skin,
+
+				initialPosition: position,
+
+				connection: this.connection
+			})
+		) : (
+			new RemotePlayer(this, {
+				id: outputPlayer.id,
+				initialPosition: position,
+				skin
+			})
+		);
 	}
 }

@@ -22,6 +22,11 @@ export class RemotePlayer extends Player {
     this.serverPosition = position;
   }
 
+  /** Disconnects the player. */
+  disconnect() {
+    this.animations.play('disconnect');
+  }
+
   /**
    * Finds the direction where the player goes.
    * @returns {Vector}
