@@ -1,3 +1,4 @@
+import { Bomb } from './bomb.model';
 /**
  * Battlefield where the players evolve.
  */
@@ -18,4 +19,7 @@ export interface Battlefield {
    * Each character represents a cell in a matrix.
    */
   matrixRepresentation: string;
+
+  /** Bombs on the battlefield. */
+  bombs: Bomb[];
 }

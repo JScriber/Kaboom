@@ -6,7 +6,7 @@ import * as decode from 'jwt-decode';
 import { environment } from 'src/environments/environment';
 import { RunningContest } from './models/running-contest.model';
 import { Player } from './models/player.model';
-import { Vector, Position, Direction } from '../../objects/player';
+import { Position, Direction } from '../../objects/player';
 
 /** Payload of the running contest token. */
 export interface RunningContestToken {

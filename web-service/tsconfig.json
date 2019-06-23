@@ -17,6 +17,8 @@
       "@entity/*": ["src/database/entity/*"],
       "@service/*": ["./src/services/*"],
       "@model/*": ["./src/models/*"],
+      "@redis-entity/*": ["./src/redis/entities/*"], 
+      "@redis-repository/*": ["./src/redis/services/repositories/*"], 
       "@environment": ["./environment/environment.dev.ts"]
     },
     "types": [

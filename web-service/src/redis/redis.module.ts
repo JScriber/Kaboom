@@ -6,12 +6,14 @@ import { environment } from '@environment';
 import { RunningContestRepository } from './services/repositories/running-contest-repository/running-contest.repository';
 import { PlayerRepository } from './services/repositories/player-repository/player.repository';
 import { BattlefieldRepository } from './services/repositories/battlefield-repository/battlefield.repository';
+import { BombRepository } from './services/repositories/bomb-repository/bomb-repository.service';
 
 /** Redis repositories. */
 const REPOSITORIES: Provider[] = [
   RunningContestRepository,
   PlayerRepository,
-  BattlefieldRepository
+  BattlefieldRepository,
+  BombRepository
 ];
 
 @Module({

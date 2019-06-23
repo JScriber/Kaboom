@@ -64,14 +64,18 @@ export class MainScene extends Phaser.Scene {
 		this.obstacles = map.createDynamicLayer('obstacles', tileset, 0, 0);
 		const shadows = map.createDynamicLayer('shadows', tileset, 0, 0);
 
-		console.log(map.widthInPixels, map.width, map.widthInPixels / map.width);
-
 		this.builder = new MapBuilder(map, this.obstacles, shadows);
 
 		// Wait data.
 		this.connection.feed$.subscribe(({ player, contest }) => {
 
-			this.builder.drawData(mapParser(contest.battlefield));
+			const { battlefield } = contest;
+
+			// Draw the battlefield layout.
+			this.builder.drawData(mapParser(battlefield));
+
+			// Draw the bombs.
+			this.builder.drawBombs(battlefield.bombs);
 
 			// Setup collisions.
 			this.field.setCollisionByProperty({ collides: true });
@@ -80,8 +84,8 @@ export class MainScene extends Phaser.Scene {
 			this.matter.world.convertTilemapLayer(this.obstacles);
 			this.matter.world.convertTilemapLayer(this.field);
 
-			// Set player initial position.
-			this.initialized ? this.updatePositions(contest) : this.initialize(contest, player);
+			// Update the players.
+			this.updatePlayers(contest, player);
 
 			this.initialized = true;
 		});
@@ -102,60 +106,72 @@ export class MainScene extends Phaser.Scene {
 	}
 
 	/**
-	 * Updates the position of the players based on the one on the server.
-	 * @param {RunningContest} contest
-	 */
-	private updatePositions(contest: RunningContest) {
-		contest.players.forEach(outputPlayer => {
-
-			const player = this.players.find(p => p.id === outputPlayer.id);
-
-			if (player && player instanceof RemotePlayer) {
-
-				player.setServerPosition({
-					x: outputPlayer.positionX,
-					y: outputPlayer.positionY
-				});
-			}
-		});
-	}
-
-	/**
 	 * Initializes the state of the game.
 	 * @param contest
 	 * @param player
 	 */
-	private initialize(contest: RunningContest, player: CommunicationPlayer) {
-		this.players = contest.players.map(p => {
+	private updatePlayers(contest: RunningContest, current: CommunicationPlayer) {
 
-			const position = {
-				x: p.positionX,
-				y: p.positionY
-			};
+		// Check removal.
+		contest.players.filter(p => !p.connected).forEach(({ id }) => {
+			const player = this.players.find(p => p.id === id);
 
-			const skin = p.skin;
-
-			let phaserPlayer: Player;
-
-			if (p.id === player.id) {
-				phaserPlayer = new LocalPlayer(this, {
-					id: p.id,
-					skin,
-
-					initialPosition: position,
-
-					connection: this.connection
-				});
-			} else {
-
-				phaserPlayer = new RemotePlayer(this, {
-					id: p.id,
-					initialPosition: position,
-					skin
-				});
+			if (player && player instanceof RemotePlayer) {
+				player.disconnect();
 			}
-
-			return phaserPlayer;
 		});
+
+		// Create or update.
+		this.players = contest.players.filter(p => p.connected)
+			.map(outputPlayer => {
+
+				let player = this.players.find(p => p.id === outputPlayer.id);
+
+				if (player) {
+					if (player instanceof RemotePlayer) {
+
+						player.setServerPosition({
+							x: outputPlayer.positionX,
+							y: outputPlayer.positionY
+						});
+					}
+				} else {
+					player = this.createPlayer(outputPlayer, outputPlayer.id === current.id);
+				}
+
+				return player;
+			});
+	}
+
+	/**
+	 * Creates a new player.
+	 * @param {Player} outputPlayer
+	 * @param {boolean} localPlayer
+	 * @returns a new player.
+	 */
+	private createPlayer(outputPlayer: CommunicationPlayer, localPlayer: boolean) {
+		const position = {
+			x: outputPlayer.positionX,
+			y: outputPlayer.positionY
+		};
+
+		const skin = outputPlayer.skin;
+
+		return (localPlayer) ? (
+			new LocalPlayer(this, {
+				id: outputPlayer.id,
+				skin,
+
+				initialPosition: position,
+
+				connection: this.connection
+			})
+		) : (
+			new RemotePlayer(this, {
+				id: outputPlayer.id,
+				initialPosition: position,
+				skin
+			})
+		);
 	}
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Observable, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, from, iif, of } from 'rxjs';
+import { switchMap, mergeMap } from 'rxjs/operators';
 
 // Entities.
 import { Player } from '../../../redis/entities/player.entity';
@@ -14,7 +14,7 @@ import { RunningContestRepository } from '../../../redis/services/repositories/r
  * Methods which contains some logic.
  * @template D - DTO type.
  */
-export type LogicHandler<D> = (p: Player, g: RunningContest, d: D) => RunningContest;
+export type LogicHandler<D> = (p: Player, g: RunningContest, d: D) => RunningContest | Promise<RunningContest> | Observable<RunningContest>;
 
 /**
  * Generic logic executor.
@@ -38,7 +38,15 @@ export class GameExecutorService {
     // TODO: Implement locker.
 
     return from(this.token.extractFromToken(token)).pipe(
-      map(([ contest, player ]) => logic(player, contest, additional)),
+      mergeMap(([ contest, player ]) => {
+        const response = logic(player, contest, additional);
+
+        // Support synchronous and asynchronous logic handlers.
+        return iif(() => response instanceof Observable || response instanceof Promise,
+          response as Promise<RunningContest>,
+          of(response as RunningContest)
+        );
+      }),
       switchMap(contest => this.save(contest))
     );
   }

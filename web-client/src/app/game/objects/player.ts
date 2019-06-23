@@ -208,5 +208,5 @@ export default abstract class Player {
     }
 
     return [velocityX, velocityY];
-  }  
+  }
 }

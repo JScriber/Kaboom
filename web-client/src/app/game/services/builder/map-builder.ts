@@ -1,6 +1,7 @@
 import { Coordinates, Data, NumericMap } from './map-builder.model';
 import { NumericMapUtils } from './map-data';
 import { LayerHandler, Layer } from './layer-handler/layer-handler';
+import { Bomb } from '../communication/models/bomb.model';
 
 export class MapBuilder {
 
@@ -43,12 +44,37 @@ export class MapBuilder {
           case Data.BreakObstacle2:
           case Data.BreakObstacle1:
             this.generateBreakObstacle({ x, y }, data - Data.BreakObstacle1 + 1, map);
+            break;
 
           default:
             break;
         }
       }
     }
+  }
+
+  /**
+   * Draws the bombs on the map.
+   * @param {Bomb[]} bombs
+   */
+  drawBombs(bombs: Bomb[]) {
+
+    bombs.forEach(bomb => this.generateBomb({
+      x: bomb.positionX + 1,
+      y: bomb.positionY + 1
+    }));
+  }
+
+  /**
+   * Adds a bomb on the map.
+   * @param {Coordinates} coordinates
+   */
+  private generateBomb(coordinates: Coordinates) {
+
+    // Removes previous shadows as it may override the bomb image.
+    this.layer.removeTile(Layer.Shadow, coordinates);
+
+    this.layer.addTile(Layer.Obstacle, coordinates, 'smallBomb');
   }
 
   /**

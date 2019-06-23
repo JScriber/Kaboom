@@ -1,4 +1,5 @@
-import { Entity, IdentifyProperty, Property } from 'orm-redis';
+import { Entity, IdentifyProperty, Property, RelationProperty } from 'orm-redis';
+import { Bomb } from './bomb.entity';
 
 export enum Skin {
   Player1,
@@ -22,9 +23,9 @@ export class Player {
   @Property(Number)
   participantId: number;
 
-  /** Says if the player has joined the game. */
+  /** Says if the player is connected. */
   @Property(Boolean)
-  confirmed: boolean;
+  connected: boolean;
 
   /** X position of the player on the battlefield. */
   @Property(Number)
@@ -55,6 +56,10 @@ export class Player {
   /** Speed at which the player moves. */
   @Property(Number)
   speed: number;
+
+  /** Maximum number of bombs the player can drop. */
+  @Property(Number)
+  maxBombs: number;
 
   // TODO: Add stored items... Number of bombs. Skin, etc.
 }

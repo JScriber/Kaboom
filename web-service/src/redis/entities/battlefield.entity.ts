@@ -1,4 +1,5 @@
-import { Entity, IdentifyProperty, Property } from 'orm-redis';
+import { Entity, IdentifyProperty, Property, RelationProperty } from 'orm-redis';
+import { Bomb } from './bomb.entity';
 
 /**
  * Battlefield where the players evolve.
@@ -33,4 +34,8 @@ export class Battlefield {
    */
   @Property(String)
   matrixRepresentation: string;
+
+  /** Bombs on the battlefield. */
+  @RelationProperty(type => [Bomb, Set], { cascadeInsert: true, cascadeUpdate: true })
+  bombs: Set<Bomb> = new Set();
 }

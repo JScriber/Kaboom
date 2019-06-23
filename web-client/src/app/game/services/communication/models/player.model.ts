@@ -14,7 +14,7 @@ export interface Player {
   participantId: number;
 
   /** Says if the player has joined the game. */
-  confirmed: boolean;
+  connected: boolean;
 
   /** X position of the player on the battlefield. */
   positionX: number;
