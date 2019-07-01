@@ -33,7 +33,7 @@ export class GameComponent implements OnInit, OnDestroy {
       default: 'matter',
       matter: {
         gravity: { y: 0 },
-        debug: false
+        debug: true
       }
     }
   };

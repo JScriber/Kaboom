@@ -21,10 +21,6 @@ export class Bomb {
   @Property(Number)
   positionY: number;
 
-  /** Date at which the bomb has been placed. */
-  @Property(String)
-  putAt: String;
-
   /** Countdown before it explodes in miliseconds. */
   @Property(Number)
   countdown: number;
